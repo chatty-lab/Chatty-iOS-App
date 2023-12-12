@@ -121,12 +121,14 @@ public extension Target {
 }
 
 
+
 // MARK: Target + Feature
 
 public extension Target {
   static func feature(factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.name = ModulePath.Feature.name
+    newFactory.product = .staticFramework
     
     return make(factory: newFactory)
   }
@@ -134,6 +136,7 @@ public extension Target {
   static func feature(implements module: ModulePath.Feature, factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.name = ModulePath.Feature.name + module.rawValue
+    newFactory.product = .staticFramework
     
     return make(factory: newFactory)
   }
@@ -159,6 +162,7 @@ public extension Target {
     var newFactory = factory
     newFactory.name = ModulePath.Feature.name + module.rawValue + "Interface"
     newFactory.sources = .interface
+    newFactory.product = .framework
     
     return make(factory: newFactory)
   }
@@ -179,6 +183,7 @@ public extension Target {
   static func domain(factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.name = ModulePath.Domain.name
+    newFactory.product = .framework
     
     return make(factory: newFactory)
   }
@@ -186,6 +191,7 @@ public extension Target {
   static func domain(implements module: ModulePath.Domain, factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.name = ModulePath.Domain.name + module.rawValue
+    newFactory.product = .staticFramework
     
     return make(factory: newFactory)
   }
@@ -211,6 +217,7 @@ public extension Target {
     var newFactory = factory
     newFactory.name = ModulePath.Domain.name + module.rawValue + "Interface"
     newFactory.sources = .interface
+    newFactory.product = .framework
     
     return make(factory: newFactory)
   }
@@ -222,6 +229,7 @@ public extension Target {
   static func core(factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.name = ModulePath.Core.name
+    newFactory.product = .framework
     
     return make(factory: newFactory)
   }
@@ -229,6 +237,7 @@ public extension Target {
   static func core(implements module: ModulePath.Core, factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.name = ModulePath.Core.name + module.rawValue
+    newFactory.product = .staticFramework
     
     return make(factory: newFactory)
   }
@@ -254,6 +263,7 @@ public extension Target {
     var newFactory = factory
     newFactory.name = ModulePath.Core.name + module.rawValue + "Interface"
     newFactory.sources = .interface
+    newFactory.product = .framework
     
     return make(factory: newFactory)
   }
@@ -265,6 +275,7 @@ public extension Target {
   static func shared(factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.name = ModulePath.Shared.name
+    newFactory.product = .framework
     
     return make(factory: newFactory)
   }

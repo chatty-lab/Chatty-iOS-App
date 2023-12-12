@@ -2,7 +2,7 @@ import ProjectDescription
 import DependencyPlugin
 
 public extension Project {
-  static func makeModule(name: String, targets: [Target]) -> Self {
+  static func makeModule(name: String, targets: [Target], settings: Settings? = nil) -> Self {
     let name: String = name
     let organizationName: String? = nil
     let options: Project.Options = .options()

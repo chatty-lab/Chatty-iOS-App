@@ -14,6 +14,13 @@ let SPM = SwiftPackageManagerDependencies(
     .remote(url: "https://github.com/ReactorKit/ReactorKit.git", requirement: .upToNextMajor(from: "3.2.0")),
     .remote(url: "https://github.com/Moya/Moya.git", requirement: .upToNextMajor(from: "15.0.3"))
   ]
+  ,baseSettings: .settings(
+    configurations: [
+      .debug(name: .debug),
+      .debug(name: "QA"),
+      .release(name: .release)
+    ]
+  )
 )
 
 let dependencies = Dependencies(
