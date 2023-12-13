@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: chatty-lab/Chatty-iOS-fastlane-certificate
-          path: Chatty-iOS-App/Chatty-iOS-App/Projects/App/Config
+          path: Projects/App/Config
           token: ${{ secrets.ACTION_TOKEN }}
 
       - name: Setting Master Key
