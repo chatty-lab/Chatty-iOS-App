@@ -72,7 +72,6 @@ Derived/
 ### Tuist managed dependencies ###
 Tuist/Dependencies
 Tuist/*.key
-Tuist/Signing
 
 ### Fastale ###
 fastlane/.env
