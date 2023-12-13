@@ -17,17 +17,17 @@ public enum AppConfiguration {
   
   var name: String {
     switch self {
-    case .debug: "Debug"
-    case .qa: "QA"
-    case .release: "Release"
+    case .debug: return "Debug"
+    case .qa: return "QA"
+    case .release: return "Release"
     }
   }
   
   var bundleIdSuffix: String {
     switch self {
-    case .debug: ".debug"
-    case .qa: ".qa"
-    case .release: ""
+    case .debug: return ".debug"
+    case .qa: return ".qa"
+    case .release: return ""
     }
   }
   
