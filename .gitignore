@@ -62,6 +62,9 @@ DerivedData/
 *.xcodeproj
 *.xcworkspace
 
+### xcconfig ###
+*.xcconfig
+
 ### Tuist derived files ###
 graph.dot
 Derived/
@@ -70,3 +73,6 @@ Derived/
 Tuist/Dependencies
 Tuist/*.key
 Tuist/Signing
+
+### Fastale ###
+fastlane/.env
