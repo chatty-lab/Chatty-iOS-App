@@ -1,0 +1,7 @@
+git_url("git@github.com:chatty-lab/Chatty-iOS-fastlane-certificate.git")
+
+storage_mode("git")
+
+type("appstore")
+
+app_identifier("org.chattylab.chatty")
