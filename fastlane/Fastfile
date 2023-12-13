@@ -14,7 +14,7 @@
 # update_fastlane
 
 APP_NAME = "Chatty"
-SCHEME = "Chatty"
+SCHEME = "Chatty-Release"
 BUNDLE_ID = "org.chattylab.chatty"
 
 KEYCHAIN_NAME = ENV["KEYCHAIN_NAME"]
