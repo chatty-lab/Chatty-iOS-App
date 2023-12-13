@@ -28,8 +28,7 @@ jobs:
           token: ${{ secrets.ACTION_TOKEN }}
 
       - name: Setting Master Key
-        run: |
-          echo "$MASTER_KEY" > ./Tuist/master.key
+        run: echo "${MASTER_KEY//[$'\r\n']}" > Tuist/master.key
         env:
           MASTER_KEY: ${{secrets.MASTER_KEY}}
 
@@ -38,9 +37,6 @@ jobs:
 
       - name: Install Fastlane
         run: brew install fastlane
-
-      - name: Install OpenSSL
-        run: brew install openssl
 
       - uses: actions/setup-ruby@v1
         with:
