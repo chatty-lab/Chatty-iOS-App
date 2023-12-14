@@ -58,6 +58,12 @@ jobs:
           KEYCHAIN_NAME: ${{ secrets.KEYCHAIN_NAME }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
 
+      - name: Verify Certificate File
+        run: openssl x509 -in ./Tuist/Signing/development.cer -text -noout
+
+      - name: Log Certificate File Details
+        run: ls -l ./Tuist/Signing/development.cer
+
       - name: Tuist generate
         run: tuist generate
 
