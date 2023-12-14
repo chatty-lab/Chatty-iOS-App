@@ -31,15 +31,17 @@ jobs:
         run: |
           echo "$MASTER_KEY" > ./Tuist/master.key
         env:
-          MASTER_KEY: ${{secrets.MASTER_KEY}}
+          MASTER_KEY: ${{ secrets.MASTER_KEY }}
 
       - name: Check Master Key Variable
         run: |
           if [ -z "${MASTER_KEY}" ]; then
             echo "MASTER_KEY is empty"
           else
-            echo "MASTER_KEY is set"
+            echo "$MASTER_KEY"
           fi
+        env:
+          MASTER_KEY: ${{ secrets.MASTER_KEY }}
 
       - name: Output Master Key
         run: |
