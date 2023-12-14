@@ -55,7 +55,7 @@ jobs:
       - name: Output Master Key Length and Checksum
         run: |
           echo "Master Key Length: ${#MASTER_KEY}"
-          echo "Master Key Checksum: $(echo -n $MASTER_KEY | shasum -a 256)"
+          echo "Master Key Checksum: $(shasum -a 256 $MASTER_KEY)"
         env:
           MASTER_KEY: ${{secrets.MASTER_KEY}}
 
