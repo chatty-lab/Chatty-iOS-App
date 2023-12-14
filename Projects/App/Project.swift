@@ -11,7 +11,7 @@ import DependencyPlugin
 
 let infoPlist: [String: Plist.Value] = [
     "CFBundleShortVersionString": "1.0",
-    "CFBundleVersion": "1.0.0",
+    "CFBundleVersion": "1",
     "CFBundleName": "Chatty",
     "CFBundleIconName": "AppIcon",
     "UIMainStoryboardFile": "",
