@@ -52,12 +52,9 @@ jobs:
       - name: Log Pre-Decrypt Certificate File Details
         run: ls -l ./Tuist/Signing/development.cer.encrypted
 
-      - name: Output Master Key Length and Checksum
+      - name: Output Master Key
         run: |
-          echo "Master Key Length: ${#MASTER_KEY}"
-          echo "Master Key Checksum: $(shasum -a 256 $MASTER_KEY)"
-        env:
-          MASTER_KEY: ${{secrets.MASTER_KEY}}
+          echo "Master Key: ${{ secrets.MASTER_KEY }}"
 
       - name: Tuist Signing Decrypt
         run: tuist signing decrypt
