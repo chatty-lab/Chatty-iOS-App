@@ -10,24 +10,25 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let infoPlist: [String: Plist.Value] = [
-    "CFBundleShortVersionString": "1.0",
-    "CFBundleVersion": "1",
-    "CFBundleName": "Chatty",
-    "CFBundleIconName": "AppIcon",
-    "UIMainStoryboardFile": "",
-    "UILaunchStoryboardName": "LaunchScreen",
-    "UIApplicationSceneManifest": [
-      "UIApplicationSupportsMultipleScenes": false,
-      "UISceneConfigurations": [
-        "UIWindowSceneSessionRoleApplication": [
-            [
-              "UISceneConfigurationName": "Default Configuration",
-              "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
-            ]
-          ]
+  "App Uses Non-Exempt Encryption": "NO",
+  "CFBundleShortVersionString": "1.0",
+  "CFBundleVersion": "1",
+  "CFBundleName": "Chatty",
+  "CFBundleIconName": "AppIcon",
+  "UIMainStoryboardFile": "",
+  "UILaunchStoryboardName": "LaunchScreen",
+  "UIApplicationSceneManifest": [
+    "UIApplicationSupportsMultipleScenes": false,
+    "UISceneConfigurations": [
+      "UIWindowSceneSessionRoleApplication": [
+        [
+          "UISceneConfigurationName": "Default Configuration",
+          "UISceneDelegateClassName": "$(PRODUCT_MODULE_NAME).SceneDelegate"
         ]
       ]
     ]
+  ]
+]
 
 let targets: [Target] = [
   .app(
