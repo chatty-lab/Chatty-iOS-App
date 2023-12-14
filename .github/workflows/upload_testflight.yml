@@ -54,7 +54,7 @@ jobs:
 
       - name: Output Master Key
         run: |
-          echo "Master Key: ${{ secrets.MASTER_KEY }}"
+          cat Tuist/master.key
 
       - name: Tuist Signing Decrypt
         run: tuist signing decrypt
