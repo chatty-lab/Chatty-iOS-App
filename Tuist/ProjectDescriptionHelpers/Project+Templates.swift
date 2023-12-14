@@ -2,7 +2,7 @@ import ProjectDescription
 import DependencyPlugin
 
 public extension Project {
-  static func makeModule(name: String, targets: [Target], settings: Settings? = nil) -> Self {
+  static func makeModule(name: String, targets: [Target], settings: Settings? = nil, additionalFiles: [FileElement] = []) -> Self {
     let name: String = name
     let organizationName: String? = nil
     let options: Project.Options = .options()
@@ -10,13 +10,14 @@ public extension Project {
     let settings: Settings? = .settings(
       configurations: [
         .debug(name: .debug),
+        .debug(name: "QA"),
         .release(name: .release)
       ]
     )
     let targets: [Target] = targets
     let schemes: [Scheme] = []
     let fileHeaderTemplate: FileHeaderTemplate? = nil
-    let additionalFiles: [FileElement] = []
+    let additionalFiles: [FileElement] = additionalFiles
     let resourceSynthesizers: [ResourceSynthesizer] = []
     
     return .init(

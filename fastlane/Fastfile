@@ -14,7 +14,7 @@
 # update_fastlane
 
 APP_NAME = "Chatty"
-SCHEME = "Chatty-Release"
+SCHEME = "Chatty-QA"
 BUNDLE_ID = "org.chattylab.chatty"
 
 KEYCHAIN_NAME = ENV["KEYCHAIN_NAME"]
@@ -47,7 +47,7 @@ platform :ios do
       keychain_password: "#{KEYCHAIN_PASSWORD}"
     )
 
-    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-Release.Release.mobileprovision")
+    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-QA.Debug.mobileprovision")
   end
 
   # ✅ 테스트 플라이트 업로드
@@ -71,5 +71,18 @@ platform :ios do
 
     # ✅ 테스트 플라이트 업로드
     upload_to_testflight(skip_waiting_for_build_processing: true)
+
+    # ✅ 버전 및 빌드 번호 가져오기
+    version_number = get_version_number(xcodeproj: "#{APP_NAME}.xcodeproj", target: "Chatty-Release")
+    build_number = get_build_number.to_i
+
+    # ✅ 슬랙으로 배포 완료 알림 보내기
+    slack(
+      username: "Fastlane",
+      message: "🎉 배포 완료 🎉",
+      icon_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/App_Store_%28iOS%29.svg/1024px-App_Store_%28iOS%29.svg.png",
+      slack_url: "https://hooks.slack.com/services/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",
+      payload: { "Version": version_number + "(" + build_number.to_s + ")" }
+    )
   end
 end
