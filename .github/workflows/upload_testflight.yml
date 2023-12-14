@@ -33,19 +33,17 @@ jobs:
         env:
           MASTER_KEY: ${{ secrets.MASTER_KEY }}
 
-      - name: Check Master Key Variable
+      - name: Check for Newline in Master Key
         run: |
-          if [ -z "${MASTER_KEY}" ]; then
-            echo "MASTER_KEY is empty"
+          if echo "${{ secrets.MASTER_KEY }}" | grep -q $'\n'; then
+            echo "Master Key contains newline characters."
           else
-            echo "$MASTER_KEY"
+            echo "Master Key does not contain newline characters."
           fi
-        env:
-          MASTER_KEY: ${{ secrets.MASTER_KEY }}
 
-      - name: Output Master Key
+      - name: Output Master Key Checksum
         run: |
-          cat ./Tuist/master.key
+          echo "Master Key Checksum: $(echo -n ${{ secrets.MASTER_KEY }} | shasum -a 256)"
 
       - name: Install Tuist
         run: curl -Ls https://install.tuist.io|bash
