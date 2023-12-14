@@ -50,7 +50,7 @@ jobs:
         run: tuist fetch
 
       - name: Log Pre-Decrypt Certificate File Details
-        run: ls -l ./Tuist/Signing/development.cer
+        run: ls -l ./Tuist/Signing/development.cer.encrypted
 
       - name: Output Master Key Length and Checksum
         run: |
