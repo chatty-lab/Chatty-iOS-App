@@ -224,7 +224,7 @@ public extension Target {
   static func domain(factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.name = ModulePath.Domain.name
-    newFactory.product = .staticFramework
+    newFactory.product = .framework
     newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Domain.name
     
     return make(factory: newFactory)
@@ -233,7 +233,7 @@ public extension Target {
   static func domain(implements module: ModulePath.Domain, factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.name = ModulePath.Domain.name + module.rawValue
-    newFactory.product = .staticFramework
+    newFactory.product = .framework
     newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Domain.name + module.rawValue
     
     return make(factory: newFactory)
@@ -260,7 +260,7 @@ public extension Target {
     var newFactory = factory
     newFactory.name = ModulePath.Domain.name + module.rawValue + "Interface"
     newFactory.sources = .interface
-    newFactory.product = .staticFramework
+    newFactory.product = .framework
     newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Domain.name + module.rawValue + "Interface"
     
     return make(factory: newFactory)
