@@ -152,7 +152,12 @@ public extension Target {
       newFactory.bundleId = Project.Environment.bundleIdPrefix + configuration.bundleIdSuffix
       newFactory.sources = ["Sources/**"]
       newFactory.resources = ["Resources/**"]
-      newFactory.settings = .settings(configurations: [configuration.configuration])
+      newFactory.settings = .settings(
+        base: [
+          "VERSIONING_SYSTEM": "apple-generic"
+        ],
+        configurations: [configuration.configuration]
+      )
     }
     return make(factory: newFactory)
   }
