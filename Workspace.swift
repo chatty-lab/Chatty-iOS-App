@@ -14,6 +14,14 @@ let workspace = Workspace(
         analyzeAction: .analyzeAction(configuration: .release)
       ),
       Scheme(
+        name: "Chatty-QA",
+        buildAction: .buildAction(targets: [.project(path: "Projects/App", target: "Chatty-QA")]),
+        runAction: .runAction(configuration: "QA"),
+        archiveAction: .archiveAction(configuration: "QA"),
+        profileAction: .profileAction(configuration: "QA"),
+        analyzeAction: .analyzeAction(configuration: "QA")
+      ),
+      Scheme(
         name: "Chatty-Debug",
         buildAction: .buildAction(targets: [.project(path: "Projects/App", target: "Chatty-Debug")]),
         runAction: .runAction(configuration: .debug),

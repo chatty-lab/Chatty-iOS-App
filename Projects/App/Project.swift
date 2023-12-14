@@ -10,8 +10,8 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let infoPlist: [String: Plist.Value] = [
-  "App Uses Non-Exempt Encryption": "NO",
-  "CFBundleShortVersionString": "1.0",
+  "App Uses Non-Exempt Encryption": false,
+  "CFBundleShortVersionString": "0.1.0",
   "CFBundleVersion": "1",
   "CFBundleName": "Chatty",
   "CFBundleIconName": "AppIcon",
@@ -43,6 +43,16 @@ let targets: [Target] = [
   ),
   .app(
     implements: .IOS,
+    configuration: .qa,
+    factory: .init(
+      infoPlist: .extendingDefault(with: infoPlist),
+      dependencies: [
+        .feature
+      ]
+    )
+  ),
+  .app(
+    implements: .IOS,
     configuration: .release,
     factory: .init(
       infoPlist: .extendingDefault(with: infoPlist),
@@ -55,5 +65,6 @@ let targets: [Target] = [
 
 let project: Project = .makeModule(
   name: "Chatty",
-  targets: targets
+  targets: targets,
+  additionalFiles: ["./config/chatty.shared.xcconfig"]
 )
