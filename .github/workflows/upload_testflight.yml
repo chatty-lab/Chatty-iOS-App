@@ -32,17 +32,9 @@ jobs:
         env:
           MASTER_KEY: ${{ secrets.MASTER_KEY }}
 
-      - name: Check for Newline in Master Key
-        run: |
-          if echo "${{ secrets.MASTER_KEY }}" | grep -q $'\n'; then
-            echo "Master Key contains newline characters."
-          else
-            echo "Master Key does not contain newline characters."
-          fi
-
       - name: Output Master Key Checksum
         run: |
-          echo "Master Key Checksum: $(echo -n ${{ secrets.MASTER_KEY }} | shasum -a 256)"
+          echo "Master Key Checksum: $(cat ${{ secrets.MASTER_KEY }} | shasum -a 256)"
 
       - name: Install Tuist
         run: curl -Ls https://install.tuist.io|bash
@@ -74,12 +66,6 @@ jobs:
         env:
           KEYCHAIN_NAME: ${{ secrets.KEYCHAIN_NAME }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-
-      - name: Verify Certificate File
-        run: openssl x509 -in ./Tuist/Signing/development.cer -text -noout
-
-      - name: Log Certificate File Details
-        run: ls -l ./Tuist/Signing/development.cer
 
       - name: Tuist generate
         run: tuist generate
