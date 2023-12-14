@@ -29,9 +29,13 @@ jobs:
 
       - name: Setting Master Key
         run: |
-          echo "$MASTER_KEY" > Tuist/master.key
+          echo "$MASTER_KEY" > ./Tuist/master.key
         env:
           MASTER_KEY: ${{secrets.MASTER_KEY}}
+
+      - name: Output Master Key
+        run: |
+          cat ./Tuist/master.key
 
       - name: Install Tuist
         run: curl -Ls https://install.tuist.io|bash
@@ -51,10 +55,6 @@ jobs:
 
       - name: Log Pre-Decrypt Certificate File Details
         run: ls -l ./Tuist/Signing/development.cer.encrypted
-
-      - name: Output Master Key
-        run: |
-          cat Tuist/master.key
 
       - name: Tuist Signing Decrypt
         run: tuist signing decrypt
