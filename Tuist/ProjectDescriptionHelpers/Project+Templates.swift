@@ -10,7 +10,7 @@ public extension Project {
     let settings: Settings? = .settings(
       configurations: [
         .debug(name: .debug),
-        .debug(name: "QA"),
+        .release(name: "QA"),
         .release(name: .release)
       ]
     )
