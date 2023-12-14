@@ -33,6 +33,14 @@ jobs:
         env:
           MASTER_KEY: ${{secrets.MASTER_KEY}}
 
+      - name: Check Master Key Variable
+        run: |
+          if [ -z "${MASTER_KEY}" ]; then
+            echo "MASTER_KEY is empty"
+          else
+            echo "MASTER_KEY is set"
+          fi
+
       - name: Output Master Key
         run: |
           cat ./Tuist/master.key
