@@ -60,7 +60,7 @@ jobs:
       - name: Tuist generate
         run: tuist generate
 
-      - run: fastlane tf
+      - run: fastlane QA
         env:
           KEYCHAIN_NAME: ${{ secrets.KEYCHAIN_NAME }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
