@@ -79,7 +79,7 @@ platform :ios do
     slack(
       username: "TestFlight",
       message: "🎉 업로드 완료 🎉",
-      slack_url: "https://hooks.slack.com/services/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",
+      slack_url: "https://hooks.slack.com/services/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",
       payload: { "Version": version_number + "(" + build_number.to_s + ")" }
     )
   end
