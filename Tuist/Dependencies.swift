@@ -6,6 +6,7 @@
 //
 
 import ProjectDescription
+import ProjectDescriptionHelpers
 
 let SPM = SwiftPackageManagerDependencies(
   [
@@ -17,7 +18,7 @@ let SPM = SwiftPackageManagerDependencies(
   ,baseSettings: .settings(
     configurations: [
       .debug(name: .debug),
-      .release(name: "QA"),
+      .debug(name: .qa),
       .release(name: .release)
     ]
   )

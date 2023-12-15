@@ -1,4 +1,5 @@
 import ProjectDescription
+import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let workspace = Workspace(
@@ -16,10 +17,10 @@ let workspace = Workspace(
       Scheme(
         name: "Chatty-QA",
         buildAction: .buildAction(targets: [.project(path: "Projects/App", target: "Chatty-QA")]),
-        runAction: .runAction(configuration: "QA"),
-        archiveAction: .archiveAction(configuration: "QA"),
-        profileAction: .profileAction(configuration: "QA"),
-        analyzeAction: .analyzeAction(configuration: "QA")
+        runAction: .runAction(configuration: .qa),
+        archiveAction: .archiveAction(configuration: .qa),
+        profileAction: .profileAction(configuration: .qa),
+        analyzeAction: .analyzeAction(configuration: .qa)
       ),
       Scheme(
         name: "Chatty-Debug",
