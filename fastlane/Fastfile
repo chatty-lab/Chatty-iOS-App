@@ -18,6 +18,7 @@ SCHEME = "Chatty-QA"
 
 KEYCHAIN_NAME = ENV["KEYCHAIN_NAME"]
 KEYCHAIN_PASSWORD = ENV["KEYCHAIN_PASSWORD"]
+SLACK_WEBHOOK_URL = ENV["SLACK_WEBHOOK_URL"]
 
 default_platform(:ios)
 
@@ -79,7 +80,7 @@ platform :ios do
     slack(
       username: "TestFlight",
       message: "🎉 업로드 완료 🎉",
-      slack_url: "https://hooks.slack.com/services/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",
+      slack_url: "#{SLACK_WEBHOOK_URL}",
       payload: { "Version": version_number + "(" + build_number.to_s + ")" }
     )
   end
