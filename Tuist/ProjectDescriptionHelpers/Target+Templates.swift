@@ -10,18 +10,10 @@ import DependencyPlugin
 
 // MARK: Target + Template
 
-public enum AppConfiguration {
-  case debug
-  case qa
-  case release
-  
-  var name: String {
-    switch self {
-    case .debug: return "Debug"
-    case .qa: return "QA"
-    case .release: return "Release"
-    }
-  }
+public enum ProjectDeployTarget: String {
+  case debug = "Debug"
+  case qa = "QA"
+  case release = "Release"
   
   var bundleIdSuffix: String {
     switch self {
@@ -32,7 +24,7 @@ public enum AppConfiguration {
   }
   
   var xcconfigPath: Path {
-    return "./config/chatty.\(self.name.lowercased()).xcconfig"
+    return "./config/chatty.\(self.rawValue.lowercased()).xcconfig"
   }
   
   var configuration: Configuration {
@@ -40,11 +32,15 @@ public enum AppConfiguration {
     case .debug:
       return .debug(name: .debug, xcconfig: self.xcconfigPath)
     case .qa:
-      return .debug(name: "QA", xcconfig: self.xcconfigPath)
+      return .debug(name: .qa, xcconfig: self.xcconfigPath)
     case .release:
       return .release(name: .release, xcconfig: self.xcconfigPath)
     }
   }
+}
+
+public extension ConfigurationName {
+  static var qa: ConfigurationName { configuration(ProjectDeployTarget.qa.rawValue) }
 }
 
 public struct TargetFactory {
@@ -139,7 +135,7 @@ public extension Target {
 // MARK: Target + App
 
 public extension Target {
-  static func app(implements module: ModulePath.App, configuration: AppConfiguration, factory: TargetFactory) -> Self {
+  static func app(implements module: ModulePath.App, configuration: ProjectDeployTarget, factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.name = ModulePath.App.name + module.rawValue
     
@@ -147,8 +143,8 @@ public extension Target {
     case .IOS:
       newFactory.platform = .iOS
       newFactory.product = .app
-      newFactory.name = "\(Project.Environment.appName)-\(configuration.name)"
-      newFactory.productName = "\(Project.Environment.appName)_\(configuration.name)"
+      newFactory.name = "\(Project.Environment.appName)-\(configuration.rawValue)"
+      newFactory.productName = "\(Project.Environment.appName)_\(configuration.rawValue)"
       newFactory.bundleId = Project.Environment.bundleIdPrefix + configuration.bundleIdSuffix
       newFactory.sources = ["Sources/**"]
       newFactory.resources = ["Resources/**"]

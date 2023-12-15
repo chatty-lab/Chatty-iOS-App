@@ -23,10 +23,10 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Save To Keychain
 
-### ios tf
+### ios QA
 
 ```sh
-[bundle exec] fastlane ios tf
+[bundle exec] fastlane ios QA
 ```
 
 Push to TestFlight
