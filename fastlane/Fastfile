@@ -46,7 +46,8 @@ platform :ios do
       keychain_password: "#{KEYCHAIN_PASSWORD}"
     )
 
-    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-QA.QA.mobileprovision")
+    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-Release.Release.mobileprovision")
+    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-QA.Release.mobileprovision")
   end
 
   # ✅ 테스트 플라이트 업로드
