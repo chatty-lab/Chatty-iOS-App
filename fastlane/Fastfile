@@ -46,7 +46,7 @@ platform :ios do
       keychain_password: "#{KEYCHAIN_PASSWORD}"
     )
 
-    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-QA.QA.mobileprovision")
+    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-QA.Release.mobileprovision")
   end
 
   # ✅ 테스트 플라이트 업로드
@@ -55,12 +55,14 @@ platform :ios do
     # ✅ 앱스토어 커넥트 키 연결
     app_store_connect_api_key(is_key_content_base64: true, in_house: false)
 
-    BUILD_NUMBER = latest_testflight_build_number(app_identifier: "org.chattylab.chatty.qa") + 1
+    # ✅ 버전 및 빌드 번호 가져오기
+    version_number = get_version_number(xcodeproj: "Projects/App/#{APP_NAME}.xcodeproj", target: "#{SCHEME}")
+    build_number = latest_testflight_build_number(app_identifier: "org.chattylab.chatty.qa") + 1
 
     # ✅ 빌드 넘버 증가
     increment_build_number(
       xcodeproj: "Projects/App/#{APP_NAME}.xcodeproj",
-      build_number: "#{BUILD_NUMBER}"
+      build_number: build_number
     )
 
     # ✅ 빌드
@@ -73,15 +75,11 @@ platform :ios do
     # ✅ 테스트 플라이트 업로드
     upload_to_testflight(skip_waiting_for_build_processing: true)
 
-    # ✅ 버전 및 빌드 번호 가져오기
-    version_number = get_version_number(xcodeproj: "Projects/App/#{APP_NAME}.xcodeproj", target: "#{SCHEME}")
-    build_number = "#{BUILD_NUMBER}"
-
     # ✅ 슬랙으로 배포 완료 알림 보내기
     slack(
       username: "TestFlight",
       message: "🎉 업로드 완료 🎉",
-      slack_url: "https://hooks.slack.com/services/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",
+      slack_url: "https://hooks.slack.com/services/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",
       payload: { "Version": version_number + "(" + build_number.to_s + ")" }
     )
   end
