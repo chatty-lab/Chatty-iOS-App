@@ -31,9 +31,7 @@ public enum ProjectDeployTarget: String {
     switch self {
     case .debug:
       return .debug(name: .debug, xcconfig: self.xcconfigPath)
-    case .qa:
-      return .debug(name: .qa, xcconfig: self.xcconfigPath)
-    case .release:
+    case .qa, .release:
       return .release(name: .release, xcconfig: self.xcconfigPath)
     }
   }

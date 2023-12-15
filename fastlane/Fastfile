@@ -46,7 +46,7 @@ platform :ios do
       keychain_password: "#{KEYCHAIN_PASSWORD}"
     )
 
-    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-QA.Release.mobileprovision")
+    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-QA.QA.mobileprovision")
   end
 
   # ✅ 테스트 플라이트 업로드
@@ -79,7 +79,7 @@ platform :ios do
     slack(
       username: "TestFlight",
       message: "🎉 업로드 완료 🎉",
-      slack_url: "https://hooks.slack.com/services/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",
+      slack_url: "https://hooks.slack.com/services/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",
       payload: { "Version": version_number + "(" + build_number.to_s + ")" }
     )
   end

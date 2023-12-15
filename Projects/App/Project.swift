@@ -10,7 +10,7 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let infoPlist: [String: Plist.Value] = [
-  "App Uses Non-Exempt Encryption": false,
+  "ITSAppUsesNonExemptEncryption": false,
   "CFBundleShortVersionString": "0.1.0",
   "CFBundleVersion": "1",
   "CFBundleName": "Chatty",
