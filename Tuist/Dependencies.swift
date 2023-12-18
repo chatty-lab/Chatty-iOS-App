@@ -18,6 +18,7 @@ let SPM = SwiftPackageManagerDependencies(
   ,baseSettings: .settings(
     configurations: [
       .debug(name: .debug),
+      .release(name: .qa),
       .release(name: .release)
     ]
   )

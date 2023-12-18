@@ -1,5 +1,6 @@
 import ProjectDescription
 import DependencyPlugin
+import ConfigurationPlugin
 
 public extension Project {
   static func makeModule(name: String, targets: [Target], settings: Settings? = nil, additionalFiles: [FileElement] = []) -> Self {
@@ -10,6 +11,7 @@ public extension Project {
     let settings: Settings? = .settings(
       configurations: [
         .debug(name: .debug),
+        .release(name: .qa),
         .release(name: .release)
       ]
     )
