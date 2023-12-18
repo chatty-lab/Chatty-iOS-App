@@ -11,7 +11,6 @@ public extension Project {
     let settings: Settings? = .settings(
       configurations: [
         .debug(name: .debug),
-        .release(name: .qa),
         .release(name: .release)
       ]
     )

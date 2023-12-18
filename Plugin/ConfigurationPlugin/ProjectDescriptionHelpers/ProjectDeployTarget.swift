@@ -28,7 +28,7 @@ public extension ProjectDeployTarget {
     case .debug:
       return .debug(name: .debug, xcconfig: .relativeToXCConfig(type: .debug))
     case .qa:
-      return .release(name: .qa, xcconfig: .relativeToXCConfig(type: .qa))
+      return .release(name: .release, xcconfig: .relativeToXCConfig(type: .qa))
     case .release:
       return .release(name: .release, xcconfig: .relativeToXCConfig(type: .release))
     }

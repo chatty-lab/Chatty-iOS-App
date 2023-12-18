@@ -46,15 +46,13 @@ platform :ios do
       keychain_name: "#{KEYCHAIN_NAME}",
       keychain_password: "#{KEYCHAIN_PASSWORD}"
     )
-
-    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-QA.Release.mobileprovision")
   end
 
   # ✅ 테스트 플라이트 업로드
   desc "Push to TestFlight"
   lane :QA do |options|
     # ✅ 프로비저닝 프로파일 설치
-    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-QA.QA.mobileprovision")
+    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-QA.Release.mobileprovision")
 
     # ✅ 앱스토어 커넥트 키 연결
     app_store_connect_api_key(is_key_content_base64: true, in_house: false)
