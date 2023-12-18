@@ -8,6 +8,7 @@
 import ProjectDescription
 import ProjectDescriptionHelpers
 import DependencyPlugin
+import ConfigurationPlugin
 
 let infoPlist: [String: Plist.Value] = [
   "ITSAppUsesNonExemptEncryption": false,
@@ -66,5 +67,5 @@ let targets: [Target] = [
 let project: Project = .makeModule(
   name: "Chatty",
   targets: targets,
-  additionalFiles: ["./config/chatty.shared.xcconfig"]
+  additionalFiles: ["\(Path.sharedXcconfig.pathString)"]
 )

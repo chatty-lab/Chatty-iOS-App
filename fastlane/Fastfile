@@ -53,6 +53,9 @@ platform :ios do
   # ✅ 테스트 플라이트 업로드
   desc "Push to TestFlight"
   lane :QA do |options|
+    # ✅ 프로비저닝 프로파일 설치
+    install_provisioning_profile(path: "Tuist/Signing/#{APP_NAME}-QA.QA.mobileprovision")
+
     # ✅ 앱스토어 커넥트 키 연결
     app_store_connect_api_key(is_key_content_base64: true, in_house: false)
 
@@ -80,6 +83,7 @@ platform :ios do
     slack(
       username: "TestFlight",
       message: "🎉 업로드 완료 🎉",
+      icon_url: "https://i.namu.wiki/i/xCVs03_2Y3BRAJwG6z8GDvZMF26Smofr1XeNS11ADh0a1YZuzTRwaanF77JVQP-cCwaJ464kxXZTbw5KTB0vbSEc4tjqjH8rffRpNKmAwMee57ZXWn0cHxE2jH7K-3y4mxad4UB-Tn_eHG0IMo6cQQ.webp",
       slack_url: "#{SLACK_WEBHOOK_URL}",
       payload: { "Version": version_number + "(" + build_number.to_s + ")" }
     )

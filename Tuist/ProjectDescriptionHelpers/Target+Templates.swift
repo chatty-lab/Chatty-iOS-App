@@ -5,41 +5,12 @@
 //  Created by walkerhilla on 12/12/23.
 //
 
-import ProjectDescription
 import DependencyPlugin
+import ConfigurationPlugin
+import EnvironmentPlugin
+import ProjectDescription
 
 // MARK: Target + Template
-
-public enum ProjectDeployTarget: String {
-  case debug = "Debug"
-  case qa = "QA"
-  case release = "Release"
-  
-  var bundleIdSuffix: String {
-    switch self {
-    case .debug: return ".debug"
-    case .qa: return ".qa"
-    case .release: return ""
-    }
-  }
-  
-  var xcconfigPath: Path {
-    return "./config/chatty.\(self.rawValue.lowercased()).xcconfig"
-  }
-  
-  var configuration: Configuration {
-    switch self {
-    case .debug:
-      return .debug(name: .debug, xcconfig: self.xcconfigPath)
-    case .qa, .release:
-      return .release(name: .release, xcconfig: self.xcconfigPath)
-    }
-  }
-}
-
-public extension ConfigurationName {
-  static var qa: ConfigurationName { configuration(ProjectDeployTarget.qa.rawValue) }
-}
 
 public struct TargetFactory {
   var name: String
