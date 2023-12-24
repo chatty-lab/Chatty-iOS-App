@@ -14,11 +14,11 @@ import ProjectDescription
 
 public struct TargetFactory {
   var name: String
-  var platform: Platform
+  var destinations: Destinations
   var product: Product
   var productName: String?
   var bundleId: String
-  var deploymentTarget: DeploymentTarget?
+  var deploymentTargets: DeploymentTargets?
   var infoPlist: InfoPlist?
   var sources: SourceFilesList?
   var resources: ResourceFileElements?
@@ -35,11 +35,11 @@ public struct TargetFactory {
   
   public init(
     name: String = "",
-    platform: Platform = .iOS,
+    destinations: Destinations = [.iPhone],
     product: Product = .staticLibrary,
     productName: String? = nil,
     bundleId: String = Project.Environment.bundleIdPrefix,
-    deploymentTarget: DeploymentTarget? = nil,
+    deploymentTargets: DeploymentTargets? = nil,
     infoPlist: InfoPlist? = .default,
     sources: SourceFilesList? = .sources,
     resources: ResourceFileElements? = nil,
@@ -54,10 +54,10 @@ public struct TargetFactory {
     launchArguments: [LaunchArgument] = [],
     additionalFiles: [FileElement] = []) {
       self.name = name
-      self.platform = platform
+      self.destinations = destinations
       self.product = product
       self.productName = productName
-      self.deploymentTarget = deploymentTarget
+      self.deploymentTargets = deploymentTargets
       self.bundleId = bundleId
       self.infoPlist = infoPlist
       self.sources = sources
@@ -79,11 +79,11 @@ public extension Target {
   private static func make(factory: TargetFactory) -> Self {
     return .init(
       name: factory.name,
-      platform: factory.platform,
+      destinations: factory.destinations,
       product: factory.product,
       productName: factory.productName,
       bundleId: factory.bundleId,
-      deploymentTarget: factory.deploymentTarget,
+      deploymentTargets: factory.deploymentTargets,
       infoPlist: factory.infoPlist,
       sources: factory.sources,
       resources: factory.resources,
@@ -110,7 +110,7 @@ public extension Target {
     
     switch module {
     case .IOS:
-      newFactory.platform = .iOS
+      newFactory.destinations = [.iPhone]
       newFactory.product = .app
       newFactory.name = "\(Project.Environment.appName)-\(configuration.rawValue)"
       newFactory.productName = "\(Project.Environment.appName)_\(configuration.rawValue)"
