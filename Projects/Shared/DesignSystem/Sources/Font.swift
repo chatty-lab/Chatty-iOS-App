@@ -7,10 +7,10 @@
 
 import UIKit
 
-enum Font {
+public enum Font {
   case Pretendard(Pretendard)
   
-  func of(size: CGFloat) -> UIFont {
+  public func of(size: CGFloat) -> UIFont {
     switch self {
     case .Pretendard(let pretendardWeight):
       return UIFont(name: pretendardWeight.fontFamilyName, size: size)!
@@ -18,7 +18,7 @@ enum Font {
   }
 }
 
-enum Pretendard: String {
+public enum Pretendard: String {
   case Black
   case Bold, ExtraBold
   case Light, ExtraLight
