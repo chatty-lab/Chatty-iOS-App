@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Feature
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -20,10 +21,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // MainTabBarController를 App Entry Point로 설정
     guard let windowScene = (scene as? UIWindowScene) else { return }
     let window = UIWindow(windowScene: windowScene)
-    let vc = ViewController()
-    window.rootViewController = vc
-    window.makeKeyAndVisible()
-    self.window = window
+    let appCoordinator = AppCoordinator(window: window)
+    appCoordinator.start()
   }
 
   func sceneDidDisconnect(_ scene: UIScene) {
