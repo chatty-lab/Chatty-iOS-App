@@ -3,16 +3,17 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.makeModule(
-  name: ModulePath.Shared.name+ModulePath.Shared.DesignSystem.rawValue,
+  name: ModulePath.Shared.name+ModulePath.Shared.ThirdPartyLib.rawValue,
   targets: [
     .shared(
-      implements: .DesignSystem,
+      implements: .ThirdPartyLib,
       factory: .init(
         dependencies: [
           .external(name: "RxSwift"),
           .external(name: "SnapKit")
         ]
       )
-    )
+    ),
+    
   ]
 )
