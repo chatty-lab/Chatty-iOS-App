@@ -101,7 +101,7 @@ func registerModuleDependency() {
 
 func registerModulePath() {
   updateFileContent(
-    filePath: currentPath + "Plugins/DependencyPlugin/ProjectDescriptionHelpers/Modules.swift",
+    filePath: currentPath + "Plugin/DependencyPlugin/ProjectDescriptionHelpers/Modules.swift",
     finding: "enum \(layer.rawValue): String, CaseIterable {\n",
     inserting: "    case \(moduleName)\n"
   )
