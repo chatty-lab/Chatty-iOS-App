@@ -302,11 +302,11 @@ public extension Target {
     var newFactory = factory
     newFactory.name = ModulePath.Shared.name + module.rawValue
     newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Shared.name + module.rawValue
+    newFactory.product = .framework
     
     if module == .DesignSystem {
       newFactory.sources = .sources
       newFactory.resources = ["Resources/**"]
-      newFactory.product = .framework
     }
     
     return make(factory: newFactory)
