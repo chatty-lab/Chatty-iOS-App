@@ -10,7 +10,9 @@ let project = Project.makeModule(
       factory: .init(
         dependencies: [
           .external(name: "RxSwift"),
-          .external(name: "SnapKit")
+          .external(name: "ReactorKit"),
+          .external(name: "SnapKit"),
+          .external(name: "Then")
         ]
       )
     ),
