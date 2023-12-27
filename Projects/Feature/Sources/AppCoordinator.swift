@@ -28,7 +28,7 @@ public final class AppCoordinator: Coordinator {
   }
   
   public func start() {
-    let onboardingCoordinator = OnboardingCoordinator(self.navigationController)
+    let onboardingCoordinator = OnboardingRootCoordinator(self.navigationController)
     childCoordinators.append(onboardingCoordinator)
     
     onboardingCoordinator.finishDelegate = self
