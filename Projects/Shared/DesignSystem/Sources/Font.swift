@@ -18,7 +18,7 @@ public enum Font {
   }
 }
 
-public enum Pretendard: String {
+public enum Pretendard: String, CaseIterable {
   case Black
   case Bold, ExtraBold
   case Light, ExtraLight
