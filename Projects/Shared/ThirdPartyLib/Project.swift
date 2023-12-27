@@ -9,8 +9,11 @@ let project = Project.makeModule(
       implements: .ThirdPartyLib,
       factory: .init(
         dependencies: [
+          .external(name: "ReactorKit"),
           .external(name: "RxSwift"),
-          .external(name: "ReactorKit")
+          .external(name: "RxGesture"),
+          .external(name: "SnapKit"),
+          .external(name: "Then")
         ]
       )
     ),
