@@ -14,7 +14,6 @@ protocol OnboardingRootControllerDelegate: AnyObject {
 }
 
 final class OnboardingRootController: UIViewController {
-  
   // MARK: - View
   private let mainView = OnboardingRootView()
   
