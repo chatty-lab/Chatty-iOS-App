@@ -111,6 +111,7 @@ public extension Target {
     switch module {
     case .IOS:
       newFactory.destinations = [.iPhone]
+      newFactory.deploymentTargets = Project.Environment.deploymentTargets
       newFactory.product = .app
       newFactory.name = "\(Project.Environment.appName)-\(configuration.rawValue)"
       newFactory.productName = "\(Project.Environment.appName)_\(configuration.rawValue)"
@@ -135,6 +136,7 @@ public extension Target {
 public extension Target {
   static func feature(factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Feature.name
     newFactory.product = .staticFramework
     newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Feature.name
@@ -144,6 +146,7 @@ public extension Target {
   
   static func feature(implements module: ModulePath.Feature, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Feature.name + module.rawValue
     newFactory.product = .staticFramework
     newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Feature.name + module.rawValue
@@ -153,6 +156,7 @@ public extension Target {
   
   static func feature(tests module: ModulePath.Feature, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Feature.name + module.rawValue + "Tests"
     newFactory.sources = .tests
     newFactory.product = .unitTests
@@ -162,6 +166,7 @@ public extension Target {
   
   static func feature(testing module: ModulePath.Feature, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Feature.name + module.rawValue + "Testing"
     newFactory.sources = .testing
     
@@ -170,6 +175,7 @@ public extension Target {
   
   static func feature(interface module: ModulePath.Feature, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Feature.name + module.rawValue + "Interface"
     newFactory.sources = .interface
     newFactory.product = .staticFramework
@@ -180,6 +186,7 @@ public extension Target {
   
   static func feature(example module: ModulePath.Feature, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Feature.name + module.rawValue + "Example"
     newFactory.sources = .exampleSources
     newFactory.product = .app
@@ -193,6 +200,7 @@ public extension Target {
 public extension Target {
   static func domain(factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Domain.name
     newFactory.product = .framework
     newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Domain.name
@@ -202,6 +210,7 @@ public extension Target {
   
   static func domain(implements module: ModulePath.Domain, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Domain.name + module.rawValue
     newFactory.product = .framework
     newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Domain.name + module.rawValue
@@ -211,6 +220,7 @@ public extension Target {
   
   static func domain(tests module: ModulePath.Domain, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Domain.name + module.rawValue + "Tests"
     newFactory.product = .unitTests
     newFactory.sources = .tests
@@ -220,6 +230,7 @@ public extension Target {
   
   static func domain(testing module: ModulePath.Domain, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Domain.name + module.rawValue + "Testing"
     newFactory.sources = .testing
     
@@ -228,6 +239,7 @@ public extension Target {
   
   static func domain(interface module: ModulePath.Domain, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Domain.name + module.rawValue + "Interface"
     newFactory.sources = .interface
     newFactory.product = .framework
@@ -242,6 +254,7 @@ public extension Target {
 public extension Target {
   static func core(factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Core.name
     newFactory.product = .framework
     newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Core.name
@@ -251,6 +264,7 @@ public extension Target {
   
   static func core(implements module: ModulePath.Core, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Core.name + module.rawValue
     newFactory.product = .framework
     newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Core.name + module.rawValue
@@ -260,6 +274,7 @@ public extension Target {
   
   static func core(tests module: ModulePath.Core, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Core.name + module.rawValue + "Tests"
     newFactory.product = .unitTests
     newFactory.sources = .tests
@@ -269,6 +284,7 @@ public extension Target {
   
   static func core(testing module: ModulePath.Core, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Core.name + module.rawValue + "Testing"
     newFactory.sources = .testing
     
@@ -277,6 +293,7 @@ public extension Target {
   
   static func core(interface module: ModulePath.Core, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Core.name + module.rawValue + "Interface"
     newFactory.sources = .interface
     newFactory.product = .framework
@@ -291,6 +308,7 @@ public extension Target {
 public extension Target {
   static func shared(factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Shared.name
     newFactory.product = .framework
     newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Shared.name
@@ -300,6 +318,7 @@ public extension Target {
   
   static func shared(implements module: ModulePath.Shared, factory: TargetFactory) -> Self {
     var newFactory = factory
+    newFactory.deploymentTargets = Project.Environment.deploymentTargets
     newFactory.name = ModulePath.Shared.name + module.rawValue
     newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Shared.name + module.rawValue
     newFactory.product = .framework
