@@ -39,6 +39,9 @@ let infoPlist: [String: Plist.Value] = [
     "Pretendard-Regular.ttf",
     "Pretendard-SemiBold.ttf",
     "Pretendard-Thin.ttf"
+  ],
+  "UISupportedInterfaceOrientations": [
+    "UIInterfaceOrientationPortrait"
   ]
 ]
 
