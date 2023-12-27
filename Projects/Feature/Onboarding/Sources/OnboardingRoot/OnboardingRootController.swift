@@ -1,17 +1,47 @@
 //
-//  OnboardingController.swift
+//  OnboardingRootController.swift
 //  FeatureOnboarding
 //
 //  Created by walkerhilla on 12/26/23.
 //
 
 import UIKit
+import SharedDesignSystem
 
-final class OnboardingController: UIViewController {
+protocol OnboardingRootControllerDelegate: AnyObject {
+  func signUp()
+  func signIn()
+}
+
+final class OnboardingRootController: UIViewController {
+  
+  // MARK: - View
+  private let mainView = OnboardingRootView()
+  
+  
+  // MARK: - Life Method
+  override func loadView() {
+    super.loadView()
+    view = mainView
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    view.backgroundColor = .blue
+    mainView.delegate = self
+    view.backgroundColor = UIColor(asset: Colors.basicWhite)
+  }
+  
+  // MARK: - Delegate
+  weak var delegate: OnboardingRootControllerDelegate?
+}
+
+extension OnboardingRootController: OnboardingRootViewDelegate {
+  func didTapSignUp() {
+    delegate?.signUp()
+  }
+  
+  func didTapSignIn() {
+    delegate?.signIn()
   }
 }
