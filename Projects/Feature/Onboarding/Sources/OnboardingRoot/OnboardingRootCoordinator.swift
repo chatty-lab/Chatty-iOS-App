@@ -35,7 +35,7 @@ extension OnboardingRootCoordinator: OnboardingRootControllerDelegate {
         return 322
       }
       sheet.detents = [customDetent]
-      sheet.prefersScrollingExpandsWhenScrolledToEdge = false
+      sheet.preferredCornerRadius = 12
     }
     
     navigationController.present(onboardingTermsController, animated: true)
