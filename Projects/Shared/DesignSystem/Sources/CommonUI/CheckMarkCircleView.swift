@@ -6,13 +6,16 @@
 //
 
 import UIKit
+import RxSwift
 
-public final class CheckMarkCircleView: UIImageView, Bounceable {
+public final class CheckMarkCircleView: UIImageView {
+  // MARK: - Rx Property
+  public let disposeBag = DisposeBag()
+  
   public var configurations: [State: CheckMarkCircleConfiguration] = [:]
   public var currentState: State? {
     didSet {
       updateForCurrentState()
-      bounce()
     }
   }
 }
