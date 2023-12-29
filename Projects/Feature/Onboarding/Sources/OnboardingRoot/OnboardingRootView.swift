@@ -64,7 +64,7 @@ final class OnboardingRootView: UIView {
     
     attributedString.addAttribute(
       .font,
-      value: Font.Pretendard(.SemiBold).of(size: 13),
+      value: Font.Pretendard(.Regular).of(size: 13),
       range: NSRange(
         location: 0,
         length: attributedString.length
