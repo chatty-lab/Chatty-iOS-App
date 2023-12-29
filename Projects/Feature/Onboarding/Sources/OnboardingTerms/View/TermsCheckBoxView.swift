@@ -12,7 +12,8 @@ import RxGesture
 import SnapKit
 import SharedDesignSystem
 
-final class TermsCheckBoxView: UIView, Touchable {
+final class TermsCheckBoxView: UIControl, Touchable, TouchableHighlight, TouchableTransform {
+  // MARK: - View Property
   private let checkCircleImageView: CheckMarkCircleView = CheckMarkCircleView().then {
     typealias Configuration = CheckMarkCircleView.CheckMarkCircleConfiguration
     let uncheckedConfig = Configuration(tintColor: UIColor(asset: Colors.gray500)!)
@@ -30,22 +31,28 @@ final class TermsCheckBoxView: UIView, Touchable {
     $0.sizeToFit()
   }
   
-  private let accesoryView: UIView = UIView()
-  private let accesoryImageView: UIImageView = UIImageView().then {
+  private let rightArrowView: UIControl = UIControl()
+  
+  private let rightArrowImageView: UIImageView = UIImageView().then {
     $0.image = UIImage(systemName: "chevron.right")
     $0.tintColor = UIColor(asset: Colors.gray500)
     $0.contentMode = .scaleAspectFit
   }
   
-  private let disposeBag = DisposeBag()
-  public let didTouch: PublishRelay<TouchType> = .init()
-  
+  // MARK: - Stored Property
   var terms: Terms {
     didSet {
       checkCircleImageView.currentState = terms.isConsented ? .checked : .unChecked
     }
   }
   
+  // MARK: - Rx Property
+  private let disposeBag = DisposeBag()
+  
+  // MARK: - Touchable Property
+  public let didTouch: PublishRelay<TouchType> = .init()
+  
+  // MARK: - Initialize Method
   init(term: Terms) {
     self.terms = term
     super.init(frame: .zero)
@@ -66,34 +73,57 @@ extension TermsCheckBoxView {
   }
   
   private func bind() {
-    accesoryView.rx.tapGesture { gesture, delegate in
-      delegate.simultaneousRecognitionPolicy = .never
-    }.when(.recognized)
-      .withUnretained(self)
-      .map { _ in .open(self.terms) }
-      .bind(to: self.didTouch)
+    self.rx.controlEvent(.touchDown)
+      .bind(with: self) { [weak self] owner, _ in
+        guard let self else { return }
+        owner.shrink(checkCircleImageView)
+        owner.highlight(checkCircleImageView)
+      }
       .disposed(by: disposeBag)
     
-    self.rx.tapGesture { gesture, delegate in
-      delegate.simultaneousRecognitionPolicy = .never
-    }.when(.recognized)
-      .withUnretained(self)
-      .map { _ in .consent(self.terms) }
-      .bind(to: self.didTouch)
+    Observable.merge(
+        self.rx.controlEvent(.touchDragExit).map { _ in Void() },
+        self.rx.controlEvent(.touchCancel).map { _ in Void() }
+    )
+    .bind(with: self) { [weak self] _, _  in
+      guard let self else { return }
+      self.expand(checkCircleImageView)
+      self.unhighlight(checkCircleImageView)
+    }
+    .disposed(by: disposeBag)
+    
+    self.rx.controlEvent(.touchUpInside)
+      .compactMap { [weak self] _ -> TouchType? in
+        guard let self else { return nil }
+        return .consent(self.terms)
+      }
+      .do { [weak self] _ in
+        guard let self else { return }
+        self.expand(checkCircleImageView)
+        self.unhighlight(checkCircleImageView)
+      }
+      .bind(to: didTouch)
+      .disposed(by: disposeBag)
+    
+    rightArrowView.rx.controlEvent(.touchUpInside)
+      .compactMap { [weak self] _ -> TouchType? in
+        guard let self else { return nil }
+        return .open(self.terms)
+      }
+      .bind(to: didTouch)
       .disposed(by: disposeBag)
   }
   
   private func configureUI() {
-    setupCheckBoxImageView()
+    setupCheckCircleImageView()
     setupTermsLabel()
-    setupAccesoryView()
+    setupRightArrowView()
   }
   
-  private func setupCheckBoxImageView() {
+  private func setupCheckCircleImageView() {
     addSubview(checkCircleImageView)
     checkCircleImageView.snp.makeConstraints {
-      $0.leading.equalToSuperview()
-      $0.centerY.equalToSuperview()
+      $0.leading.centerY.equalToSuperview()
       $0.size.equalTo(22)
     }
   }
@@ -110,16 +140,16 @@ extension TermsCheckBoxView {
     termsLabel.text = terms.phrase
   }
   
-  private func setupAccesoryView() {
-    addSubview(accesoryView)
-    accesoryView.addSubview(accesoryImageView)
+  private func setupRightArrowView() {
+    addSubview(rightArrowView)
+    rightArrowView.addSubview(rightArrowImageView)
     
-    accesoryView.snp.makeConstraints {
+    rightArrowView.snp.makeConstraints {
       $0.trailing.top.bottom.equalToSuperview()
       $0.width.equalTo(30)
     }
     
-    accesoryImageView.snp.makeConstraints {
+    rightArrowImageView.snp.makeConstraints {
       $0.trailing.centerY.equalToSuperview()
       $0.size.equalTo(16)
     }

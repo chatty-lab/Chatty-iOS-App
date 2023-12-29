@@ -13,6 +13,7 @@ import SnapKit
 import Then
 
 final class OnboardingTermsView: UIView, Touchable {
+  // MARK: - View Property
   private let titleLabel: UILabel = UILabel().then {
     $0.text = "채티를 이용하려면 동의가 필요해요"
     $0.font = Font.Pretendard(.SemiBold).of(size: 18)
@@ -44,8 +45,8 @@ final class OnboardingTermsView: UIView, Touchable {
     )
   )
   
-  private let allConsentButtonView: AllConsentView = AllConsentView().then {
-    typealias Configuration = AllConsentView.Configuration
+  private let allConsentButtonView: AllConsentButton = AllConsentButton().then {
+    typealias Configuration = AllConsentButton.Configuration
     let uncheckedConfig = Configuration(tintColor: UIColor(asset: Colors.gray500)!)
     let checkedConfig = Configuration(tintColor: UIColor(asset: Colors.primaryNormal)!)
     
@@ -54,7 +55,7 @@ final class OnboardingTermsView: UIView, Touchable {
     $0.currentState = .unChecked
   }
   
-  private let advanceButton: RoundButton = RoundButton(text: "시작하기").then {
+  private let signUpButton: RoundButton = RoundButton(title: "시작하기").then {
     typealias Configuration = RoundButton.Configuration
     let enabledConfig = Configuration(backgroundColor: UIColor(asset: Colors.primaryNormal)!, isEnabled: true)
     let disabledConfig = Configuration(backgroundColor: UIColor(asset: Colors.gray300)!, isEnabled: false)
@@ -63,9 +64,13 @@ final class OnboardingTermsView: UIView, Touchable {
     $0.setState(disabledConfig, for: .disabled)
   }
   
+  // MARK: - Rx Property
   private let disposeBag = DisposeBag()
+  
+  // MARK: - Touchable Property
   public let didTouch: PublishRelay<TouchType> = .init()
   
+  // MARK: - Initialize Method
   override init(frame: CGRect) {
     super.init(frame: frame)
     bind()
@@ -79,7 +84,7 @@ final class OnboardingTermsView: UIView, Touchable {
 
 extension OnboardingTermsView {
   enum TouchType {
-    case advance
+    case signUp
     case allConsent
     case consent(Terms)
     case open(Terms)
@@ -106,7 +111,6 @@ extension OnboardingTermsView {
       .bind(to: self.didTouch)
       .disposed(by: disposeBag)
     
-    
     locationDataUsage.didTouch
       .map {
         switch $0 {
@@ -117,14 +121,13 @@ extension OnboardingTermsView {
       .bind(to: self.didTouch)
       .disposed(by: disposeBag)
     
-    allConsentButtonView.rx.tapGesture()
-      .when(.recognized)
+    allConsentButtonView.didTouch
       .map { _ in .allConsent }
       .bind(to: self.didTouch)
       .disposed(by: disposeBag)
     
-    advanceButton.didTouch
-      .map { .advance }
+    signUpButton.didTouch
+      .map { _ in .signUp }
       .bind(to: self.didTouch)
       .disposed(by: disposeBag)
   }
@@ -133,7 +136,7 @@ extension OnboardingTermsView {
     setupTitleView()
     setupTermContainer()
     setupAllConsentButtonView()
-    setupContinueButton()
+    setupSignUpButton()
   }
   
   private func setupTitleView() {
@@ -183,10 +186,10 @@ extension OnboardingTermsView {
     }
   }
   
-  private func setupContinueButton() {
-    addSubview(advanceButton)
+  private func setupSignUpButton() {
+    addSubview(signUpButton)
     
-    advanceButton.snp.makeConstraints {
+    signUpButton.snp.makeConstraints {
       $0.top.equalTo(allConsentButtonView.snp.bottom).offset(23)
       $0.leading.trailing.equalToSuperview().inset(20)
       $0.height.equalTo(52)
@@ -209,7 +212,7 @@ extension OnboardingTermsView {
     self.allConsentButtonView.currentState = type ? .checked : .unChecked
   }
   
-  public func updateAdvanceButton(for type: Bool) {
-    self.advanceButton.currentState = type ? .enabled : .disabled
+  public func updateSignUpButton(for type: Bool) {
+    self.signUpButton.currentState = type ? .enabled : .disabled
   }
 }

@@ -1,22 +1,18 @@
 //
-//  AllConsentView.swift
+//  AllConsentButton.swift
 //  FeatureOnboarding
 //
 //  Created by walkerhilla on 12/29/23.
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 import SnapKit
 import SharedDesignSystem
 
-final class AllConsentView: UIView {
-  var configurations: [State : Configuration] = [:]
-  var currentState: State? {
-    didSet {
-      updateForCurrentState()
-    }
-  }
-  
+final class AllConsentButton: UIControl, Touchable, TouchableHighlight {
+  // MARK: - View Property
   private let allConsentLabel: UILabel = UILabel().then {
     $0.text = "전체 동의"
     $0.textColor = UIColor(asset: Colors.basicBlack)
@@ -33,8 +29,24 @@ final class AllConsentView: UIView {
     $0.currentState = .unChecked
   }
   
+  // MARK: - Rx Property
+  let disposeBag = DisposeBag()
+  
+  // MARK: - Touchable Property
+  let didTouch: PublishRelay<Void> = .init()
+  
+  // MARK: - StateConfigurable Property
+  var configurations: [State : Configuration] = [:]
+  var currentState: State? {
+    didSet {
+      updateForCurrentState()
+    }
+  }
+  
+  // MARK: - Initialize Method
   override init(frame: CGRect) {
     super.init(frame: frame)
+    bind()
     configureUI()
   }
   
@@ -43,9 +55,37 @@ final class AllConsentView: UIView {
   }
 }
 
-extension AllConsentView {
+extension AllConsentButton {
+  private func bind() {
+    self.rx.controlEvent(.touchDown)
+      .bind(with: self) { [weak self] owner, _ in
+        guard let self else { return }
+        owner.highlight(self)
+      }
+      .disposed(by: disposeBag)
+    
+    Observable.merge(
+        self.rx.controlEvent(.touchDragExit).map { _ in Void() },
+        self.rx.controlEvent(.touchCancel).map { _ in Void() }
+    )
+    .bind(with: self) { [weak self] _, _  in
+      guard let self else { return }
+      self.unhighlight(self)
+    }
+    .disposed(by: disposeBag)
+    
+    self.rx.controlEvent(.touchUpInside)
+      .map { _ in Void() }
+      .do { [weak self] _ in
+        guard let self else { return }
+        self.unhighlight(self)
+      }
+      .bind(to: didTouch)
+      .disposed(by: disposeBag)
+  }
+  
   private func configureUI() {
-    layer.borderWidth = 0.7
+    layer.borderWidth = 1
     layer.cornerRadius = 8
     
     setupAllConsentLabel()
@@ -70,7 +110,7 @@ extension AllConsentView {
   }
 }
 
-extension AllConsentView: StateConfigurable {
+extension AllConsentButton: StateConfigurable {
   enum State {
     case checked
     case unChecked
