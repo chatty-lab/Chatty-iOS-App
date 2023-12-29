@@ -27,16 +27,8 @@ public final class OnboardingRootCoordinator: Coordinator {
 
 extension OnboardingRootCoordinator: OnboardingRootControllerDelegate {
   func signUp() {
-    let onboardingTermsController = OnboardingTermsController()
+    let onboardingTermsController = OnboardingTermsController(reactor: OnboardingTermsReactor())
     onboardingTermsController.modalPresentationStyle = .pageSheet
-    
-    if let sheet = onboardingTermsController.sheetPresentationController {
-      let customDetent = UISheetPresentationController.Detent.custom(identifier: .init("customDetent")) { _ in
-        return 322
-      }
-      sheet.detents = [customDetent]
-      sheet.preferredCornerRadius = 12
-    }
     
     navigationController.present(onboardingTermsController, animated: true)
   }
