@@ -13,7 +13,7 @@ protocol OnboardingRootControllerDelegate: AnyObject {
   func signIn()
 }
 
-final class OnboardingRootController: UIViewController {
+final class OnboardingRootController: BaseController {
   // MARK: - View
   private let mainView = OnboardingRootView()
   
@@ -28,7 +28,6 @@ final class OnboardingRootController: UIViewController {
     super.viewDidLoad()
     
     mainView.delegate = self
-    view.backgroundColor = UIColor(asset: Colors.basicWhite)
   }
   
   // MARK: - Delegate
