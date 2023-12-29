@@ -20,7 +20,7 @@ final class OnboardingTermsReactor: Reactor {
   enum Mutation {
     case setConsent(Terms)
     case setAllConsent(Bool)
-    case enableAdvanceButton(Bool)
+    case enableSignUpButton(Bool)
   }
   
   /// 현재 온보딩 약관 화면의 상태를 나타내는 구조체에요
@@ -29,7 +29,7 @@ final class OnboardingTermsReactor: Reactor {
     var privacyPolicy: Terms
     var locationDataUsage: Terms
     var isAllConsented: Bool = false
-    var isAdvanceButtonEnabled: Bool = false
+    var isSignUpButtonEnabled: Bool = false
     
     init() {
       termsOfService = Terms(type: .termsOfService, isRequired: true, isConsented: false)
@@ -72,15 +72,15 @@ extension OnboardingTermsReactor {
       
       let requiredConsented = newState.termsOfService.isConsented &&
                               newState.privacyPolicy.isConsented
-      newState.isAdvanceButtonEnabled = requiredConsented
+      newState.isSignUpButtonEnabled = requiredConsented
     case .setAllConsent(let isAllConsented):
       newState.termsOfService.isConsented = isAllConsented
       newState.privacyPolicy.isConsented = isAllConsented
       newState.locationDataUsage.isConsented = isAllConsented
       newState.isAllConsented = isAllConsented
-      newState.isAdvanceButtonEnabled = isAllConsented
-    case .enableAdvanceButton(let bool):
-      newState.isAdvanceButtonEnabled = bool
+      newState.isSignUpButtonEnabled = isAllConsented
+    case .enableSignUpButton(let bool):
+      newState.isSignUpButtonEnabled = bool
     }
     return newState
   }
