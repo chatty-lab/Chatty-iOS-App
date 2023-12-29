@@ -9,5 +9,10 @@ import UIKit
 
 public enum CoordinatorType {
   case app, tab
-  case onboarding, live, chat, feed, myChatty
+  case live, chat, feed, myChatty
+  case onboarding(OnboardingType)
+}
+
+public enum OnboardingType {
+  case root, terms, auth, profileUpdate
 }
