@@ -12,7 +12,7 @@ public final class OnboardingRootCoordinator: Coordinator {
   public var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: UINavigationController
   public var childCoordinators: [Coordinator] = []
-  public var type: CoordinatorType = .onboarding
+  public var type: CoordinatorType = .onboarding(.root)
   
   public init(_ navigationController: UINavigationController) {
     self.navigationController = navigationController
