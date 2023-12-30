@@ -12,7 +12,7 @@ import SharedDesignSystem
 import SnapKit
 import Then
 
-final class OnboardingTermsView: UIView, Touchable {
+final class OnboardingTermsView: BaseView, Touchable {
   // MARK: - View Property
   private let titleLabel: UILabel = UILabel().then {
     $0.text = "채티를 이용하려면 동의가 필요해요"
@@ -73,24 +73,18 @@ final class OnboardingTermsView: UIView, Touchable {
   // MARK: - Initialize Method
   override init(frame: CGRect) {
     super.init(frame: frame)
-    bind()
-    configureUI()
   }
   
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-}
-
-extension OnboardingTermsView {
-  enum TouchType {
-    case signUp
-    case allConsent
-    case consent(Terms)
-    case open(Terms)
+  // MARK: - UIConfigurable
+  override func configureUI() {
+    setupTitleView()
+    setupTermContainer()
+    setupAllConsentButtonView()
+    setupSignUpButton()
   }
   
-  private func bind() {
+  // MARK: - Bindable
+  override func bind() {
     termOfService.didTouch
       .map {
         switch $0 {
@@ -131,14 +125,16 @@ extension OnboardingTermsView {
       .bind(to: self.didTouch)
       .disposed(by: disposeBag)
   }
-  
-  private func configureUI() {
-    setupTitleView()
-    setupTermContainer()
-    setupAllConsentButtonView()
-    setupSignUpButton()
+}
+
+extension OnboardingTermsView {
+  enum TouchType {
+    case signUp
+    case allConsent
+    case consent(Terms)
+    case open(Terms)
   }
-  
+
   private func setupTitleView() {
     addSubview(titleLabel)
     titleLabel.snp.makeConstraints {

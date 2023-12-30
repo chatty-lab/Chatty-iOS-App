@@ -13,7 +13,7 @@ import SnapKit
 import Then
 import SharedDesignSystem
 
-final class OnboardingRootView: UIView {
+final class OnboardingRootView: BaseView {
   // MARK: - View
   private let containerView: UIView = UIView()
   
@@ -82,28 +82,19 @@ final class OnboardingRootView: UIView {
   var didTouch: RxRelay.PublishRelay<TouchType> = .init()
   
   // MARK: - Life Method
-  
   override init(frame: CGRect) {
     super.init(frame: frame)
-    bind()
-    configureUI()
   }
   
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
+  // MARK: - UIConfigurable
+  override func configureUI() {
+    setupWelcomeBox()
+    setupSignInButton()
+    setupSignUpButton()
   }
-}
-
-extension OnboardingRootView: Touchable {
-  enum TouchType {
-    case signUp
-    case signIn
-  }
-}
-
-// MARK: - UI setup
-extension OnboardingRootView {
-  private func bind() {
+  
+  // MARK: - UIBindable
+  override func bind() {
     signUpButton.didTouch
       .map{ .signUp }
       .bind(to: didTouch)
@@ -114,13 +105,16 @@ extension OnboardingRootView {
       .bind(to: didTouch)
       .disposed(by: disposeBag)
   }
-  
-  private func configureUI() {
-    setupWelcomeBox()
-    setupSignInButton()
-    setupSignUpButton()
+}
+
+extension OnboardingRootView: Touchable {
+  enum TouchType {
+    case signUp
+    case signIn
   }
-  
+}
+
+extension OnboardingRootView {
   private func setupWelcomeBox() {
     addSubview(containerView)
     containerView.addSubview(logoImageView)

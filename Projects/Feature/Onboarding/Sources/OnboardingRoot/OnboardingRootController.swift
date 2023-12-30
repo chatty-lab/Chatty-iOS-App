@@ -24,8 +24,6 @@ public final class OnboardingRootController: BaseController {
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    uiConfigurator = self
-    bind()
   }
   
   // MARK: - Delegate
@@ -34,10 +32,14 @@ public final class OnboardingRootController: BaseController {
   deinit {
     print("해제됨: OnboardingRootController")
   }
-}
-
-extension OnboardingRootController: UIConfigurable {
-  func bind() {
+  
+  // MARK: - UIConfiurable
+  public override func configureUI() {
+    navigationController?.setNavigationBarHidden(true, animated: true)
+  }
+  
+  // MARK: - Bindable
+  public override func bind() {
     mainView.didTouch
       .bind(with: self) { owner, touch in
         switch touch {
@@ -48,9 +50,5 @@ extension OnboardingRootController: UIConfigurable {
         }
       }
       .disposed(by: disposeBag)
-  }
-  
-  public func configureUI() {
-    navigationController?.setNavigationBarHidden(true, animated: true)
   }
 }

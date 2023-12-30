@@ -11,7 +11,7 @@ import RxCocoa
 import SnapKit
 import SharedDesignSystem
 
-final class AllConsentButton: UIControl, Touchable, TouchableHighlight {
+final class AllConsentButton: BaseControl, Touchable, TouchableHighlight {
   // MARK: - View Property
   private let allConsentLabel: UILabel = UILabel().then {
     $0.text = "전체 동의"
@@ -46,17 +46,13 @@ final class AllConsentButton: UIControl, Touchable, TouchableHighlight {
   // MARK: - Initialize Method
   override init(frame: CGRect) {
     super.init(frame: frame)
-    bind()
-    configureUI()
   }
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
-}
-
-extension AllConsentButton {
-  private func bind() {
+  
+  override func bind() {
     self.rx.controlEvent(.touchDown)
       .bind(with: self) { [weak self] owner, _ in
         guard let self else { return }
@@ -84,14 +80,16 @@ extension AllConsentButton {
       .disposed(by: disposeBag)
   }
   
-  private func configureUI() {
+  override func configureUI() {
     layer.borderWidth = 1
     layer.cornerRadius = 8
     
     setupAllConsentLabel()
     setupCheckBoxImageView()
   }
-  
+}
+
+extension AllConsentButton {
   private func setupAllConsentLabel() {
     addSubview(allConsentLabel)
     allConsentLabel.snp.makeConstraints {

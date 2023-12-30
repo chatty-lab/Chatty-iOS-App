@@ -12,7 +12,7 @@ import RxGesture
 import SnapKit
 import SharedDesignSystem
 
-final class TermsCheckBoxView: UIControl, Touchable, TouchableHighlight, TouchableTransform {
+final class TermsCheckBoxView: BaseControl, Touchable, TouchableHighlight, TouchableTransform {
   // MARK: - View Property
   private let checkCircleImageView: CheckMarkCircleView = CheckMarkCircleView().then {
     typealias Configuration = CheckMarkCircleView.CheckMarkCircleConfiguration
@@ -56,24 +56,19 @@ final class TermsCheckBoxView: UIControl, Touchable, TouchableHighlight, Touchab
   init(term: Terms) {
     self.terms = term
     super.init(frame: .zero)
-    bind()
     setupTermsText()
-    configureUI()
   }
   
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-}
-
-extension TermsCheckBoxView {
-  enum TouchType {
-    case consent(Terms)
-    case open(Terms)
+  // MARK: - UIConfigurable
+  override func configureUI() {
+    setupCheckCircleImageView()
+    setupTermsLabel()
+    setupRightArrowView()
   }
   
-  private func bind() {
-    self.rx.controlEvent(.touchDown)
+  // MARK: - Bindable
+  override func bind() {
+     self.rx.controlEvent(.touchDown)
       .bind(with: self) { [weak self] owner, _ in
         guard let self else { return }
         owner.shrink(checkCircleImageView)
@@ -113,11 +108,12 @@ extension TermsCheckBoxView {
       .bind(to: didTouch)
       .disposed(by: disposeBag)
   }
-  
-  private func configureUI() {
-    setupCheckCircleImageView()
-    setupTermsLabel()
-    setupRightArrowView()
+}
+
+extension TermsCheckBoxView {
+  enum TouchType {
+    case consent(Terms)
+    case open(Terms)
   }
   
   private func setupCheckCircleImageView() {

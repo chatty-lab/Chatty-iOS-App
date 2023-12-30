@@ -38,13 +38,20 @@ final class OnboardingTermsController: BaseController {
   required init(reactor: Reactor) {
     defer {
       self.reactor = reactor
-      uiConfigurator = self
     }
     super.init()
   }
   
   // MARK: - Delegate
   weak var delegate: OnboardingTermsDelegate?
+  
+  // MARK: - UIConfigurable
+  override func configureUI() {
+    view.addSubview(mainView)
+    mainView.snp.makeConstraints {
+      $0.top.leading.trailing.equalToSuperview()
+    }
+  }
 }
 
 extension OnboardingTermsController: ReactorKit.View {
@@ -106,14 +113,7 @@ extension OnboardingTermsController: ReactorKit.View {
   }
 }
 
-extension OnboardingTermsController: UIConfigurable {
-  func configureUI() {
-    view.addSubview(mainView)
-    mainView.snp.makeConstraints {
-      $0.top.leading.trailing.equalToSuperview()
-    }
-  }
-  
+extension OnboardingTermsController {
   private func setupSheet() {
     if let sheet = self.sheetPresentationController {
       let contentHeight = mainView.frame.height
