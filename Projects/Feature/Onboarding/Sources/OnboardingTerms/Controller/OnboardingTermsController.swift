@@ -10,26 +10,31 @@ import ReactorKit
 import RxSwift
 import SharedDesignSystem
 
+protocol OnboardingTermsDelegate: AnyObject {
+  func signUp()
+}
+
 final class OnboardingTermsController: BaseController {
+  // MARK: - View Property
   private lazy var mainView = OnboardingTermsView()
+  
+  // MARK: - Reactor Property
   typealias Reactor = OnboardingTermsReactor
+  
+  // MARK: - Rx Property
   var disposeBag = DisposeBag()
   
+  // MARK: - Life Method
   override func viewDidLoad() {
     super.viewDidLoad()
   }
   
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    if let sheet = self.sheetPresentationController {
-      let contentHeight = mainView.frame.height
-      let customDetent = UISheetPresentationController.Detent.custom(identifier: .init("customDetent")) { _ in
-        return contentHeight
-      }
-      sheet.detents = [customDetent]
-    }
+    setupSheet()
   }
   
+  // MARK: - Initialize Method
   required init(reactor: Reactor) {
     defer {
       self.reactor = reactor
@@ -37,6 +42,9 @@ final class OnboardingTermsController: BaseController {
     }
     super.init()
   }
+  
+  // MARK: - Delegate
+  weak var delegate: OnboardingTermsDelegate?
 }
 
 extension OnboardingTermsController: ReactorKit.View {
@@ -48,9 +56,10 @@ extension OnboardingTermsController: ReactorKit.View {
           reactor.action.onNext(.toggleAllConsent)
         case .consent(let terms):
           reactor.action.onNext(.toggleConsent(terms))
-        case .open(let terms): break
-        case .advance:
-          owner.dismiss(animated: true)
+        case .open(let terms):
+          print("약관 상세 페이지: \(terms.type.rawValue)")
+        case .signUp:
+          owner.delegate?.signUp()
         }
       }
       .disposed(by: disposeBag)
@@ -88,10 +97,10 @@ extension OnboardingTermsController: ReactorKit.View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map(\.isAdvanceButtonEnabled)
+      .map(\.isSignUpButtonEnabled)
       .distinctUntilChanged()
-      .bind(with: self) { owner, isAdvanceButtonEnabled in
-        owner.mainView.updateAdvanceButton(for: isAdvanceButtonEnabled)
+      .bind(with: self) { owner, isSignUpButtonEnabled in
+        owner.mainView.updateSignUpButton(for: isSignUpButtonEnabled)
       }
       .disposed(by: disposeBag)
   }
@@ -102,6 +111,17 @@ extension OnboardingTermsController: UIConfigurable {
     view.addSubview(mainView)
     mainView.snp.makeConstraints {
       $0.top.leading.trailing.equalToSuperview()
+    }
+  }
+  
+  private func setupSheet() {
+    if let sheet = self.sheetPresentationController {
+      let contentHeight = mainView.frame.height
+      let customDetent = UISheetPresentationController.Detent.custom(identifier: .init("customDetent")) { _ in
+        return contentHeight
+      }
+      sheet.detents = [customDetent]
+      sheet.preferredCornerRadius = 16
     }
   }
 }

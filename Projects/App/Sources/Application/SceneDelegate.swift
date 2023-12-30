@@ -11,7 +11,7 @@ import Feature
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
   var window: UIWindow?
-
+  var appCoordinator: AppCoordinator?
 
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
     // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -21,8 +21,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // MainTabBarController를 App Entry Point로 설정
     guard let windowScene = (scene as? UIWindowScene) else { return }
     let window = UIWindow(windowScene: windowScene)
-    let appCoordinator = AppCoordinator(window: window)
-    appCoordinator.start()
+    let navigationController = UINavigationController()
+    appCoordinator = AppCoordinator(window: window, navigationController)
+    appCoordinator?.start()
   }
 
   func sceneDidDisconnect(_ scene: UIScene) {

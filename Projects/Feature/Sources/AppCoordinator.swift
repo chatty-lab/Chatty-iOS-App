@@ -9,38 +9,50 @@ import UIKit
 import Shared
 import FeatureOnboarding
 
-public final class AppCoordinator: Coordinator {
-  public var finishDelegate: CoordinatorFinishDelegate?
+protocol AppCoordinatorProtocol: Coordinator {
+  func showOnboardingFlow()
+  func showMainFlow()
+}
+
+public final class AppCoordinator: AppCoordinatorProtocol {
+  public weak var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: UINavigationController
   public var childCoordinators: [Coordinator] = []
   public var type: CoordinatorType = .app
   
-  var window: UIWindow?
+  var window: UIWindow
   
-  public init(_ navigationController: UINavigationController) {
+  public init(window: UIWindow, _ navigationController: UINavigationController) {
     self.navigationController = navigationController
-  }
-  
-  public convenience init(window: UIWindow) {
-    self.init(UINavigationController())
     self.window = window
-    navigationController.setNavigationBarHidden(true, animated: true)
   }
   
   public func start() {
-    let onboardingCoordinator = OnboardingRootCoordinator(self.navigationController)
+    showOnboardingFlow()
+  }
+  
+  func showOnboardingFlow() {
+    let onboardingCoordinator = OnboardingRootCoordinator(self.navigationController, OnboardingRootController())
     childCoordinators.append(onboardingCoordinator)
     
     onboardingCoordinator.finishDelegate = self
     onboardingCoordinator.start()
     
-    window?.rootViewController = navigationController
-    window?.makeKeyAndVisible()
+    window.rootViewController = navigationController
+    window.makeKeyAndVisible()
+  }
+  
+  func showMainFlow() {
+    
+  }
+  
+  deinit {
+    print("해제됨: AppCoordinator")
   }
 }
 
 extension AppCoordinator: CoordinatorFinishDelegate {
-  public func coordinatorDidFinish(childCoordinator: Shared.Coordinator) {
+  public func coordinatorDidFinish(childCoordinator: Coordinator) {
     self.childCoordinators.removeAll()
     self.navigationController.viewControllers.removeAll()
     self.finishDelegate?.coordinatorDidFinish(childCoordinator: self)

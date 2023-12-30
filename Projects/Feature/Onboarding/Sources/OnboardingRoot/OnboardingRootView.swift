@@ -6,14 +6,12 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import RxGesture
 import SnapKit
 import Then
 import SharedDesignSystem
-
-protocol OnboardingRootViewDelegate: AnyObject {
-  func didTapSignUp()
-  func didTapSignIn()
-}
 
 final class OnboardingRootView: UIView {
   // MARK: - View
@@ -42,23 +40,15 @@ final class OnboardingRootView: UIView {
     $0.sizeToFit()
   }
   
-  private lazy var signUpButton: UIButton = UIButton().then {
-    var container = AttributeContainer()
-    container.font = Font.Pretendard(.SemiBold).of(size: 16)
-    container.foregroundColor = UIColor(asset: Colors.basicWhite)
+  private let signUpButton: RoundButton = RoundButton(title: "시작하기").then {
+    typealias Configuration = RoundButton.Configuration
+    let enabledConfig = Configuration(backgroundColor: UIColor(asset: Colors.primaryNormal)!, isEnabled: true)
     
-    var configuration = UIButton.Configuration.filled()
-    configuration.attributedTitle = .init("시작하기", attributes: container)
-    configuration.baseBackgroundColor = UIColor(asset: Colors.primaryNormal)
-    configuration.titleAlignment = .center
-    
-    $0.configuration = configuration
-    $0.layer.cornerRadius = 6
-    $0.addTarget(self, action: #selector(signUpButtonTapped), for: .touchUpInside)
+    $0.setState(enabledConfig, for: .enabled)
+    $0.currentState = .enabled
   }
   
-  private lazy var signInButton: UILabel = UILabel().then {
-    let tapGesture = UITapGestureRecognizer(target: self, action: #selector(signInButtonTapped))
+  private let signInButton: UILabel = UILabel().then {
     let attributedString = NSMutableAttributedString(string: "이미 계정이 있다면? 로그인")
     let loginRange = (attributedString.string as NSString).range(of: "로그인")
     
@@ -85,28 +75,46 @@ final class OnboardingRootView: UIView {
     )
     
     $0.attributedText = attributedString
-    $0.addGestureRecognizer(tapGesture)
-    $0.isUserInteractionEnabled = true
   }
+  
+  // MARK: - Rx Property
+  private let disposeBag = DisposeBag()
+  var didTouch: RxRelay.PublishRelay<TouchType> = .init()
   
   // MARK: - Life Method
   
   override init(frame: CGRect) {
     super.init(frame: frame)
+    bind()
     configureUI()
   }
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
-  
-  // MARK: - Delegate
-  
-  weak var delegate: OnboardingRootViewDelegate?
+}
+
+extension OnboardingRootView: Touchable {
+  enum TouchType {
+    case signUp
+    case signIn
+  }
 }
 
 // MARK: - UI setup
 extension OnboardingRootView {
+  private func bind() {
+    signUpButton.didTouch
+      .map{ .signUp }
+      .bind(to: didTouch)
+      .disposed(by: disposeBag)
+    
+    signInButton.rx.tapGesture()
+      .map{ _ in .signIn }
+      .bind(to: didTouch)
+      .disposed(by: disposeBag)
+  }
+  
   private func configureUI() {
     setupWelcomeBox()
     setupSignInButton()
@@ -157,16 +165,5 @@ extension OnboardingRootView {
       $0.bottom.equalTo(self.safeAreaLayoutGuide).offset(-13)
       $0.centerX.equalToSuperview()
     }
-  }
-}
-
-// MARK: Action
-extension OnboardingRootView {
-  @objc func signUpButtonTapped() {
-    delegate?.didTapSignUp()
-  }
-  
-  @objc func signInButtonTapped() {
-    delegate?.didTapSignIn()
   }
 }

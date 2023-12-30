@@ -6,40 +6,51 @@
 //
 
 import UIKit
+import RxSwift
 import SharedDesignSystem
 
-protocol OnboardingRootControllerDelegate: AnyObject {
-  func signUp()
-  func signIn()
-}
-
-final class OnboardingRootController: BaseController {
+public final class OnboardingRootController: BaseController {
   // MARK: - View
   private let mainView = OnboardingRootView()
   
+  // MARK: - Rx Property
+  private let disposeBag = DisposeBag()
   
   // MARK: - Life Method
-  override func loadView() {
+  public override func loadView() {
     super.loadView()
     view = mainView
   }
   
-  override func viewDidLoad() {
+  public override func viewDidLoad() {
     super.viewDidLoad()
-    
-    mainView.delegate = self
+    uiConfigurator = self
+    bind()
   }
   
   // MARK: - Delegate
-  weak var delegate: OnboardingRootControllerDelegate?
+  weak var delegate: OnboardingRootCoordinatorProtocol?
+  
+  deinit {
+    print("해제됨: OnboardingRootController")
+  }
 }
 
-extension OnboardingRootController: OnboardingRootViewDelegate {
-  func didTapSignUp() {
-    delegate?.signUp()
+extension OnboardingRootController: UIConfigurable {
+  func bind() {
+    mainView.didTouch
+      .bind(with: self) { owner, touch in
+        switch touch {
+        case .signIn:
+          owner.delegate?.pushToLogin()
+        case .signUp:
+          owner.delegate?.presentToTerms()
+        }
+      }
+      .disposed(by: disposeBag)
   }
   
-  func didTapSignIn() {
-    delegate?.signIn()
+  public func configureUI() {
+    navigationController?.setNavigationBarHidden(true, animated: true)
   }
 }

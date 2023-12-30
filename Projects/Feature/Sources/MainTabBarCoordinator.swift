@@ -10,7 +10,7 @@ import Shared
 import FeatureLive
 
 final class MainTabBarCoordinator: Coordinator {
-  var finishDelegate: CoordinatorFinishDelegate?
+  weak var finishDelegate: CoordinatorFinishDelegate?
   var navigationController: UINavigationController
   var childCoordinators: [Coordinator] = []
   var type: CoordinatorType = .tab
