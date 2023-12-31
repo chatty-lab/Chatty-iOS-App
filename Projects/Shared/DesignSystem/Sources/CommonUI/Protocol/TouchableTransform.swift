@@ -13,8 +13,8 @@ import UIKit
 ///
 /// __Method__
 ///
-/// - `shrink`: 뷰를 축소하는 애니메이션을 실행해요.
-/// - `expand`: 뷰를 원래 크기로 확장하는 애니메이션을 실행해요.
+/// - `shrink`: 뷰의 크기를 일정 비율만큼 축소해요.
+/// - `expand`: 뷰를 원래 크기로 되돌려요.
 ///
 public protocol TouchableTransform: UIControl {
   func shrink(_ view: UIView)
