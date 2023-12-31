@@ -19,6 +19,7 @@ open class BaseView: UIView, UIConfigurable, Bindable {
   public override init(frame: CGRect) {
     super.init(frame: frame)
     configureUI()
+    bind()
   }
   
   @available(*, unavailable)
