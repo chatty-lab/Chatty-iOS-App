@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import SharedDesignSystem
 
 public protocol Coordinator: AnyObject {
   var finishDelegate: CoordinatorFinishDelegate? { get set }
-  var navigationController: UINavigationController { get set }
+  var navigationController: BaseNavigationController { get set }
   var childCoordinators: [Coordinator] { get set }
   var type: CoordinatorType { get set }
   

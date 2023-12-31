@@ -7,6 +7,7 @@
 
 import UIKit
 import Shared
+import SharedDesignSystem
 import FeatureOnboarding
 
 protocol AppCoordinatorProtocol: Coordinator {
@@ -16,13 +17,13 @@ protocol AppCoordinatorProtocol: Coordinator {
 
 public final class AppCoordinator: AppCoordinatorProtocol {
   public weak var finishDelegate: CoordinatorFinishDelegate?
-  public var navigationController: UINavigationController
+  public var navigationController: BaseNavigationController
   public var childCoordinators: [Coordinator] = []
   public var type: CoordinatorType = .app
   
   var window: UIWindow
   
-  public init(window: UIWindow, _ navigationController: UINavigationController) {
+  public init(window: UIWindow, _ navigationController: BaseNavigationController) {
     self.navigationController = navigationController
     self.window = window
   }

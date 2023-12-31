@@ -7,15 +7,16 @@
 
 import UIKit
 import Shared
+import SharedDesignSystem
 
 public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol {
   public weak var finishDelegate: CoordinatorFinishDelegate?
-  public var navigationController: UINavigationController
+  public var navigationController: BaseNavigationController
   public var childCoordinators: [Coordinator] = []
   public var type: CoordinatorType = .onboarding(.root)
   public var onboardingRootController: OnboardingRootController
   
-  public init(_ navigationController: UINavigationController, _ controller: OnboardingRootController) {
+  public init(_ navigationController: BaseNavigationController, _ controller: OnboardingRootController) {
     self.navigationController = navigationController
     self.onboardingRootController = controller
   }

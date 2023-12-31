@@ -19,12 +19,17 @@ import UIKit
 ///   `BaseController`의 서브 클래스는 `bind` 메서드를 재정의하여 구체적인 바인딩 로직을 구현할 수 있어요.
 ///
 open class BaseController: UIViewController, UIConfigurable, Bindable {
+  public weak var baseNavigationController: BaseNavigationController? {
+    return navigationController as? BaseNavigationController
+  }
+  
   open override func viewDidLoad() {
     super.viewDidLoad()
     
     configureUI()
     bind()
     setupBackgroundIfNotSet()
+    navigationController?.delegate = self
   }
   
   public init() {
@@ -44,12 +49,18 @@ open class BaseController: UIViewController, UIConfigurable, Bindable {
   
   // MARK: - UIConfigurable
   open func configureUI() {
-    
+  
   }
   
   // MARK: - Bindable
   open func bind() {
     
+  }
+}
+
+extension BaseController: UINavigationControllerDelegate {
+  public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+    baseNavigationController?.willShow()
   }
 }
 

@@ -7,6 +7,7 @@
 
 import UIKit
 import Feature
+import SharedDesignSystem
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -21,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // MainTabBarController를 App Entry Point로 설정
     guard let windowScene = (scene as? UIWindowScene) else { return }
     let window = UIWindow(windowScene: windowScene)
-    let navigationController = UINavigationController()
+    let navigationController = BaseNavigationController()
     appCoordinator = AppCoordinator(window: window, navigationController)
     appCoordinator?.start()
   }
