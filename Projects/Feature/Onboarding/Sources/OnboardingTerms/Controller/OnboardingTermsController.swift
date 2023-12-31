@@ -59,10 +59,10 @@ extension OnboardingTermsController: ReactorKit.View {
     mainView.didTouch
       .subscribe(with: self) { owner, touch in
         switch touch {
-        case .allConsent:
-          reactor.action.onNext(.toggleAllConsent)
-        case .consent(let terms):
-          reactor.action.onNext(.toggleConsent(terms))
+        case .acceptAll:
+          reactor.action.onNext(.toggleAcceptAll)
+        case .accept(let terms):
+          reactor.action.onNext(.toggleAccept(terms))
         case .open(let terms):
           print("약관 상세 페이지: \(terms.type.rawValue)")
         case .signUp:
@@ -96,10 +96,10 @@ extension OnboardingTermsController: ReactorKit.View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map(\.isAllConsented)
+      .map(\.isAllAccepted)
       .distinctUntilChanged()
-      .bind(with: self) { owner, isAllConsented in
-        owner.mainView.updateAllConsentButtonView(for: isAllConsented)
+      .bind(with: self) { owner, isAllAccepted in
+        owner.mainView.updateAcceptAllButtonView(for: isAllAccepted)
       }
       .disposed(by: disposeBag)
     

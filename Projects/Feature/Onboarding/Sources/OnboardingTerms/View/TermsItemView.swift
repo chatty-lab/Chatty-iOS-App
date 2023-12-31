@@ -1,5 +1,5 @@
 //
-//  TermsCheckBoxView.swift
+//  TermsItemView.swift
 //  FeatureOnboarding
 //
 //  Created by walkerhilla on 12/27/23.
@@ -12,7 +12,7 @@ import RxGesture
 import SnapKit
 import SharedDesignSystem
 
-final class TermsCheckBoxView: BaseControl, Touchable, TouchableHighlight, TouchableTransform {
+final class TermsItemView: BaseControl, Touchable, TouchableHighlight, TouchableTransform {
   // MARK: - View Property
   private let checkCircleImageView: CheckMarkCircleView = CheckMarkCircleView().then {
     typealias Configuration = CheckMarkCircleView.CheckMarkCircleConfiguration
@@ -42,7 +42,7 @@ final class TermsCheckBoxView: BaseControl, Touchable, TouchableHighlight, Touch
   // MARK: - Stored Property
   var terms: Terms {
     didSet {
-      checkCircleImageView.currentState = terms.isConsented ? .checked : .unChecked
+      checkCircleImageView.currentState = terms.isAccepted ? .checked : .unChecked
     }
   }
   
@@ -90,7 +90,7 @@ final class TermsCheckBoxView: BaseControl, Touchable, TouchableHighlight, Touch
     self.rx.controlEvent(.touchUpInside)
       .compactMap { [weak self] _ -> TouchType? in
         guard let self else { return nil }
-        return .consent(self.terms)
+        return .accept(self.terms)
       }
       .do { [weak self] _ in
         guard let self else { return }
@@ -110,9 +110,9 @@ final class TermsCheckBoxView: BaseControl, Touchable, TouchableHighlight, Touch
   }
 }
 
-extension TermsCheckBoxView {
+extension TermsItemView {
   enum TouchType {
-    case consent(Terms)
+    case accept(Terms)
     case open(Terms)
   }
   

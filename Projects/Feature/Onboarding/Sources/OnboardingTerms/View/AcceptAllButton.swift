@@ -1,5 +1,5 @@
 //
-//  AllConsentButton.swift
+//  AcceptAllButton.swift
 //  FeatureOnboarding
 //
 //  Created by walkerhilla on 12/29/23.
@@ -11,9 +11,9 @@ import RxCocoa
 import SnapKit
 import SharedDesignSystem
 
-final class AllConsentButton: BaseControl, Touchable, TouchableHighlight {
+final class AcceptAllButton: BaseControl, Touchable, TouchableHighlight {
   // MARK: - View Property
-  private let allConsentLabel: UILabel = UILabel().then {
+  private let acceptAllLabel: UILabel = UILabel().then {
     $0.text = "전체 동의"
     $0.textColor = UIColor(asset: Colors.basicBlack)
     $0.font = Font.Pretendard(.Regular).of(size: 14)
@@ -84,15 +84,15 @@ final class AllConsentButton: BaseControl, Touchable, TouchableHighlight {
     layer.borderWidth = 1
     layer.cornerRadius = 8
     
-    setupAllConsentLabel()
+    setupAcceptAllLabel()
     setupCheckBoxImageView()
   }
 }
 
-extension AllConsentButton {
-  private func setupAllConsentLabel() {
-    addSubview(allConsentLabel)
-    allConsentLabel.snp.makeConstraints {
+extension AcceptAllButton {
+  private func setupAcceptAllLabel() {
+    addSubview(acceptAllLabel)
+    acceptAllLabel.snp.makeConstraints {
       $0.leading.equalToSuperview().offset(18)
       $0.centerY.equalToSuperview()
     }
@@ -108,7 +108,7 @@ extension AllConsentButton {
   }
 }
 
-extension AllConsentButton: StateConfigurable {
+extension AcceptAllButton: StateConfigurable {
   enum State {
     case checked
     case unChecked

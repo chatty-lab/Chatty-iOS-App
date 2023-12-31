@@ -24,29 +24,29 @@ final class OnboardingTermsView: BaseView, Touchable {
   
   private let termContainer: UIView = UIView()
   
-  private let termOfService: TermsCheckBoxView = TermsCheckBoxView(
+  private let termOfService: TermsItemView = TermsItemView(
     term: Terms(
       type: .termsOfService,
       isRequired: true
     )
   )
   
-  private let privacyPolicy: TermsCheckBoxView = TermsCheckBoxView(
+  private let privacyPolicy: TermsItemView = TermsItemView(
     term: Terms(
       type: .privacyPolicy,
       isRequired: true
     )
   )
   
-  private let locationDataUsage: TermsCheckBoxView = TermsCheckBoxView(
+  private let locationDataUsage: TermsItemView = TermsItemView(
     term: Terms(
       type: .locationDataUsage,
       isRequired: false
     )
   )
   
-  private let allConsentButtonView: AllConsentButton = AllConsentButton().then {
-    typealias Configuration = AllConsentButton.Configuration
+  private let acceptAllButtonView: AcceptAllButton = AcceptAllButton().then {
+    typealias Configuration = AcceptAllButton.Configuration
     let uncheckedConfig = Configuration(tintColor: UIColor(asset: Colors.gray500)!)
     let checkedConfig = Configuration(tintColor: UIColor(asset: Colors.primaryNormal)!)
     
@@ -79,7 +79,7 @@ final class OnboardingTermsView: BaseView, Touchable {
   override func configureUI() {
     setupTitleView()
     setupTermContainer()
-    setupAllConsentButtonView()
+    setupAcceptAllButtonView()
     setupSignUpButton()
   }
   
@@ -89,7 +89,7 @@ final class OnboardingTermsView: BaseView, Touchable {
       .map {
         switch $0 {
         case .open(let terms): return .open(terms)
-        case .consent(let terms): return .consent(terms)
+        case .accept(let terms): return .accept(terms)
         }
       }
       .bind(to: self.didTouch)
@@ -99,7 +99,7 @@ final class OnboardingTermsView: BaseView, Touchable {
       .map {
         switch $0 {
         case .open(let terms): return .open(terms)
-        case .consent(let terms): return .consent(terms)
+        case .accept(let terms): return .accept(terms)
         }
       }
       .bind(to: self.didTouch)
@@ -109,14 +109,14 @@ final class OnboardingTermsView: BaseView, Touchable {
       .map {
         switch $0 {
         case .open(let terms): return .open(terms)
-        case .consent(let terms): return .consent(terms)
+        case .accept(let terms): return .accept(terms)
         }
       }
       .bind(to: self.didTouch)
       .disposed(by: disposeBag)
     
-    allConsentButtonView.didTouch
-      .map { _ in .allConsent }
+    acceptAllButtonView.didTouch
+      .map { _ in .acceptAll }
       .bind(to: self.didTouch)
       .disposed(by: disposeBag)
     
@@ -130,8 +130,8 @@ final class OnboardingTermsView: BaseView, Touchable {
 extension OnboardingTermsView {
   enum TouchType {
     case signUp
-    case allConsent
-    case consent(Terms)
+    case acceptAll
+    case accept(Terms)
     case open(Terms)
   }
 
@@ -172,10 +172,10 @@ extension OnboardingTermsView {
     }
   }
   
-  private func setupAllConsentButtonView() {
-    addSubview(allConsentButtonView)
+  private func setupAcceptAllButtonView() {
+    addSubview(acceptAllButtonView)
     
-    allConsentButtonView.snp.makeConstraints {
+    acceptAllButtonView.snp.makeConstraints {
       $0.top.equalTo(termContainer.snp.bottom).offset(21)
       $0.leading.trailing.equalToSuperview().inset(20)
       $0.height.equalTo(46)
@@ -186,7 +186,7 @@ extension OnboardingTermsView {
     addSubview(signUpButton)
     
     signUpButton.snp.makeConstraints {
-      $0.top.equalTo(allConsentButtonView.snp.bottom).offset(23)
+      $0.top.equalTo(acceptAllButtonView.snp.bottom).offset(23)
       $0.leading.trailing.equalToSuperview().inset(20)
       $0.height.equalTo(52)
       $0.bottom.equalToSuperview().offset(-20)
@@ -204,8 +204,8 @@ extension OnboardingTermsView {
     }
   }
   
-  public func updateAllConsentButtonView(for type: Bool) {
-    self.allConsentButtonView.currentState = type ? .checked : .unChecked
+  public func updateAcceptAllButtonView(for type: Bool) {
+    self.acceptAllButtonView.currentState = type ? .checked : .unChecked
   }
   
   public func updateSignUpButton(for type: Bool) {

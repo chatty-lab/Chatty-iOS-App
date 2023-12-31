@@ -13,7 +13,7 @@ import SnapKit
 import Then
 import SharedDesignSystem
 
-final class OnboardingRootView: BaseView {
+final class OnboardingRootView: BaseView, Touchable {
   // MARK: - View
   private let containerView: UIView = UIView()
   
@@ -79,6 +79,8 @@ final class OnboardingRootView: BaseView {
   
   // MARK: - Rx Property
   private let disposeBag = DisposeBag()
+  
+  // MARK: - Touchable
   var didTouch: RxRelay.PublishRelay<TouchType> = .init()
   
   // MARK: - Life Method
@@ -107,14 +109,12 @@ final class OnboardingRootView: BaseView {
   }
 }
 
-extension OnboardingRootView: Touchable {
+extension OnboardingRootView {
   enum TouchType {
     case signUp
     case signIn
   }
-}
 
-extension OnboardingRootView {
   private func setupWelcomeBox() {
     addSubview(containerView)
     containerView.addSubview(logoImageView)

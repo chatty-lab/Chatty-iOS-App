@@ -10,7 +10,7 @@ import Foundation
 struct Terms: Hashable {
   let type: TermsType
   let isRequired: Bool
-  var isConsented: Bool = false
+  var isAccepted: Bool = false
   
   var phrase: String {
     let isRequired = isRequired ? "필수" : "선택"
