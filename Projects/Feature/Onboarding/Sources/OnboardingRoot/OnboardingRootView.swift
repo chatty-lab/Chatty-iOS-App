@@ -81,7 +81,7 @@ final class OnboardingRootView: BaseView, Touchable {
   private let disposeBag = DisposeBag()
   
   // MARK: - Touchable
-  var didTouch: RxRelay.PublishRelay<TouchType> = .init()
+  var touchEvent: RxRelay.PublishRelay<TouchEventType> = .init()
   
   // MARK: - Life Method
   override init(frame: CGRect) {
@@ -97,20 +97,20 @@ final class OnboardingRootView: BaseView, Touchable {
   
   // MARK: - UIBindable
   override func bind() {
-    signUpButton.didTouch
+    signUpButton.touchEvent
       .map{ .signUp }
-      .bind(to: didTouch)
+      .bind(to: touchEvent)
       .disposed(by: disposeBag)
     
     signInButton.rx.tapGesture()
       .map{ _ in .signIn }
-      .bind(to: didTouch)
+      .bind(to: touchEvent)
       .disposed(by: disposeBag)
   }
 }
 
 extension OnboardingRootView {
-  enum TouchType {
+  enum TouchEventType {
     case signUp
     case signIn
   }

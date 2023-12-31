@@ -56,7 +56,7 @@ final class OnboardingTermsController: BaseController {
 
 extension OnboardingTermsController: ReactorKit.View {
   func bind(reactor: OnboardingTermsReactor) {
-    mainView.didTouch
+    mainView.touchEvent
       .subscribe(with: self) { owner, touch in
         switch touch {
         case .acceptAll:

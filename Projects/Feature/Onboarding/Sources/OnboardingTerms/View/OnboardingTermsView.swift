@@ -68,7 +68,7 @@ final class OnboardingTermsView: BaseView, Touchable {
   private let disposeBag = DisposeBag()
   
   // MARK: - Touchable Property
-  public let didTouch: PublishRelay<TouchType> = .init()
+  public let touchEvent: PublishRelay<TouchEventType> = .init()
   
   // MARK: - Initialize Method
   override init(frame: CGRect) {
@@ -85,50 +85,50 @@ final class OnboardingTermsView: BaseView, Touchable {
   
   // MARK: - Bindable
   override func bind() {
-    termOfService.didTouch
+    termOfService.touchEvent
       .map {
         switch $0 {
         case .open(let terms): return .open(terms)
         case .accept(let terms): return .accept(terms)
         }
       }
-      .bind(to: self.didTouch)
+      .bind(to: self.touchEvent)
       .disposed(by: disposeBag)
     
-    privacyPolicy.didTouch
+    privacyPolicy.touchEvent
       .map {
         switch $0 {
         case .open(let terms): return .open(terms)
         case .accept(let terms): return .accept(terms)
         }
       }
-      .bind(to: self.didTouch)
+      .bind(to: self.touchEvent)
       .disposed(by: disposeBag)
     
-    locationDataUsage.didTouch
+    locationDataUsage.touchEvent
       .map {
         switch $0 {
         case .open(let terms): return .open(terms)
         case .accept(let terms): return .accept(terms)
         }
       }
-      .bind(to: self.didTouch)
+      .bind(to: self.touchEvent)
       .disposed(by: disposeBag)
     
-    acceptAllButtonView.didTouch
+    acceptAllButtonView.touchEvent
       .map { _ in .acceptAll }
-      .bind(to: self.didTouch)
+      .bind(to: self.touchEvent)
       .disposed(by: disposeBag)
     
-    signUpButton.didTouch
+    signUpButton.touchEvent
       .map { _ in .signUp }
-      .bind(to: self.didTouch)
+      .bind(to: self.touchEvent)
       .disposed(by: disposeBag)
   }
 }
 
 extension OnboardingTermsView {
-  enum TouchType {
+  enum TouchEventType {
     case signUp
     case acceptAll
     case accept(Terms)

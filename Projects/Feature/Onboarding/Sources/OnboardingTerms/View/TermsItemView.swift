@@ -50,7 +50,7 @@ final class TermsItemView: BaseControl, Touchable, TouchableHighlight, Touchable
   private let disposeBag = DisposeBag()
   
   // MARK: - Touchable Property
-  public let didTouch: PublishRelay<TouchType> = .init()
+  public let touchEvent: PublishRelay<TouchEventType> = .init()
   
   // MARK: - Initialize Method
   init(term: Terms) {
@@ -88,7 +88,7 @@ final class TermsItemView: BaseControl, Touchable, TouchableHighlight, Touchable
     .disposed(by: disposeBag)
     
     self.rx.controlEvent(.touchUpInside)
-      .compactMap { [weak self] _ -> TouchType? in
+      .compactMap { [weak self] _ -> TouchEventType? in
         guard let self else { return nil }
         return .accept(self.terms)
       }
@@ -97,21 +97,21 @@ final class TermsItemView: BaseControl, Touchable, TouchableHighlight, Touchable
         self.expand(checkCircleImageView)
         self.unhighlight(checkCircleImageView)
       }
-      .bind(to: didTouch)
+      .bind(to: touchEvent)
       .disposed(by: disposeBag)
     
     rightArrowView.rx.controlEvent(.touchUpInside)
-      .compactMap { [weak self] _ -> TouchType? in
+      .compactMap { [weak self] _ -> TouchEventType? in
         guard let self else { return nil }
         return .open(self.terms)
       }
-      .bind(to: didTouch)
+      .bind(to: touchEvent)
       .disposed(by: disposeBag)
   }
 }
 
 extension TermsItemView {
-  enum TouchType {
+  enum TouchEventType {
     case accept(Terms)
     case open(Terms)
   }

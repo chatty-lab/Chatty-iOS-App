@@ -33,14 +33,9 @@ public final class OnboardingRootController: BaseController {
     print("해제됨: OnboardingRootController")
   }
   
-  // MARK: - UIConfiurable
-  public override func configureUI() {
-    navigationController?.setNavigationBarHidden(true, animated: true)
-  }
-  
   // MARK: - Bindable
   public override func bind() {
-    mainView.didTouch
+    mainView.touchEvent
       .bind(with: self) { owner, touch in
         switch touch {
         case .signIn:

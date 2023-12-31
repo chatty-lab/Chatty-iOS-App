@@ -24,7 +24,7 @@ open class RoundButton: BaseControl, Touchable, TouchableHighlight, TouchableTra
   
   // MARK: - Rx Property
   private let disposeBag = DisposeBag()
-  public let didTouch: RxRelay.PublishRelay<Void> = .init()
+  public let touchEvent: RxRelay.PublishRelay<Void> = .init()
   
   // MARK: - StateConfigurable Property
   public var configurations: [State : Configuration] = [:]
@@ -71,7 +71,7 @@ open class RoundButton: BaseControl, Touchable, TouchableHighlight, TouchableTra
         self.expand(self)
         self.unhighlight(self)
       }
-      .bind(to: didTouch)
+      .bind(to: touchEvent)
       .disposed(by: disposeBag)
   }
   

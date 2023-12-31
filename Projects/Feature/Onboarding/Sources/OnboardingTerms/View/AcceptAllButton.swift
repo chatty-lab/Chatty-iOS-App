@@ -33,7 +33,7 @@ final class AcceptAllButton: BaseControl, Touchable, TouchableHighlight {
   let disposeBag = DisposeBag()
   
   // MARK: - Touchable Property
-  let didTouch: PublishRelay<Void> = .init()
+  let touchEvent: PublishRelay<Void> = .init()
   
   // MARK: - StateConfigurable Property
   var configurations: [State : Configuration] = [:]
@@ -76,7 +76,7 @@ final class AcceptAllButton: BaseControl, Touchable, TouchableHighlight {
         guard let self else { return }
         self.unhighlight(self)
       }
-      .bind(to: didTouch)
+      .bind(to: touchEvent)
       .disposed(by: disposeBag)
   }
   
