@@ -14,5 +14,9 @@ public enum CoordinatorType {
 }
 
 public enum OnboardingType {
-  case root, terms, auth, profileUpdate
+  case root, terms, auth, profileUpdate(OnboardingProfileType)
+}
+
+public enum OnboardingProfileType {
+  case nickName, profiles
 }
