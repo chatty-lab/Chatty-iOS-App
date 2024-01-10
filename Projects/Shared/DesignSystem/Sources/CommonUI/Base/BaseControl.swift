@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 /// `BaseControl`는 UIControl의 서브 클래스에서 공통적으로 처리하는 로직의 인터페이스를 정의해요.
 ///
@@ -18,6 +19,8 @@ import UIKit
 ///   `BaseControl`의 서브 클래스는 `bind` 메서드를 재정의하여 구체적인 바인딩 로직을 구현할 수 있어요.
 ///
 open class BaseControl: UIControl, UIConfigurable, Bindable {
+  
+  public let disposeBag = DisposeBag()
   
   public override init(frame: CGRect) {
     super.init(frame: frame)

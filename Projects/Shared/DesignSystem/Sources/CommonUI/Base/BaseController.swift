@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxGesture
 
 /// `BaseController`는 Controller에서 공통적으로 처리하는 로직의 인터페이스를 정의해요.
 ///
@@ -19,16 +21,17 @@ import UIKit
 ///   `BaseController`의 서브 클래스는 `bind` 메서드를 재정의하여 구체적인 바인딩 로직을 구현할 수 있어요.
 ///
 open class BaseController: UIViewController, UIConfigurable, Bindable {
-  public weak var baseNavigationController: BaseNavigationController? {
-    return navigationController as? BaseNavigationController
+  public var disposeBag = DisposeBag()
+  
+  public weak var baseNavigationController: CustomNavigationController? {
+    return navigationController as? CustomNavigationController
   }
   
   open override func viewDidLoad() {
     super.viewDidLoad()
-    
     configureUI()
-    bind()
     setupBackgroundIfNotSet()
+    bind()
     navigationController?.delegate = self
   }
   
@@ -41,26 +44,34 @@ open class BaseController: UIViewController, UIConfigurable, Bindable {
     fatalError("init(coder:) has not been implemented")
   }
   
+  // MARK: - Set UI
   private func setupBackgroundIfNotSet() {
     if self.view.backgroundColor == nil {
-      self.view.backgroundColor = UIColor(asset: Colors.basicWhite)
+      self.view.backgroundColor = SystemColor.basicWhite.uiColor
     }
   }
   
   // MARK: - UIConfigurable
   open func configureUI() {
-  
+    
   }
   
   // MARK: - Bindable
   open func bind() {
     
   }
+  
+  open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    self.view.endEditing(true)
+  }
 }
 
 extension BaseController: UINavigationControllerDelegate {
   public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-    baseNavigationController?.willShow()
+    baseNavigationController?.navigationController(navigationController, willShow: viewController, animated: animated)
+  }
+  
+  public func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+    baseNavigationController?.navigationController(navigationController, didShow: viewController, animated: animated)
   }
 }
-
