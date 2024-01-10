@@ -1,32 +1,33 @@
 //
-//  RoundButton.swift
+//  CustomAlertButton.swift
 //  SharedDesignSystem
 //
-//  Created by walkerhilla on 12/27/23.
+//  Created by walkerhilla on 1/6/24.
 //
 
 import UIKit
-import Then
 import RxSwift
 import RxCocoa
 import SnapKit
+import Then
 
-open class RoundButton: UIControl, Touchable, TouchableHighlight, TouchableTransform {
+open class CustomAlertButton: BaseControl, Touchable, Highlightable {
   // MARK: - View Property
-  private lazy var titleLabel: UILabel = UILabel().then {
-    $0.text = title
-    $0.textColor = UIColor(asset: Colors.basicWhite)
-    $0.font = Font.Pretendard(.SemiBold).of(size: 16)
+  private let titleLabel: UILabel = UILabel().then {
+    $0.font = SystemFont.title03.font
   }
   
   // MARK: - Stored Property
-  private let title: String
+  public var title: String? {
+    didSet {
+      setTitle(title)
+    }
+  }
   
   // MARK: - Rx Property
-  private let disposeBag = DisposeBag()
-  public let didTouch: RxRelay.PublishRelay<Void> = .init()
+  public let touchEventRelay: RxRelay.PublishRelay<Void> = .init()
   
-  // MARK: - StateConfigurable Property
+  // MARK: - StateConfigurable
   public var configurations: [State : Configuration] = [:]
   public var currentState: State? {
     didSet {
@@ -34,26 +35,16 @@ open class RoundButton: UIControl, Touchable, TouchableHighlight, TouchableTrans
     }
   }
   
-  public init(title: String) {
-    self.title = title
-    super.init(frame: .zero)
-    
-    bind()
-    configureUI()
+  // MARK: - Initialize Method
+  public override init(frame: CGRect) {
+    super.init(frame: frame)
   }
   
-  @available(*, unavailable)
-  required public init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-}
-
-extension RoundButton {
-  private func bind() {
+  // MARK: - Bindable
+  open override func bind() {
     self.rx.controlEvent(.touchDown)
       .bind(with: self) { [weak self] owner, _ in
         guard let self else { return }
-        owner.shrink(self)
         owner.highlight(self)
       }
       .disposed(by: disposeBag)
@@ -64,7 +55,6 @@ extension RoundButton {
     )
     .bind(with: self) { [weak self] _, _  in
       guard let self else { return }
-      self.expand(self)
       self.unhighlight(self)
     }
     .disposed(by: disposeBag)
@@ -73,15 +63,15 @@ extension RoundButton {
       .map { _ in Void() }
       .do { [weak self] _ in
         guard let self else { return }
-        self.expand(self)
         self.unhighlight(self)
       }
-      .bind(to: didTouch)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
   }
   
-  private func configureUI() {
-    layer.cornerRadius = 6
+  // MARK: - UIConfigurable
+  open override func configureUI() {
+    layer.cornerRadius = 8
     
     setupTitleLabel()
   }
@@ -92,21 +82,25 @@ extension RoundButton {
       $0.centerX.centerY.equalToSuperview()
     }
   }
+  
+  private func setTitle(_ title: String?) {
+    titleLabel.text = title
+  }
 }
 
-extension RoundButton: StateConfigurable {
+extension CustomAlertButton: StateConfigurable {
   public enum State {
-    case enabled
-    case disabled
+    case positive
+    case negative
   }
   
   public struct Configuration {
     let backgroundColor: UIColor
-    let isEnabled: Bool
+    let textColor: UIColor
     
-    public init(backgroundColor: UIColor, isEnabled: Bool) {
+    public init(backgroundColor: UIColor, textColor: UIColor) {
       self.backgroundColor = backgroundColor
-      self.isEnabled = isEnabled
+      self.textColor = textColor
     }
   }
   
@@ -114,6 +108,7 @@ extension RoundButton: StateConfigurable {
     guard let currentState,
           let config = configurations[currentState] else { return }
     backgroundColor = config.backgroundColor
-    isEnabled = config.isEnabled
+    titleLabel.textColor = config.textColor
   }
 }
+

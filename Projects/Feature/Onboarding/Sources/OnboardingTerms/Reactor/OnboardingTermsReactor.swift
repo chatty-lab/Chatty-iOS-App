@@ -9,54 +9,55 @@ import Foundation
 import RxSwift
 import ReactorKit
 
-final class OnboardingTermsReactor: Reactor {
+public final class OnboardingTermsReactor: Reactor {
   /// 온보딩 약관 화면에서 수행할 수 있는 사용자의 액션을 정의해요
-  enum Action {
-    case toggleConsent(Terms)
-    case toggleAllConsent
+  public enum Action {
+    case toggleAccept(Terms)
+    case toggleAcceptAll
   }
   
   /// 화면의 상태를 변화하는 요인을 정의해요
-  enum Mutation {
-    case setConsent(Terms)
-    case setAllConsent(Bool)
-    case enableSignUpButton(Bool)
+  public enum Mutation {
+    case setAccept(Terms)
+    case setAcceptAll(Bool)
   }
   
   /// 현재 온보딩 약관 화면의 상태를 나타내는 구조체에요
-  struct State {
+  public struct State {
     var termsOfService: Terms
     var privacyPolicy: Terms
     var locationDataUsage: Terms
-    var isAllConsented: Bool = false
+    var isAllAccepted: Bool = false
     var isSignUpButtonEnabled: Bool = false
     
     init() {
-      termsOfService = Terms(type: .termsOfService, isRequired: true, isConsented: false)
-      privacyPolicy = Terms(type: .privacyPolicy, isRequired: true, isConsented: false)
-      locationDataUsage = Terms(type: .locationDataUsage, isRequired: false, isConsented: false)
+      termsOfService = Terms(type: .termsOfService, isRequired: true, isAccepted: false)
+      privacyPolicy = Terms(type: .privacyPolicy, isRequired: true, isAccepted: false)
+      locationDataUsage = Terms(type: .locationDataUsage, isRequired: false, isAccepted: false)
     }
   }
   
-  let initialState: State = State()
+  public let initialState: State = State()
+  
+  public init() { }
 }
 
 extension OnboardingTermsReactor {
-  func mutate(action: Action) -> Observable<Mutation> {
+  public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .toggleConsent(let terms):
+    case .toggleAccept(let terms):
       var newTerms = terms
-      newTerms.isConsented.toggle()
-      return .just(.setConsent(newTerms))
-    case .toggleAllConsent:
-      return .just(.setAllConsent(!currentState.isAllConsented))
+      newTerms.isAccepted.toggle()
+      return .just(.setAccept(newTerms))
+    case .toggleAcceptAll:
+      return .just(.setAcceptAll(!currentState.isAllAccepted))
     }
   }
   
-  func reduce(state: State, mutation: Mutation) -> State {
+  public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
-    case .setConsent(let terms):
+    case .setAccept(let terms):
       switch terms.type {
       case .termsOfService:
         newState.termsOfService = terms
@@ -65,22 +66,20 @@ extension OnboardingTermsReactor {
       case .locationDataUsage:
         newState.locationDataUsage = terms
       }
-      let allConsented = newState.termsOfService.isConsented &&
-                         newState.privacyPolicy.isConsented &&
-                         newState.locationDataUsage.isConsented
-      newState.isAllConsented = allConsented
+      let isAllAccepted = newState.termsOfService.isAccepted &&
+                         newState.privacyPolicy.isAccepted &&
+                         newState.locationDataUsage.isAccepted
+      newState.isAllAccepted = isAllAccepted
       
-      let requiredConsented = newState.termsOfService.isConsented &&
-                              newState.privacyPolicy.isConsented
-      newState.isSignUpButtonEnabled = requiredConsented
-    case .setAllConsent(let isAllConsented):
-      newState.termsOfService.isConsented = isAllConsented
-      newState.privacyPolicy.isConsented = isAllConsented
-      newState.locationDataUsage.isConsented = isAllConsented
-      newState.isAllConsented = isAllConsented
-      newState.isSignUpButtonEnabled = isAllConsented
-    case .enableSignUpButton(let bool):
-      newState.isSignUpButtonEnabled = bool
+      let requiredTermsAccepted = newState.termsOfService.isAccepted &&
+                              newState.privacyPolicy.isAccepted
+      newState.isSignUpButtonEnabled = requiredTermsAccepted
+    case .setAcceptAll(let isAllAccepted):
+      newState.termsOfService.isAccepted = isAllAccepted
+      newState.privacyPolicy.isAccepted = isAllAccepted
+      newState.locationDataUsage.isAccepted = isAllAccepted
+      newState.isAllAccepted = isAllAccepted
+      newState.isSignUpButtonEnabled = isAllAccepted
     }
     return newState
   }

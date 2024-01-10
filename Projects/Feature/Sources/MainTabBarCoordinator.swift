@@ -7,23 +7,24 @@
 
 import UIKit
 import Shared
+import SharedDesignSystem
 import FeatureLive
 
 final class MainTabBarCoordinator: Coordinator {
   weak var finishDelegate: CoordinatorFinishDelegate?
-  var navigationController: UINavigationController
+  var navigationController: CustomNavigationController
   var childCoordinators: [Coordinator] = []
   var type: CoordinatorType = .tab
   
   var tabBarController: UITabBarController
   
-  init(_ navigationController: UINavigationController) {
+  init(_ navigationController: CustomNavigationController) {
     self.navigationController = navigationController
     self.tabBarController = UITabBarController()
   }
   
   func start() {
-    let liveTabCoordinator = LiveCoordinator(UINavigationController())
+    let liveTabCoordinator = LiveCoordinator(CustomNavigationController())
     liveTabCoordinator.start()
     
     let tabBarController = MainTabBarController(tabNavigationControllers: [

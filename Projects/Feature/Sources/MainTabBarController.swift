@@ -6,11 +6,12 @@
 //
 
 import UIKit
+import SharedDesignSystem
 
 public final class MainTabBarController: UITabBarController {
-  private var tabNavigationControllers: [MainTabBarItemType: UINavigationController]
+  private var tabNavigationControllers: [MainTabBarItemType: CustomNavigationController]
   
-  init(tabNavigationControllers: [MainTabBarItemType : UINavigationController]) {
+  init(tabNavigationControllers: [MainTabBarItemType : CustomNavigationController]) {
     self.tabNavigationControllers = tabNavigationControllers
     super.init(nibName: nil, bundle: nil)
   }
@@ -26,9 +27,9 @@ public final class MainTabBarController: UITabBarController {
     configureTabBarController(controllers: tabNavigationControllers)
   }
   
-  private func configureTabBarController(controllers: [MainTabBarItemType: UINavigationController]) {
-    let items = MainTabBarItemType.allCases.map { item -> UINavigationController in
-      guard let tab = tabNavigationControllers[item] else { return UINavigationController() }
+  private func configureTabBarController(controllers: [MainTabBarItemType: CustomNavigationController]) {
+    let items = MainTabBarItemType.allCases.map { item -> CustomNavigationController in
+      guard let tab = tabNavigationControllers[item] else { return CustomNavigationController() }
       return tab
     }
     
