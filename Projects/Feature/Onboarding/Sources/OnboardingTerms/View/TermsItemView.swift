@@ -12,12 +12,12 @@ import RxGesture
 import SnapKit
 import SharedDesignSystem
 
-final class TermsItemView: BaseControl, Touchable, TouchableHighlight, TouchableTransform {
+final class TermsItemView: BaseControl, Touchable, Highlightable, Transformable {
   // MARK: - View Property
   private let checkCircleImageView: CheckMarkCircleView = CheckMarkCircleView().then {
     typealias Configuration = CheckMarkCircleView.CheckMarkCircleConfiguration
-    let uncheckedConfig = Configuration(tintColor: UIColor(asset: Colors.gray500)!)
-    let checkedConfig = Configuration(tintColor: UIColor(asset: Colors.primaryNormal)!)
+    let uncheckedConfig = Configuration(tintColor: SystemColor.gray500.uiColor)
+    let checkedConfig = Configuration(tintColor: SystemColor.primaryNormal.uiColor)
     
     $0.setState(uncheckedConfig, for: .unChecked)
     $0.setState(checkedConfig, for: .checked)
@@ -26,7 +26,7 @@ final class TermsItemView: BaseControl, Touchable, TouchableHighlight, Touchable
   
   private let termsLabel: UILabel = UILabel().then {
     $0.font = Font.Pretendard(.Regular).of(size: 14)
-    $0.textColor = UIColor(asset: Colors.basicBlack)
+    $0.textColor = SystemColor.basicBlack.uiColor
     $0.textAlignment = .left
     $0.sizeToFit()
   }
@@ -35,7 +35,7 @@ final class TermsItemView: BaseControl, Touchable, TouchableHighlight, Touchable
   
   private let rightArrowImageView: UIImageView = UIImageView().then {
     $0.image = UIImage(systemName: "chevron.right")
-    $0.tintColor = UIColor(asset: Colors.gray500)
+    $0.tintColor = SystemColor.gray500.uiColor
     $0.contentMode = .scaleAspectFit
   }
   
@@ -46,11 +46,8 @@ final class TermsItemView: BaseControl, Touchable, TouchableHighlight, Touchable
     }
   }
   
-  // MARK: - Rx Property
-  private let disposeBag = DisposeBag()
-  
   // MARK: - Touchable Property
-  public let touchEvent: PublishRelay<TouchEventType> = .init()
+  public let touchEventRelay: PublishRelay<TouchEventType> = .init()
   
   // MARK: - Initialize Method
   init(term: Terms) {
@@ -69,10 +66,9 @@ final class TermsItemView: BaseControl, Touchable, TouchableHighlight, Touchable
   // MARK: - Bindable
   override func bind() {
      self.rx.controlEvent(.touchDown)
-      .bind(with: self) { [weak self] owner, _ in
-        guard let self else { return }
-        owner.shrink(checkCircleImageView)
-        owner.highlight(checkCircleImageView)
+      .bind(with: self) { owner, _ in
+        owner.shrink(owner.checkCircleImageView, duration: .fast, with: .custom(0.95))
+        owner.highlight(owner.checkCircleImageView)
       }
       .disposed(by: disposeBag)
     
@@ -80,10 +76,8 @@ final class TermsItemView: BaseControl, Touchable, TouchableHighlight, Touchable
         self.rx.controlEvent(.touchDragExit).map { _ in Void() },
         self.rx.controlEvent(.touchCancel).map { _ in Void() }
     )
-    .bind(with: self) { [weak self] _, _  in
-      guard let self else { return }
-      self.expand(checkCircleImageView)
-      self.unhighlight(checkCircleImageView)
+    .bind(with: self) { owner, _  in
+      owner.expand(owner.checkCircleImageView, duration: .fast, with: .identity)
     }
     .disposed(by: disposeBag)
     
@@ -94,10 +88,10 @@ final class TermsItemView: BaseControl, Touchable, TouchableHighlight, Touchable
       }
       .do { [weak self] _ in
         guard let self else { return }
-        self.expand(checkCircleImageView)
+        self.expand(checkCircleImageView, duration: .fast, with: .identity)
         self.unhighlight(checkCircleImageView)
       }
-      .bind(to: touchEvent)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
     
     rightArrowView.rx.controlEvent(.touchUpInside)
@@ -105,7 +99,7 @@ final class TermsItemView: BaseControl, Touchable, TouchableHighlight, Touchable
         guard let self else { return nil }
         return .open(self.terms)
       }
-      .bind(to: touchEvent)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
   }
 }

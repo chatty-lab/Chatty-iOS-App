@@ -11,17 +11,16 @@ import SharedDesignSystem
 
 public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol {
   public weak var finishDelegate: CoordinatorFinishDelegate?
-  public var navigationController: BaseNavigationController
+  public var navigationController: CustomNavigationController
   public var childCoordinators: [Coordinator] = []
   public var type: CoordinatorType = .onboarding(.root)
-  public var onboardingRootController: OnboardingRootController
   
-  public init(_ navigationController: BaseNavigationController, _ controller: OnboardingRootController) {
+  public init(_ navigationController: CustomNavigationController) {
     self.navigationController = navigationController
-    self.onboardingRootController = controller
   }
   
   public func start() {
+    let onboardingRootController = OnboardingRootController()
     onboardingRootController.delegate = self
     navigationController.pushViewController(onboardingRootController, animated: false)
   }
@@ -43,16 +42,18 @@ public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol 
 }
 
 extension OnboardingRootCoordinator: OnboardingTermsDelegate {
-  func signUp() {
-    navigationController.dismiss(animated: true)
-    let onboardingAuthCoordinator = OnboardingAuthCoordinator(navigationController, onboardingAuthController: OnboardingAuthController())
-    onboardingAuthCoordinator.finishDelegate = self
-    onboardingAuthCoordinator.start()
+  public func signUp() {
+    let onboardingPhoneAuthenticationCoordinator = OnboardingPhoneAuthenticationCoordinator(self.navigationController)
+    
+    childCoordinators.append(onboardingPhoneAuthenticationCoordinator)
+    
+    onboardingPhoneAuthenticationCoordinator.finishDelegate = self
+    onboardingPhoneAuthenticationCoordinator.start()
   }
 }
 
 extension OnboardingRootCoordinator: CoordinatorFinishDelegate {
   public func coordinatorDidFinish(childCoordinator: Coordinator) {
-    
+    finish()
   }
 }

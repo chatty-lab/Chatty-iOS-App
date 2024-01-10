@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     // MainTabBarController를 App Entry Point로 설정
     guard let windowScene = (scene as? UIWindowScene) else { return }
     let window = UIWindow(windowScene: windowScene)
-    let navigationController = BaseNavigationController()
+    let navigationController = CustomNavigationController()
     appCoordinator = AppCoordinator(window: window, navigationController)
     appCoordinator?.start()
   }

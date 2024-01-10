@@ -26,24 +26,26 @@ final class OnboardingRootView: BaseView, Touchable {
   
   private let welcomeTitleLabel: UILabel = UILabel().then {
     $0.text = "반가워요!"
-    $0.textColor = UIColor(asset: Colors.basicBlack)
-    $0.font = Font.Pretendard(.Bold).of(size: 26)
+    $0.textColor = SystemColor.basicBlack.uiColor
+    $0.font = SystemFont.headLine01.font
     $0.textAlignment = .center
     $0.sizeToFit()
   }
   
   private let welcomeSubTitleLabel: UILabel = UILabel().then {
     $0.text = "새로운 친구들이 여러분을 기다리고 있어요."
-    $0.textColor = UIColor(asset: Colors.basicBlack)
-    $0.font = Font.Pretendard(.Regular).of(size: 16)
+    $0.textColor = SystemColor.basicBlack.uiColor
+    $0.font = SystemFont.title04.font
     $0.textAlignment = .center
     $0.sizeToFit()
   }
   
-  private let signUpButton: RoundButton = RoundButton(title: "시작하기").then {
-    typealias Configuration = RoundButton.Configuration
-    let enabledConfig = Configuration(backgroundColor: UIColor(asset: Colors.primaryNormal)!, isEnabled: true)
+  private let signUpButton: FillButton = FillButton().then {
+    typealias Configuration = FillButton.Configuration
+    let enabledConfig = Configuration(backgroundColor: SystemColor.primaryNormal.uiColor, isEnabled: true)
     
+    $0.title = "시작하기"
+    $0.cornerRadius = 8
     $0.setState(enabledConfig, for: .enabled)
     $0.currentState = .enabled
   }
@@ -62,7 +64,7 @@ final class OnboardingRootView: BaseView, Touchable {
     )
     attributedString.addAttribute(
       .foregroundColor,
-      value: UIColor(asset: Colors.gray600)!,
+      value: SystemColor.gray600.uiColor,
       range: NSRange(
         location: 0,
         length: attributedString.length
@@ -70,7 +72,7 @@ final class OnboardingRootView: BaseView, Touchable {
     )
     attributedString.addAttribute(
       .foregroundColor,
-      value: UIColor(asset: Colors.primaryNormal)!,
+      value: SystemColor.primaryNormal.uiColor,
       range: loginRange
     )
     
@@ -81,7 +83,7 @@ final class OnboardingRootView: BaseView, Touchable {
   private let disposeBag = DisposeBag()
   
   // MARK: - Touchable
-  var touchEvent: RxRelay.PublishRelay<TouchEventType> = .init()
+  var touchEventRelay: RxRelay.PublishRelay<TouchEventType> = .init()
   
   // MARK: - Life Method
   override init(frame: CGRect) {
@@ -97,14 +99,14 @@ final class OnboardingRootView: BaseView, Touchable {
   
   // MARK: - UIBindable
   override func bind() {
-    signUpButton.touchEvent
+    signUpButton.touchEventRelay
       .map{ .signUp }
-      .bind(to: touchEvent)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
     
     signInButton.rx.tapGesture()
       .map{ _ in .signIn }
-      .bind(to: touchEvent)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
   }
 }

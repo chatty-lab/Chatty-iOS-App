@@ -13,9 +13,6 @@ public final class OnboardingRootController: BaseController {
   // MARK: - View
   private let mainView = OnboardingRootView()
   
-  // MARK: - Rx Property
-  private let disposeBag = DisposeBag()
-  
   // MARK: - Life Method
   public override func loadView() {
     super.loadView()
@@ -24,6 +21,12 @@ public final class OnboardingRootController: BaseController {
   
   public override func viewDidLoad() {
     super.viewDidLoad()
+    baseNavigationController?.setBaseNavigationBarHidden(true, animated: false)
+  }
+  
+  public override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    baseNavigationController?.setBaseNavigationBarHidden(true, animated: true)
   }
   
   // MARK: - Delegate
@@ -35,7 +38,7 @@ public final class OnboardingRootController: BaseController {
   
   // MARK: - Bindable
   public override func bind() {
-    mainView.touchEvent
+    mainView.touchEventRelay
       .bind(with: self) { owner, touch in
         switch touch {
         case .signIn:

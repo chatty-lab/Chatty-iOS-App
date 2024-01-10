@@ -17,7 +17,7 @@ final class OnboardingTermsView: BaseView, Touchable {
   private let titleLabel: UILabel = UILabel().then {
     $0.text = "채티를 이용하려면 동의가 필요해요"
     $0.font = Font.Pretendard(.SemiBold).of(size: 18)
-    $0.textColor = UIColor(asset: Colors.basicBlack)
+    $0.textColor = SystemColor.basicBlack.uiColor
     $0.textAlignment = .center
     $0.sizeToFit()
   }
@@ -47,19 +47,21 @@ final class OnboardingTermsView: BaseView, Touchable {
   
   private let acceptAllButtonView: AcceptAllButton = AcceptAllButton().then {
     typealias Configuration = AcceptAllButton.Configuration
-    let uncheckedConfig = Configuration(tintColor: UIColor(asset: Colors.gray500)!)
-    let checkedConfig = Configuration(tintColor: UIColor(asset: Colors.primaryNormal)!)
+    let uncheckedConfig = Configuration(tintColor: SystemColor.gray500.uiColor)
+    let checkedConfig = Configuration(tintColor: SystemColor.primaryNormal.uiColor)
     
     $0.setState(uncheckedConfig, for: .unChecked)
     $0.setState(checkedConfig, for: .checked)
     $0.currentState = .unChecked
   }
   
-  private let signUpButton: RoundButton = RoundButton(title: "시작하기").then {
-    typealias Configuration = RoundButton.Configuration
-    let enabledConfig = Configuration(backgroundColor: UIColor(asset: Colors.primaryNormal)!, isEnabled: true)
-    let disabledConfig = Configuration(backgroundColor: UIColor(asset: Colors.gray300)!, isEnabled: false)
+  private let signUpButton: FillButton = FillButton().then {
+    typealias Configuration = FillButton.Configuration
+    let enabledConfig = Configuration(backgroundColor: SystemColor.primaryNormal.uiColor, isEnabled: true)
+    let disabledConfig = Configuration(backgroundColor: SystemColor.gray300.uiColor, isEnabled: false)
     
+    $0.title = "시작하기"
+    $0.cornerRadius = 8
     $0.setState(enabledConfig, for: .enabled)
     $0.setState(disabledConfig, for: .disabled)
   }
@@ -68,7 +70,7 @@ final class OnboardingTermsView: BaseView, Touchable {
   private let disposeBag = DisposeBag()
   
   // MARK: - Touchable Property
-  public let touchEvent: PublishRelay<TouchEventType> = .init()
+  public let touchEventRelay: PublishRelay<TouchEventType> = .init()
   
   // MARK: - Initialize Method
   override init(frame: CGRect) {
@@ -85,44 +87,44 @@ final class OnboardingTermsView: BaseView, Touchable {
   
   // MARK: - Bindable
   override func bind() {
-    termOfService.touchEvent
+    termOfService.touchEventRelay
       .map {
         switch $0 {
         case .open(let terms): return .open(terms)
         case .accept(let terms): return .accept(terms)
         }
       }
-      .bind(to: self.touchEvent)
+      .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
     
-    privacyPolicy.touchEvent
+    privacyPolicy.touchEventRelay
       .map {
         switch $0 {
         case .open(let terms): return .open(terms)
         case .accept(let terms): return .accept(terms)
         }
       }
-      .bind(to: self.touchEvent)
+      .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
     
-    locationDataUsage.touchEvent
+    locationDataUsage.touchEventRelay
       .map {
         switch $0 {
         case .open(let terms): return .open(terms)
         case .accept(let terms): return .accept(terms)
         }
       }
-      .bind(to: self.touchEvent)
+      .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
     
-    acceptAllButtonView.touchEvent
+    acceptAllButtonView.touchEventRelay
       .map { _ in .acceptAll }
-      .bind(to: self.touchEvent)
+      .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
     
-    signUpButton.touchEvent
+    signUpButton.touchEventRelay
       .map { _ in .signUp }
-      .bind(to: self.touchEvent)
+      .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
 }
@@ -193,7 +195,7 @@ extension OnboardingTermsView {
     }
   }
   
-  public func updateTermsView(for type: Terms.TermsType, with terms: Terms) {
+  public func setTermsView(for type: Terms.TermsType, with terms: Terms) {
     switch type {
     case .termsOfService:
       self.termOfService.terms = terms
@@ -204,11 +206,11 @@ extension OnboardingTermsView {
     }
   }
   
-  public func updateAcceptAllButtonView(for type: Bool) {
-    self.acceptAllButtonView.currentState = type ? .checked : .unChecked
+  public func setAcceptAllButtonViewIsChecked(for state: Bool) {
+    self.acceptAllButtonView.currentState = state ? .checked : .unChecked
   }
   
-  public func updateSignUpButton(for type: Bool) {
-    self.signUpButton.currentState = type ? .enabled : .disabled
+  public func setSignUpButtonIsEnabled(for state: Bool) {
+    self.signUpButton.currentState = state ? .enabled : .disabled
   }
 }

@@ -11,29 +11,26 @@ import RxCocoa
 import SnapKit
 import SharedDesignSystem
 
-final class AcceptAllButton: BaseControl, Touchable, TouchableHighlight {
+final class AcceptAllButton: BaseControl, Touchable, Highlightable {
   // MARK: - View Property
   private let acceptAllLabel: UILabel = UILabel().then {
     $0.text = "전체 동의"
-    $0.textColor = UIColor(asset: Colors.basicBlack)
+    $0.textColor = SystemColor.basicBlack.uiColor
     $0.font = Font.Pretendard(.Regular).of(size: 14)
   }
   
   private let checkBoxImageView: CheckMarkCircleView = CheckMarkCircleView().then {
     typealias Configuration = CheckMarkCircleView.CheckMarkCircleConfiguration
-    let uncheckedConfig = Configuration(tintColor: UIColor(asset: Colors.gray500)!)
-    let checkedConfig = Configuration(tintColor: UIColor(asset: Colors.primaryNormal)!)
+    let uncheckedConfig = Configuration(tintColor: SystemColor.gray500.uiColor)
+    let checkedConfig = Configuration(tintColor: SystemColor.primaryNormal.uiColor)
     
     $0.setState(uncheckedConfig, for: .unChecked)
     $0.setState(checkedConfig, for: .checked)
     $0.currentState = .unChecked
   }
   
-  // MARK: - Rx Property
-  let disposeBag = DisposeBag()
-  
   // MARK: - Touchable Property
-  let touchEvent: PublishRelay<Void> = .init()
+  let touchEventRelay: PublishRelay<Void> = .init()
   
   // MARK: - StateConfigurable Property
   var configurations: [State : Configuration] = [:]
@@ -52,6 +49,7 @@ final class AcceptAllButton: BaseControl, Touchable, TouchableHighlight {
     fatalError("init(coder:) has not been implemented")
   }
   
+  // MARK: - UIBindable
   override func bind() {
     self.rx.controlEvent(.touchDown)
       .bind(with: self) { [weak self] owner, _ in
@@ -76,10 +74,11 @@ final class AcceptAllButton: BaseControl, Touchable, TouchableHighlight {
         guard let self else { return }
         self.unhighlight(self)
       }
-      .bind(to: touchEvent)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
   }
   
+  // MARK: - UIConfigurable
   override func configureUI() {
     layer.borderWidth = 1
     layer.cornerRadius = 8

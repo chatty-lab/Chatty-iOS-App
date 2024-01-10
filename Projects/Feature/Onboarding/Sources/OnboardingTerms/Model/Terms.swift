@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Terms: Hashable {
+public struct Terms: Hashable {
   let type: TermsType
   let isRequired: Bool
   var isAccepted: Bool = false

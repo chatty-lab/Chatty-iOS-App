@@ -9,22 +9,21 @@ import Foundation
 import RxSwift
 import ReactorKit
 
-final class OnboardingTermsReactor: Reactor {
+public final class OnboardingTermsReactor: Reactor {
   /// 온보딩 약관 화면에서 수행할 수 있는 사용자의 액션을 정의해요
-  enum Action {
+  public enum Action {
     case toggleAccept(Terms)
     case toggleAcceptAll
   }
   
   /// 화면의 상태를 변화하는 요인을 정의해요
-  enum Mutation {
+  public enum Mutation {
     case setAccept(Terms)
     case setAcceptAll(Bool)
-    case enableSignUpButton(Bool)
   }
   
   /// 현재 온보딩 약관 화면의 상태를 나타내는 구조체에요
-  struct State {
+  public struct State {
     var termsOfService: Terms
     var privacyPolicy: Terms
     var locationDataUsage: Terms
@@ -38,11 +37,13 @@ final class OnboardingTermsReactor: Reactor {
     }
   }
   
-  let initialState: State = State()
+  public let initialState: State = State()
+  
+  public init() { }
 }
 
 extension OnboardingTermsReactor {
-  func mutate(action: Action) -> Observable<Mutation> {
+  public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .toggleAccept(let terms):
       var newTerms = terms
@@ -53,7 +54,7 @@ extension OnboardingTermsReactor {
     }
   }
   
-  func reduce(state: State, mutation: Mutation) -> State {
+  public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
     case .setAccept(let terms):
@@ -79,8 +80,6 @@ extension OnboardingTermsReactor {
       newState.locationDataUsage.isAccepted = isAllAccepted
       newState.isAllAccepted = isAllAccepted
       newState.isSignUpButtonEnabled = isAllAccepted
-    case .enableSignUpButton(let bool):
-      newState.isSignUpButtonEnabled = bool
     }
     return newState
   }
