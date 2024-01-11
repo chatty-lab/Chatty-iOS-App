@@ -47,7 +47,7 @@ public final class MBTIToggleButtonView: UIView, Touchable {
   let disposeBag = DisposeBag()
   
   // MARK: - Touchable Property
-  public var didTouch: RxRelay.PublishRelay<Bool> = .init()
+  public var touchEventRelay: RxRelay.PublishRelay<Bool> = .init()
   
   
   // MARK: - Initialize Property
@@ -65,14 +65,14 @@ public final class MBTIToggleButtonView: UIView, Touchable {
 
 extension MBTIToggleButtonView {
   private func bind() {
-    firstButton.didTouch
+    firstButton.touchEventRelay
       .map { _ in true }
-      .bind(to: didTouch)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
     
-    secondButton.didTouch
+    secondButton.touchEventRelay
       .map { _ in false }
-      .bind(to: didTouch)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
   }
 

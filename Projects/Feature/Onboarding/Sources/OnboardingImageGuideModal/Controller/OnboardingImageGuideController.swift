@@ -21,7 +21,6 @@ public final class OnboardingImageGuideController: BaseController {
   public typealias Reactor = OnboardingImageGuideReactor
   
   // MARK: - Rx Property
-  public var disposeBag = DisposeBag()
   private let imageRelay = PublishRelay<UIImage?>()
   
   // MARK: - Initialize Method
@@ -37,17 +36,24 @@ public final class OnboardingImageGuideController: BaseController {
   required init(reactor: Reactor) {
     defer {
       self.reactor = reactor
-      uiConfigurator = self
     }
     super.init()
   }
   
   weak var delegate: OnboardingImageGuideCoordinatorDelegate?
+  
+  public override func configureUI() {
+    view.addSubview(mainView)
+    
+    mainView.snp.makeConstraints {
+      $0.top.leading.trailing.equalToSuperview()
+    }
+  }
 }
 
 extension OnboardingImageGuideController: ReactorKit.View {
   public func bind(reactor: OnboardingImageGuideReactor) {
-    mainView.didTouch
+    mainView.touchEventRelay
       .bind(with: self) { owner, touch in
         switch touch {
         case .toggleSegment(let bool):
@@ -95,15 +101,7 @@ extension OnboardingImageGuideController: ReactorKit.View {
   }
 }
 
-extension OnboardingImageGuideController: UIConfigurable {
-  public func configureUI() {
-    view.addSubview(mainView)
-    
-    mainView.snp.makeConstraints {
-      $0.top.leading.trailing.equalToSuperview()
-    }
-  }
-  
+extension OnboardingImageGuideController {
   private func setupSheet() {
     if let sheet = self.sheetPresentationController {
       let contentHeight = mainView.frame.height
@@ -116,8 +114,8 @@ extension OnboardingImageGuideController: UIConfigurable {
   }
 }
 
-// 임시 이미지 픽커
-extension OnboardingImageGuideController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-  
-}
+//// 임시 이미지 픽커
+//extension OnboardingImageGuideController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+//  
+//}
 

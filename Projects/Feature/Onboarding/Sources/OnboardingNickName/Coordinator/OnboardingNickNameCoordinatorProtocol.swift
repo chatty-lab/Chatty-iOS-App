@@ -9,7 +9,5 @@ import UIKit
 import Shared
 
 public protocol OnboardingNickNameCoordinatorProtocol: Coordinator {
-  var onboardingNickNameController: OnboardingNickNameController { get set }
-  
   func pushToProfile(_ nickName: String)
 }

@@ -7,22 +7,29 @@
 
 import UIKit
 import Shared
+import SharedDesignSystem
 
 public final class OnboardingProfileCoordinator: OnboardingProfileCoordinatorProtocol {
   public var finishDelegate: CoordinatorFinishDelegate?
-  public var navigationController: UINavigationController
+  public var navigationController: CustomNavigationController
   public var childCoordinators: [Coordinator] = []
-  public var onboardingProfileController: OnboardingProfileController
   public var type: CoordinatorType = .onboarding(.profileUpdate(.profiles))
-  private var onboardingProfileCoordinatorTump: OnboardingProfileCoordinator?
-  private var onboardingImageGuideCoordinator: OnboardingImageGuideCoordinator?
   
-  public init(_ navigationController: UINavigationController, _ onboardingProfileCoordinator: OnboardingProfileController) {
+  public init(_ navigationController: CustomNavigationController) {
     self.navigationController = navigationController
-    self.onboardingProfileController = onboardingProfileCoordinator
   }
   
   public func start() {
+    let profileState = OnboardingProfileReactor.State(state: .init(
+      type: .gender,
+      nickName: "",
+      gender: .none,
+      porfileImage: UIImage(),
+      birth: Date(),
+      mbti: .init())
+    )
+    let onboardingProfileReactor = OnboardingProfileReactor(profileState)
+    let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReactor)
     onboardingProfileController.delegate = self
     navigationController.pushViewController(onboardingProfileController, animated: true)
   }
@@ -31,22 +38,20 @@ public final class OnboardingProfileCoordinator: OnboardingProfileCoordinatorPro
     var state = state
     state.type = state.type.nextViewType
     let profileState = OnboardingProfileReactor.State(state: state)
-    
-    self.onboardingProfileCoordinatorTump = OnboardingProfileCoordinator(navigationController, OnboardingProfileController(reactor: OnboardingProfileReactor(profileState)))
-    onboardingProfileCoordinatorTump?.finishDelegate = self
-    onboardingProfileCoordinatorTump?.start()
+    let onboardingProfileReator = OnboardingProfileReactor(profileState)
+    let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReator)
+    onboardingProfileController.delegate = self
+    navigationController.pushViewController(onboardingProfileController, animated: true)
   }
   
   public func presentModal() {
     print("hi -> coordinator 2")
-    self.onboardingImageGuideCoordinator = OnboardingImageGuideCoordinator(onboardingImageGuideController: OnboardingImageGuideController(reactor: OnboardingImageGuideReactor()), navigationController: navigationController)
-
-    
-    onboardingImageGuideCoordinator?.finishDelegate = self
-    onboardingImageGuideCoordinator?.start()
-    
+    let onboardingImageGuideCoordinator = OnboardingImageGuideCoordinator(onboardingImageGuideController: OnboardingImageGuideController(reactor: OnboardingImageGuideReactor()), navigationController: navigationController)
+    childCoordinators.append(onboardingImageGuideCoordinator)
+    onboardingImageGuideCoordinator.finishDelegate = self
+    onboardingImageGuideCoordinator.start()
   }
-
+  
   
   public func switchToMainTab() {
     print("profile - nil")

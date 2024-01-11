@@ -13,7 +13,7 @@ import Then
 import SnapKit
 import SharedDesignSystem
 
-final class MBTIButtonView: UIControl, Touchable, TouchableHighlight {
+final class MBTIButtonView: UIControl, Touchable, Highlightable {
   // MARK: - View Property
   private let mbtiLabel: UILabel = UILabel().then {
     $0.font = SystemFont.headLine02.font
@@ -26,7 +26,7 @@ final class MBTIButtonView: UIControl, Touchable, TouchableHighlight {
   let disposeBag = DisposeBag()
   
   // MARK: - Touchable Property
-  public let didTouch = PublishRelay<Void>()
+  public let touchEventRelay = PublishRelay<Void>()
   
   // MARK: - StateConfigurable Property
   var configurations: [State : Configuration] = [:]
@@ -73,7 +73,7 @@ extension MBTIButtonView {
         self.unhighlight(owner)
       }
       .map { _ in Void() }
-      .bind(to: didTouch)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
   }
   

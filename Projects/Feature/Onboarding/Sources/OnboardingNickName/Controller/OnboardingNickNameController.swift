@@ -15,10 +15,7 @@ import SharedDesignSystem
 
 public final class OnboardingNickNameController: BaseController {
   // MARK: - ViewProperty
-  private let nickNameView: OnboardingNickNameView = OnboardingNickNameView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-  
-  // MARK: - Rx Property
-  public var disposeBag = DisposeBag()
+  private let nickNameView: OnboardingNickNameView = OnboardingNickNameView()
   
   // MARK: - Reactor
   public typealias Reactor = OnboardingNickNameReactor
@@ -26,24 +23,34 @@ public final class OnboardingNickNameController: BaseController {
   // MARK: - Life Cycle
   public override func viewDidLoad() {
     super.viewDidLoad()
-    configureUI()
   }
   
   // MARK: - Initialize Method
-  required init(reactor: Reactor) {
+  public required init(reactor: Reactor) {
     defer {
       self.reactor = reactor
-      uiConfigurator = self
     }
     super.init()
   }
   
-  public var delegate: OnboardingNickNameCoordinatorProtocol?
+  deinit {
+    print("해제됨: OnboardingNickNameController")
+  }
+  
+  public weak var delegate: OnboardingNickNameCoordinatorProtocol?
+  
+  // MARK: - UIConfigurable
+  public override func configureUI() {
+    view.addSubview(nickNameView)
+    nickNameView.snp.makeConstraints {
+      $0.top.leading.trailing.bottom.equalToSuperview()
+    }
+  }
 }
 
 extension OnboardingNickNameController: ReactorKit.View {
   public func bind(reactor: OnboardingNickNameReactor) {
-    nickNameView.didTouch
+    nickNameView.touchEventRelay
       .bind(with: self) { owner, touch in
         switch touch {
         case .removeText:
@@ -95,13 +102,3 @@ extension OnboardingNickNameController: ReactorKit.View {
       .disposed(by: disposeBag)
   }
 }
-
-extension OnboardingNickNameController: UIConfigurable {
-  public func configureUI() {
-    view.addSubview(nickNameView)
-    nickNameView.snp.makeConstraints {
-      $0.top.leading.trailing.bottom.equalToSuperview()
-    }
-  }
-}
-

@@ -13,5 +13,4 @@ public protocol OnboardingImageGuideCoordinatorDelegate: Coordinator {
   
   func pushToAlbumView()
   func didFinishPick(_ image: UIImage?)
-
 }
