@@ -20,8 +20,8 @@ public final class OnboardingProfileView: UIView {
     $0.textColor = SystemColor.basicBlack.uiColor
     $0.font = SystemFont.caption02.font
   }
-  private let continueButton: RoundButton = RoundButton(title: "계속하기").then {
-    typealias Configuration = RoundButton.Configuration
+  private let continueButton: FillButton = FillButton().then {
+    typealias Configuration = FillButton.Configuration
     let disabledConfig = Configuration(
       backgroundColor: SystemColor.gray300.uiColor,
       isEnabled: false
@@ -31,6 +31,7 @@ public final class OnboardingProfileView: UIView {
       isEnabled: true
     )
     
+    $0.title = "계속하기"
     $0.setState(enabledCofig, for: .enabled)
     $0.setState(disabledConfig, for: .disabled)
   }
@@ -45,7 +46,7 @@ public final class OnboardingProfileView: UIView {
   private let disposeBag = DisposeBag()
   
   // MARK: - Touch Property
-  public let didTouch: PublishRelay<TouchType> = .init()
+  public let touchEventRelay: PublishRelay<TouchType> = .init()
   
   // MARK: - Life Method
   public override init(frame: CGRect) {
@@ -71,38 +72,38 @@ extension OnboardingProfileView: Touchable {
 
 extension OnboardingProfileView {
   private func bind() {
-    continueButton.didTouch
+    continueButton.touchEventRelay
       .map { TouchType.continueButton }
-      .bind(to: self.didTouch)
+      .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
   private func bindGender() {
-    maleCheckBoxView?.didTouch
+    maleCheckBoxView?.touchEventRelay
       .map { TouchType.tabGender(.male) }
-      .bind(to: self.didTouch)
+      .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
     
-    femaleCheckBoxView?.didTouch
+    femaleCheckBoxView?.touchEventRelay
       .map { TouchType.tabGender(.female) }
-      .bind(to: self.didTouch)
+      .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
   private func bindBirth() {
     birthDatePicker?.rx.date
       .map { TouchType.setBirth($0) }
-      .bind(to: self.didTouch)
+      .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
   private func bindProfileImage() {
-    profileImagePickerView?.didTouch
+    profileImagePickerView?.touchEventRelay
       .map { TouchType.tabImagePicker }
-      .bind(to: self.didTouch)
+      .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
   private func bindMBTI() {
-    mbtiView?.didTouch
+    mbtiView?.touchEventRelay
       .map { touch in TouchType.toggleMBTI(touch.0, touch.1) }
-      .bind(to: self.didTouch)
+      .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
 }

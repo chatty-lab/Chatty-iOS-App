@@ -17,9 +17,6 @@ public final class OnboardingProfileController: BaseController {
   // MARK: - Reactor Property
   public typealias Reactor = OnboardingProfileReactor
   
-  // MARK: - Rx Property
-  public var disposeBag = DisposeBag()
-  
   // MARK: - Life Method
   public override func viewDidLoad() {
     super.viewDidLoad()
@@ -30,18 +27,25 @@ public final class OnboardingProfileController: BaseController {
   required init(reactor: Reactor) {
     defer {
       self.reactor = reactor
-      uiConfigurator = self
     }
     super.init()
   }
   
-  weak var delegate: OnboardingProfileCoordinatorProtocol?
+  public weak var delegate: OnboardingProfileCoordinatorProtocol?
+  
+  // MARK: - UIConfigurable
+  public override func configureUI() {
+    view.addSubview(profileView)
+    profileView.snp.makeConstraints {
+      $0.top.leading.trailing.bottom.equalToSuperview()
+    }
+  }
 }
 
 extension OnboardingProfileController: ReactorKit.View {
   public func bind(reactor: OnboardingProfileReactor) {
     
-    profileView.didTouch
+    profileView.touchEventRelay
       .bind(with: self) { owner, touch in
         switch touch {
         case .tabGender(let gender):
@@ -119,15 +123,6 @@ extension OnboardingProfileController: ReactorKit.View {
         owner.profileView.updateMBTIView(mbti)
       }
       .disposed(by: disposeBag)
-  }
-}
-
-extension OnboardingProfileController: UIConfigurable {
-  public func configureUI() {
-    view.addSubview(profileView)
-    profileView.snp.makeConstraints {
-      $0.top.leading.trailing.bottom.equalToSuperview()
-    }
   }
 }
 

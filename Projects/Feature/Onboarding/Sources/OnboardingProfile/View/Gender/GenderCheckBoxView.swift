@@ -13,7 +13,7 @@ import Then
 import SnapKit
 import SharedDesignSystem
 
-public final class GenderCheckBoxView: UIControl, Touchable, TouchableHighlight {
+public final class GenderCheckBoxView: UIControl, Touchable, Highlightable {
   
   public var genderType: Gender = .none {
     didSet {
@@ -40,7 +40,7 @@ public final class GenderCheckBoxView: UIControl, Touchable, TouchableHighlight 
   private let disposeBag = DisposeBag()
   
   // MARK: - Touchable Property
-  public let didTouch: PublishRelay<Void> = .init()
+  public let touchEventRelay: PublishRelay<Void> = .init()
   
   // MARK: - StateConfigurable Property
   public var configurations: [State : Configuration] = [:]
@@ -86,7 +86,7 @@ extension GenderCheckBoxView {
         self.unhighlight(owner)
       }
       .map { _ in Void() }
-      .bind(to: didTouch)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
   }
   

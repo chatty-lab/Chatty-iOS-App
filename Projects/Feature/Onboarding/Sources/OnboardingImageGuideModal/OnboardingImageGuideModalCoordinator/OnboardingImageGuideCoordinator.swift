@@ -7,17 +7,18 @@
 
 import UIKit
 import Shared
+import SharedDesignSystem
 
 
 public final class OnboardingImageGuideCoordinator: OnboardingImageGuideCoordinatorDelegate {
   public var onboardingImageGuideController: OnboardingImageGuideController
   public var finishDelegate: Shared.CoordinatorFinishDelegate?
-  public var navigationController: UINavigationController
+  public var navigationController: CustomNavigationController
   public var childCoordinators: [Shared.Coordinator] = []
   public var type: Shared.CoordinatorType = .myChatty
   public var imagePicker = UIImagePickerController()
 
-  public init(onboardingImageGuideController: OnboardingImageGuideController, navigationController: UINavigationController) {
+  public init(onboardingImageGuideController: OnboardingImageGuideController, navigationController: CustomNavigationController) {
     self.onboardingImageGuideController = onboardingImageGuideController
     self.navigationController = navigationController
   }

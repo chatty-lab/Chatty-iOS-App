@@ -37,13 +37,14 @@ public final class ImageGuideView: BaseView {
     )
     $0.selectedSegmentIndex = 0
   }
-  private let seletedRoundButton: RoundButton = RoundButton(title: "앨범에서 선택하기").then {
-    typealias Configuration = RoundButton.Configuration
+  private let seletedRoundButton: FillButton = FillButton().then {
+    typealias Configuration = FillButton.Configuration
     let enaleConfig = Configuration(
       backgroundColor: SystemColor.primaryNormal.uiColor,
       isEnabled: true
     )
     
+    $0.title = "앨범에서 선택하기"
     $0.setState(enaleConfig, for: .enabled)
     $0.currentState = .enabled
   }
@@ -52,13 +53,33 @@ public final class ImageGuideView: BaseView {
   private let disposeBag = DisposeBag()
   
   // MARK: - Touch Property
-  public let didTouch: PublishRelay<TouchType> = .init()
+  public let touchEventRelay: PublishRelay<TouchType> = .init()
   
   // MARK: - Life Method
   public override init(frame: CGRect) {
     super.init(frame: frame)
-    bind()
-    configureUI()
+  }
+  
+  public override func configureUI() {
+    setupTitleLabel()
+    setupSegmentControl()
+    setupCertifiedGuideView()
+    setupSeletedButton()
+  }
+  
+  public override func bind() {
+    seletedRoundButton.touchEventRelay
+      .map { TouchType.tabShowAlbumButtom }
+      .bind(to: touchEventRelay)
+      .disposed(by: disposeBag)
+    
+    segmentControl.rx.selectedSegmentIndex
+      .map { index in
+        let bool = index == 0 ? true : false
+        return TouchType.toggleSegment(bool)
+      }
+      .bind(to: touchEventRelay)
+      .disposed(by: disposeBag)
   }
 }
 
@@ -67,31 +88,9 @@ extension ImageGuideView: Touchable {
     case toggleSegment(Bool)
     case tabShowAlbumButtom
   }
-  
-  private func bind() {
-    seletedRoundButton.didTouch
-      .map { TouchType.tabShowAlbumButtom }
-      .bind(to: didTouch)
-      .disposed(by: disposeBag)
-    
-    segmentControl.rx.selectedSegmentIndex
-      .map { index in
-        let bool = index == 0 ? true : false
-        return TouchType.toggleSegment(bool)
-      }
-      .bind(to: didTouch)
-      .disposed(by: disposeBag)
-  }
 }
 
 extension ImageGuideView {
-  public func configureUI() {
-    setupTitleLabel()
-    setupSegmentControl()
-    setupCertifiedGuideView()
-    setupSeletedButton()
-  }
-  
   private func setupTitleLabel() {
     addSubview(titleLabel)
     
@@ -112,7 +111,7 @@ extension ImageGuideView {
   }
   private func setupCertifiedGuideView() {
     addSubview(certifiedGuideView)
-    let viewWidth = UIViewController.viewFrame.width
+    let viewWidth = 375
     let containerWidth = viewWidth - 40
     let containerHeight = (containerWidth * 213) / 335
     certifiedGuideView.snp.makeConstraints {

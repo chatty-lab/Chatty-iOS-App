@@ -34,11 +34,12 @@ public final class OnboardingNickNameView: BaseView, Touchable {
     $0.textColor = SystemColor.basicBlack.uiColor
   }
   
-  private let continueButton: RoundButton = RoundButton(title: "계속하기").then {
-    typealias Configuration = RoundButton.Configuration
+  private let continueButton: FillButton = FillButton().then {
+    typealias Configuration = FillButton.Configuration
     let disabledConfig = Configuration(backgroundColor: SystemColor.gray300.uiColor, isEnabled: false)
     let enabledCofig = Configuration(backgroundColor: SystemColor.primaryNormal.uiColor, isEnabled: true)
     
+    $0.title = "계속하기"
     $0.setState(enabledCofig, for: .enabled)
     $0.setState(disabledConfig, for: .disabled)
   }
@@ -49,29 +50,30 @@ public final class OnboardingNickNameView: BaseView, Touchable {
   public let textRelay = BehaviorRelay<String>(value: "")
   
   // MARK: - Touchable Property
-  public let didTouch: PublishRelay<TouchType> = .init()
+  public let touchEventRelay: PublishRelay<TouchType> = .init()
   
   // MARK: - Life Cycle
   public override init(frame: CGRect) {
     super.init(frame: frame)
-    bind()
-    configureUI()
   }
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
-}
-
-extension OnboardingNickNameView {
-  public enum TouchType {
-    case removeText
-    case continueButton
+  
+  // MARK: - UIConfigurable
+  public override func configureUI() {
+    setupTitleTextView()
+    setupCheckableTextField()
+    setupcheckBoxImageView()
+    setupBottomLine()
+    setupContinueButton()
   }
   
-  private func bind() {
-    continueButton.didTouch
+  // MARK: - UIBindable
+  public override func bind() {
+    continueButton.touchEventRelay
       .map { TouchType.continueButton }
-      .bind(to: self.didTouch)
+      .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
     
 //    checkBoxImageView.didTouch
@@ -84,13 +86,14 @@ extension OnboardingNickNameView {
       .bind(to: textRelay)
       .disposed(by: disposeBag)
   }
-  private func configureUI() {
-    setupTitleTextView()
-    setupCheckableTextField()
-    setupcheckBoxImageView()
-    setupBottomLine()
-    setupContinueButton()
+}
+
+extension OnboardingNickNameView {
+  public enum TouchType {
+    case removeText
+    case continueButton
   }
+
   private func setupTitleTextView() {
     addSubview(titleTextView)
     titleTextView.snp.makeConstraints {

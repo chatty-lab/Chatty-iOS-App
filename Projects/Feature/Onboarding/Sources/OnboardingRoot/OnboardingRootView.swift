@@ -13,7 +13,7 @@ import SnapKit
 import Then
 import SharedDesignSystem
 
-final class OnboardingRootView: UIView {
+final class OnboardingRootView: BaseView, Touchable {
   // MARK: - View
   private let containerView: UIView = UIView()
   
@@ -26,24 +26,26 @@ final class OnboardingRootView: UIView {
   
   private let welcomeTitleLabel: UILabel = UILabel().then {
     $0.text = "반가워요!"
-    $0.textColor = UIColor(asset: Colors.basicBlack)
-    $0.font = Font.Pretendard(.Bold).of(size: 26)
+    $0.textColor = SystemColor.basicBlack.uiColor
+    $0.font = SystemFont.headLine01.font
     $0.textAlignment = .center
     $0.sizeToFit()
   }
   
   private let welcomeSubTitleLabel: UILabel = UILabel().then {
     $0.text = "새로운 친구들이 여러분을 기다리고 있어요."
-    $0.textColor = UIColor(asset: Colors.basicBlack)
-    $0.font = Font.Pretendard(.Regular).of(size: 16)
+    $0.textColor = SystemColor.basicBlack.uiColor
+    $0.font = SystemFont.title04.font
     $0.textAlignment = .center
     $0.sizeToFit()
   }
   
-  private let signUpButton: RoundButton = RoundButton(title: "시작하기").then {
-    typealias Configuration = RoundButton.Configuration
-    let enabledConfig = Configuration(backgroundColor: UIColor(asset: Colors.primaryNormal)!, isEnabled: true)
+  private let signUpButton: FillButton = FillButton().then {
+    typealias Configuration = FillButton.Configuration
+    let enabledConfig = Configuration(backgroundColor: SystemColor.primaryNormal.uiColor, isEnabled: true)
     
+    $0.title = "시작하기"
+    $0.cornerRadius = 8
     $0.setState(enabledConfig, for: .enabled)
     $0.currentState = .enabled
   }
@@ -62,7 +64,7 @@ final class OnboardingRootView: UIView {
     )
     attributedString.addAttribute(
       .foregroundColor,
-      value: UIColor(asset: Colors.gray600)!,
+      value: SystemColor.gray600.uiColor,
       range: NSRange(
         location: 0,
         length: attributedString.length
@@ -70,7 +72,7 @@ final class OnboardingRootView: UIView {
     )
     attributedString.addAttribute(
       .foregroundColor,
-      value: UIColor(asset: Colors.primaryNormal)!,
+      value: SystemColor.primaryNormal.uiColor,
       range: loginRange
     )
     
@@ -79,48 +81,42 @@ final class OnboardingRootView: UIView {
   
   // MARK: - Rx Property
   private let disposeBag = DisposeBag()
-  var didTouch: RxRelay.PublishRelay<TouchType> = .init()
+  
+  // MARK: - Touchable
+  var touchEventRelay: RxRelay.PublishRelay<TouchEventType> = .init()
   
   // MARK: - Life Method
-  
   override init(frame: CGRect) {
     super.init(frame: frame)
-    bind()
-    configureUI()
   }
   
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-}
-
-extension OnboardingRootView: Touchable {
-  enum TouchType {
-    case signUp
-    case signIn
-  }
-}
-
-// MARK: - UI setup
-extension OnboardingRootView {
-  private func bind() {
-    signUpButton.didTouch
-      .map{ .signUp }
-      .bind(to: didTouch)
-      .disposed(by: disposeBag)
-    
-    signInButton.rx.tapGesture()
-      .map{ _ in .signIn }
-      .bind(to: didTouch)
-      .disposed(by: disposeBag)
-  }
-  
-  private func configureUI() {
+  // MARK: - UIConfigurable
+  override func configureUI() {
     setupWelcomeBox()
     setupSignInButton()
     setupSignUpButton()
   }
   
+  // MARK: - UIBindable
+  override func bind() {
+    signUpButton.touchEventRelay
+      .map{ .signUp }
+      .bind(to: touchEventRelay)
+      .disposed(by: disposeBag)
+    
+    signInButton.rx.tapGesture()
+      .map{ _ in .signIn }
+      .bind(to: touchEventRelay)
+      .disposed(by: disposeBag)
+  }
+}
+
+extension OnboardingRootView {
+  enum TouchEventType {
+    case signUp
+    case signIn
+  }
+
   private func setupWelcomeBox() {
     addSubview(containerView)
     containerView.addSubview(logoImageView)

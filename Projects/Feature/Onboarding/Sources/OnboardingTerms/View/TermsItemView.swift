@@ -1,5 +1,5 @@
 //
-//  TermsCheckBoxView.swift
+//  TermsItemView.swift
 //  FeatureOnboarding
 //
 //  Created by walkerhilla on 12/27/23.
@@ -12,12 +12,12 @@ import RxGesture
 import SnapKit
 import SharedDesignSystem
 
-final class TermsCheckBoxView: UIControl, Touchable, TouchableHighlight, TouchableTransform {
+final class TermsItemView: BaseControl, Touchable, Highlightable, Transformable {
   // MARK: - View Property
   private let checkCircleImageView: CheckMarkCircleView = CheckMarkCircleView().then {
     typealias Configuration = CheckMarkCircleView.CheckMarkCircleConfiguration
-    let uncheckedConfig = Configuration(tintColor: UIColor(asset: Colors.gray500)!)
-    let checkedConfig = Configuration(tintColor: UIColor(asset: Colors.primaryNormal)!)
+    let uncheckedConfig = Configuration(tintColor: SystemColor.gray500.uiColor)
+    let checkedConfig = Configuration(tintColor: SystemColor.primaryNormal.uiColor)
     
     $0.setState(uncheckedConfig, for: .unChecked)
     $0.setState(checkedConfig, for: .checked)
@@ -26,7 +26,7 @@ final class TermsCheckBoxView: UIControl, Touchable, TouchableHighlight, Touchab
   
   private let termsLabel: UILabel = UILabel().then {
     $0.font = Font.Pretendard(.Regular).of(size: 14)
-    $0.textColor = UIColor(asset: Colors.basicBlack)
+    $0.textColor = SystemColor.basicBlack.uiColor
     $0.textAlignment = .left
     $0.sizeToFit()
   }
@@ -35,49 +35,40 @@ final class TermsCheckBoxView: UIControl, Touchable, TouchableHighlight, Touchab
   
   private let rightArrowImageView: UIImageView = UIImageView().then {
     $0.image = UIImage(systemName: "chevron.right")
-    $0.tintColor = UIColor(asset: Colors.gray500)
+    $0.tintColor = SystemColor.gray500.uiColor
     $0.contentMode = .scaleAspectFit
   }
   
   // MARK: - Stored Property
   var terms: Terms {
     didSet {
-      checkCircleImageView.currentState = terms.isConsented ? .checked : .unChecked
+      checkCircleImageView.currentState = terms.isAccepted ? .checked : .unChecked
     }
   }
   
-  // MARK: - Rx Property
-  private let disposeBag = DisposeBag()
-  
   // MARK: - Touchable Property
-  public let didTouch: PublishRelay<TouchType> = .init()
+  public let touchEventRelay: PublishRelay<TouchEventType> = .init()
   
   // MARK: - Initialize Method
   init(term: Terms) {
     self.terms = term
     super.init(frame: .zero)
-    bind()
     setupTermsText()
-    configureUI()
   }
   
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-}
-
-extension TermsCheckBoxView {
-  enum TouchType {
-    case consent(Terms)
-    case open(Terms)
+  // MARK: - UIConfigurable
+  override func configureUI() {
+    setupCheckCircleImageView()
+    setupTermsLabel()
+    setupRightArrowView()
   }
   
-  private func bind() {
-    self.rx.controlEvent(.touchDown)
-      .bind(with: self) { [weak self] owner, _ in
-        guard let self else { return }
-        owner.shrink(checkCircleImageView)
-        owner.highlight(checkCircleImageView)
+  // MARK: - Bindable
+  override func bind() {
+     self.rx.controlEvent(.touchDown)
+      .bind(with: self) { owner, _ in
+        owner.shrink(owner.checkCircleImageView, duration: .fast, with: .custom(0.95))
+        owner.highlight(owner.checkCircleImageView)
       }
       .disposed(by: disposeBag)
     
@@ -85,39 +76,38 @@ extension TermsCheckBoxView {
         self.rx.controlEvent(.touchDragExit).map { _ in Void() },
         self.rx.controlEvent(.touchCancel).map { _ in Void() }
     )
-    .bind(with: self) { [weak self] _, _  in
-      guard let self else { return }
-      self.expand(checkCircleImageView)
-      self.unhighlight(checkCircleImageView)
+    .bind(with: self) { owner, _  in
+      owner.expand(owner.checkCircleImageView, duration: .fast, with: .identity)
     }
     .disposed(by: disposeBag)
     
     self.rx.controlEvent(.touchUpInside)
-      .compactMap { [weak self] _ -> TouchType? in
+      .compactMap { [weak self] _ -> TouchEventType? in
         guard let self else { return nil }
-        return .consent(self.terms)
+        return .accept(self.terms)
       }
       .do { [weak self] _ in
         guard let self else { return }
-        self.expand(checkCircleImageView)
+        self.expand(checkCircleImageView, duration: .fast, with: .identity)
         self.unhighlight(checkCircleImageView)
       }
-      .bind(to: didTouch)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
     
     rightArrowView.rx.controlEvent(.touchUpInside)
-      .compactMap { [weak self] _ -> TouchType? in
+      .compactMap { [weak self] _ -> TouchEventType? in
         guard let self else { return nil }
         return .open(self.terms)
       }
-      .bind(to: didTouch)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
   }
-  
-  private func configureUI() {
-    setupCheckCircleImageView()
-    setupTermsLabel()
-    setupRightArrowView()
+}
+
+extension TermsItemView {
+  enum TouchEventType {
+    case accept(Terms)
+    case open(Terms)
   }
   
   private func setupCheckCircleImageView() {

@@ -49,7 +49,7 @@ extension CertifiedGuideView {
     containerView.addSubview(firstImageView)
     containerView.addSubview(secondImageView)
     
-    let viewWidth = UIViewController.viewFrame.width
+    let viewWidth = 375
     let containerWidth = viewWidth - 40
     let containerHeight = (containerWidth * 213) / 335
     print("jeight - \(containerHeight)")

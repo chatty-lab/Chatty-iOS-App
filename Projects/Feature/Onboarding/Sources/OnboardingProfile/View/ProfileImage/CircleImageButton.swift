@@ -13,7 +13,7 @@ import SnapKit
 import Then
 import SharedDesignSystem
 
-public final class CircleImageButton: UIControl, Touchable, TouchableHighlight {
+public final class CircleImageButton: UIControl, Touchable, Highlightable {
   // MARK: - View Property
   private var imageView: UIImageView = UIImageView()
   
@@ -21,7 +21,7 @@ public final class CircleImageButton: UIControl, Touchable, TouchableHighlight {
   private let disposeBag = DisposeBag()
   
   // MARK: - Touchable Property
-  public var didTouch: RxRelay.PublishRelay<Void> = .init()
+  public var touchEventRelay: RxRelay.PublishRelay<Void> = .init()
   
   // MARK: - Initialize Method
   public override init(frame: CGRect) {
@@ -63,7 +63,7 @@ extension CircleImageButton {
       .map { _ in
         print("touch3")
         return Void() }
-      .bind(to: didTouch)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
   }
   

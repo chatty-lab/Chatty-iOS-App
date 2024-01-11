@@ -43,7 +43,7 @@ public final class MBTIView: UIView, Touchable {
   let disposeBag = DisposeBag()
   
   // MARK: - Touchable Property
-  public var didTouch: RxRelay.PublishRelay<(MBTISeletedState, Bool)> = .init()
+  public var touchEventRelay: RxRelay.PublishRelay<(MBTISeletedState, Bool)> = .init()
   
   // MARK: - Initialize Property
   public override init(frame: CGRect) {
@@ -59,24 +59,24 @@ public final class MBTIView: UIView, Touchable {
 
 extension MBTIView {
   private func bind() {
-    firstSelectToggleButton.didTouch
+    firstSelectToggleButton.touchEventRelay
       .map { touch in (.first, touch) }
-      .bind(to: didTouch)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
     
-    secondSelectToggleButton.didTouch
+    secondSelectToggleButton.touchEventRelay
       .map { touch in (.second, touch) }
-      .bind(to: didTouch)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
             
-    thirdSelectToggleButton.didTouch
+    thirdSelectToggleButton.touchEventRelay
       .map { touch in (.third, touch) }
-      .bind(to: didTouch)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
     
-    fourthSelectToggleButton.didTouch
+    fourthSelectToggleButton.touchEventRelay
       .map { touch in (.fourth, touch) }
-      .bind(to: didTouch)
+      .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
   }
   

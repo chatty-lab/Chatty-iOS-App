@@ -19,13 +19,11 @@ public final class ProfileImagePickerView: BaseView {
   
   // MARK: Rx Property
   private let disposeBag = DisposeBag()
-  public var didTouch: PublishRelay<Void> = .init()
+  public var touchEventRelay: PublishRelay<Void> = .init()
   
   // MARK: - Initialize Method
   public override init(frame: CGRect) {
     super.init(frame: .zero)
-    bind()
-    configureUI()
   }
   
   required init?(coder: NSCoder) {
@@ -35,22 +33,24 @@ public final class ProfileImagePickerView: BaseView {
   deinit {
     print("deinit3 - ProfileImagePickerView")
   }
-}
-
-extension ProfileImagePickerView {
-  private func bind() {
-    circleImageButton.didTouch
-      .map { _ in Void() }
-      .bind(to: didTouch)
-      .disposed(by: disposeBag)
-  }
   
-  private func configureUI() {
+  // MARK: - UIConfigurable
+  public override func configureUI() {
     setupTextBoxView()
     setupRoundImageView()
     updateProfileImage()
   }
   
+  // MARK: - UIBindable
+  public override func bind() {
+    circleImageButton.touchEventRelay
+      .map { _ in Void() }
+      .bind(to: touchEventRelay)
+      .disposed(by: disposeBag)
+  }
+}
+
+extension ProfileImagePickerView {
   private func setupTextBoxView() {
     addSubview(textBoxView)
     
