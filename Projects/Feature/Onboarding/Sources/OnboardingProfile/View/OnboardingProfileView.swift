@@ -34,6 +34,8 @@ public final class OnboardingProfileView: UIView {
     $0.title = "계속하기"
     $0.setState(enabledCofig, for: .enabled)
     $0.setState(disabledConfig, for: .disabled)
+    
+    $0.layer.cornerRadius = 8
   }
   
   private weak var maleCheckBoxView: GenderCheckBoxView?

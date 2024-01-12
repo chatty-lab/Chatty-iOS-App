@@ -47,6 +47,8 @@ public final class ImageGuideView: BaseView {
     $0.title = "앨범에서 선택하기"
     $0.setState(enaleConfig, for: .enabled)
     $0.currentState = .enabled
+    
+    $0.layer.cornerRadius = 8
   }
   
   // MARK: - Rx Property
