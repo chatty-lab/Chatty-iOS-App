@@ -12,7 +12,7 @@ import SnapKit
 import Then
 import SharedDesignSystem
 
-public final class ImageGuideView: BaseView {
+public final class OnboardingImageGuideModalView: BaseView {
   // MARK: - View Property
   private let titleLabel: UILabel = UILabel().then {
     $0.text = "사진 인증 가이드"
@@ -85,14 +85,14 @@ public final class ImageGuideView: BaseView {
   }
 }
 
-extension ImageGuideView: Touchable {
+extension OnboardingImageGuideModalView: Touchable {
   public enum TouchType {
     case toggleSegment(Bool)
     case tabShowAlbumButtom
   }
 }
 
-extension ImageGuideView {
+extension OnboardingImageGuideModalView {
   private func setupTitleLabel() {
     addSubview(titleLabel)
     
@@ -134,7 +134,7 @@ extension ImageGuideView {
   }
 }
 
-extension ImageGuideView {
+extension OnboardingImageGuideModalView {
   public func updateView(_ isCertified: Bool) {
     updateCertifiedGuideView(isCertified)
     updateSegmentControl(isCertified)

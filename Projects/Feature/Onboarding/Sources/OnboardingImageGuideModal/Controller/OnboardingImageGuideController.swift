@@ -15,7 +15,7 @@ import ReactorKit
 
 public final class OnboardingImageGuideController: BaseController {
   // MARK: - View Property
-  private lazy var mainView = ImageGuideView()
+  private lazy var mainView = OnboardingImageGuideModalView()
   
   // MARK: - Reactor Property
   public typealias Reactor = OnboardingImageGuideReactor
