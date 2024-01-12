@@ -17,13 +17,15 @@ public final class OnboardingNickNameReactor: Reactor {
     case inputText(String)
     case tabResetText
     case tabContinueButton
+    case didPushed
   }
   
   /// 화면의 상태가 변화하는 요인
   public enum Mutation {
-    case inputedTextString(String)
+    case inputedText(String)
     case checkDuplicate(String)
     case isLoading(Bool)
+    case didPushed
   }
   
   /// 화면의 상태를 나타내는 구조체
@@ -33,6 +35,10 @@ public final class OnboardingNickNameReactor: Reactor {
     var isButtonEnabled: Bool = false
     var successSave: Bool = false
     var isLoading: Bool = false
+    
+    var isTextEmpty: Bool {
+      return nickNameText.isEmpty
+    }
     
     init() {
       nickNameText = ""
@@ -46,22 +52,24 @@ extension OnboardingNickNameReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .inputText(let string):
-      return .just(.inputedTextString(string))
+      return .just(.inputedText(string))
     case .tabResetText:
-      return .just(.inputedTextString(""))
+      return .just(.inputedText(""))
     case .tabContinueButton:
       return .concat([
         .just(.isLoading(true)),
         .just(.checkDuplicate(currentState.nickNameText)),
         .just(.isLoading(false))
       ])
+    case .didPushed:
+      return .just(.didPushed)
     }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
-    case .inputedTextString(let string):
+    case .inputedText(let string):
       newState.nickNameText = string
       if string.count > 10 {
         newState.isButtonEnabled = false
@@ -83,11 +91,13 @@ extension OnboardingNickNameReactor {
       }
     case .isLoading(let bool):
       newState.isLoading = bool
+    case .didPushed:
+      newState.successSave = false
     }
     return newState
   }
   
   private func saveNickName(_ nickNameText: String) -> Bool {
-    return true
+    return nickNameText == "1" ? false : true
   }
 }

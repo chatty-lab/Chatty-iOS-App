@@ -15,25 +15,23 @@ import SharedDesignSystem
 public final class TitleTextView: UIView {
   
   //MARK: - View
-  private let containerView = UIView()
-  
   private let titleTextField: UILabel = UILabel().then {
     $0.font = SystemFont.headLine02.font
     $0.textColor = SystemColor.basicBlack.uiColor
     $0.textAlignment = .left
-    $0.numberOfLines = 2
+    $0.numberOfLines = 0
   }
   private let descriptionTextField: UILabel = UILabel().then {
     $0.font = SystemFont.body03.font
     $0.textColor = SystemColor.gray700.uiColor
     $0.textAlignment = .left
-    $0.numberOfLines = 2
+    $0.numberOfLines = 0
   }
   
   //MARK: - Rx Property
   private let disposeBag = DisposeBag()
   
-  // MARK: -
+  // MARK: - Initialize Method
   public override init(frame: CGRect) {
     super.init(frame: frame)
     configureUI()
@@ -46,26 +44,19 @@ public final class TitleTextView: UIView {
   
 extension TitleTextView {
   private func configureUI() {
-    addSubview(containerView)
-    containerView.addSubview(titleTextField)
-    containerView.addSubview(descriptionTextField)
-    
-    containerView.snp.makeConstraints {
-      $0.top.leading.trailing.bottom.equalToSuperview()
-    }
+    addSubview(titleTextField)
+    addSubview(descriptionTextField)
     
     titleTextField.snp.makeConstraints {
       $0.top.equalToSuperview()
-      $0.leading.equalToSuperview().inset(20)
-      $0.trailing.equalToSuperview().inset(-20)
-      $0.height.greaterThanOrEqualTo(29)
+      $0.leading.trailing.equalToSuperview().inset(20)
+      $0.height.greaterThanOrEqualTo(31)
     }
     
     descriptionTextField.snp.makeConstraints {
       $0.top.equalTo(titleTextField.snp.bottom).offset(16)
-      $0.leading.equalToSuperview().inset(20)
-      $0.trailing.equalToSuperview().inset(-20)
-      $0.height.greaterThanOrEqualTo(18)
+      $0.leading.trailing.equalToSuperview().inset(20)
+      $0.height.greaterThanOrEqualTo(22)
       $0.bottom.equalToSuperview()
     }
   }

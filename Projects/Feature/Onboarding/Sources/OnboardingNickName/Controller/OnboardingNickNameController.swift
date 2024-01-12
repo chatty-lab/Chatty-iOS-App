@@ -61,10 +61,22 @@ extension OnboardingNickNameController: ReactorKit.View {
       }
       .disposed(by: disposeBag)
     
-    nickNameView.textRelay
-      .map { str in
-        return Reactor.Action.inputText(str) }
-      .bind(to: reactor.action)
+    nickNameView.inputEventRelay
+      .bind(with: self) { owner, input in
+        switch input {
+        case .nickNameText(let nickName):
+          owner.reactor?.action.onNext(.inputText(nickName))
+        }
+      }
+      .disposed(by: disposeBag)
+    
+    
+    reactor.state
+      .map(\.isTextEmpty)
+      .distinctUntilChanged()
+      .bind(with: self) { owner, bool in
+        owner.nickNameView.updateResetButton(bool)
+      }
       .disposed(by: disposeBag)
     
     reactor.state
@@ -89,6 +101,7 @@ extension OnboardingNickNameController: ReactorKit.View {
       .bind(with: self) { owner, result in
         if result {
           owner.delegate?.pushToProfile(reactor.currentState.nickNameText)
+          owner.reactor?.action.onNext(.didPushed)
         }
       }
       .disposed(by: disposeBag)
