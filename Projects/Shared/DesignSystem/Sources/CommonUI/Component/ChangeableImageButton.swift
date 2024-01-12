@@ -82,14 +82,20 @@ extension ChangeableImageButton: StateConfigurable {
   public enum State {
     case enabled
     case disabled
+    case systemImage
+    case customImage
   }
   
   public struct Configuration {
     var image: UIImage
+    let tintColor: UIColor
+    let size: Double
     let isEnabled: Bool
     
-    public init(image: UIImage, isEnabled: Bool) {
+    public init(image: UIImage, tintColor: UIColor = .clear, size: Double = 0, isEnabled: Bool) {
       self.image = image
+      self.tintColor = tintColor
+      self.size = size
       self.isEnabled = isEnabled
     }
   }
@@ -97,8 +103,23 @@ extension ChangeableImageButton: StateConfigurable {
   public func updateForCurrentState() {
     guard let currentState,
           let config = configurations[currentState] else { return }
+    
     imageView.tintColor = SystemColor.gray300.uiColor
     imageView.image = config.image
+    
+    var image = UIImage()
+    
+    switch currentState {
+    case .enabled, .disabled, .customImage:
+      image = config.image
+    case .systemImage:
+      let symbolConfig = UIImage.SymbolConfiguration(pointSize: config.size)
+      let systemImage = config.image.withConfiguration(symbolConfig)
+      image = systemImage
+    }
+    imageView.contentMode = .center
+    imageView.tintColor = config.tintColor
+    imageView.image = image
     isEnabled = config.isEnabled
   }
   

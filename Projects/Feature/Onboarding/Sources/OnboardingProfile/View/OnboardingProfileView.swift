@@ -97,9 +97,7 @@ extension OnboardingProfileView {
   }
   private func bindProfileImage() {
     profileImagePickerView?.touchEventRelay
-      .map { _ in
-        print("aaaaaaaaaaa")
-        return TouchType.tabImagePicker }
+      .map { TouchType.tabImagePicker }
       .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
@@ -194,15 +192,22 @@ extension OnboardingProfileView {
     let profileImagePickerView = ChangeableImageButton().then {
       typealias Configuration = ChangeableImageButton.Configuration
       
-      let config = UIImage.SymbolConfiguration(pointSize: 26.67)
-      let plusImage = UIImage(systemName: "plus", withConfiguration: config)
+      let emptyState = Configuration(
+        image: UIImage(systemName: "plus")!,
+        tintColor: SystemColor.gray600.uiColor,
+        size: 26.67,
+        isEnabled: true
+      )
+      let inpuedState = Configuration(
+        image: UIImage(),
+        tintColor: .clear,
+        size: 0,
+        isEnabled: true
+      )
       
-      let emptyState = Configuration(image: plusImage ?? UIImage(), isEnabled: true)
-      let inpuedState = Configuration(image: UIImage(), isEnabled: true)
-      
-      $0.setState(emptyState, for: .disabled)
-      $0.setState(inpuedState, for: .enabled)
-      $0.currentState = .disabled
+      $0.setState(emptyState, for: .systemImage)
+      $0.setState(inpuedState, for: .customImage)
+      $0.currentState = .systemImage
       
       $0.layer.cornerRadius = 160 / 2
       $0.clipsToBounds = true
@@ -284,12 +289,11 @@ extension OnboardingProfileView {
   public func updateProfileImageView(_ image: UIImage?) {
     if image == nil {
       profileImageTextBoxView?.updateProfileImage(false)
-      profileImagePickerView?.currentState = .disabled
+      profileImagePickerView?.currentState = .customImage
     } else {
       profileImageTextBoxView?.updateProfileImage(true)
-      profileImagePickerView?.updateStateConfigure(.enabled, image: image ?? UIImage())
-      profileImagePickerView?.currentState = .enabled
-//      imageView.contentMode = .center
+      profileImagePickerView?.updateStateConfigure(.systemImage, image: image ?? UIImage())
+      profileImagePickerView?.currentState = .systemImage
 //      imageView.tintColor = SystemColor.gray600.uiColor
     }
   }

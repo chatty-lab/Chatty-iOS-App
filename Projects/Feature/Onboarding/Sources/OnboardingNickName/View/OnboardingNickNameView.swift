@@ -33,7 +33,7 @@ public final class OnboardingNickNameView: BaseView, Touchable, InputReceivable 
   
   private let resetTextButton: ChangeableImageButton = ChangeableImageButton().then {
     typealias Configuration = ChangeableImageButton.Configuration
-    let enabled = Configuration(image: UIImage(systemName: "xmark.circle.fill")!, isEnabled: true)
+    let enabled = Configuration(image: UIImage(systemName: "xmark.circle.fill")!, tintColor: SystemColor.gray300.uiColor, isEnabled: true)
     let disabled = Configuration(image: UIImage(), isEnabled: false)
     
     $0.setState(enabled, for: .enabled)
