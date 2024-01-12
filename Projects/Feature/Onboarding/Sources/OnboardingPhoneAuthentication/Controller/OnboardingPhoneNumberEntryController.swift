@@ -59,13 +59,14 @@ public final class OnboardingPhoneNumberEntryController: BaseController {
   }
   
   private func requestSMS(with phoneNumber: String) {
-    let alertView = CustomAlertView()
-    alertView.title = phoneNumber.formattedPhoneNumber()
-    alertView.subTitle = "이 전화번호로 인증번호 메시지를 보낼게요."
-    let alertController = CustomAlertController(alertView: alertView)
+    let title = phoneNumber.formattedPhoneNumber()
+    let message = "이 전화번호로 인증번호 메시지를 보낼게요."
+    let alertController = CustomAlertController(title: title, message: message, delegate: self)
+    let sendAction = CustomAlertAction(text: "전송", style: .destructive)
+    let cancelAction = CustomAlertAction(text: "취소", style: .cancel)
     
-    alertController.delegate = self
-    alertController.modalPresentationStyle = .overCurrentContext
+    alertController.addAction(sendAction)
+    alertController.addAction(cancelAction)
     navigationController?.present(alertController, animated: false)
   }
 }
@@ -99,11 +100,11 @@ extension OnboardingPhoneNumberEntryController: ReactorKit.View {
 }
 
 extension OnboardingPhoneNumberEntryController: CustomAlertDelegate {
-  public func positiveAction() {
+  public func destructiveAction() {
     delegate?.pushToVerificationCodeEntryView(self.reactor)
   }
   
-  public func negativeAction() {
+  public func cancelAction() {
     self.activateTextField()
   }
 }
