@@ -39,7 +39,8 @@ public final class OnboardingProfileView: UIView {
   private weak var maleCheckBoxView: GenderCheckBoxView?
   private weak var femaleCheckBoxView: GenderCheckBoxView?
   private weak var birthDatePicker: UIDatePicker?
-  private weak var profileImagePickerView: ProfileImagePickerView?
+  private weak var profileImagePickerView: ChangeableImageButton?
+  private weak var profileImageTextBoxView: TextBoxView?
   private weak var mbtiView: MBTIView?
   
   // MARK: - Rx Property
@@ -96,7 +97,9 @@ extension OnboardingProfileView {
   }
   private func bindProfileImage() {
     profileImagePickerView?.touchEventRelay
-      .map { TouchType.tabImagePicker }
+      .map { _ in
+        print("aaaaaaaaaaa")
+        return TouchType.tabImagePicker }
       .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
@@ -187,13 +190,43 @@ extension OnboardingProfileView {
   }
   
   private func setupProfileImagePicker() {
-    let profileImagePickerView = ProfileImagePickerView()
+    let profleImageTextBoxView = TextBoxView()
+    let profileImagePickerView = ChangeableImageButton().then {
+      typealias Configuration = ChangeableImageButton.Configuration
+      
+      let config = UIImage.SymbolConfiguration(pointSize: 26.67)
+      let plusImage = UIImage(systemName: "plus", withConfiguration: config)
+      
+      let emptyState = Configuration(image: plusImage ?? UIImage(), isEnabled: true)
+      let inpuedState = Configuration(image: UIImage(), isEnabled: true)
+      
+      $0.setState(emptyState, for: .disabled)
+      $0.setState(inpuedState, for: .enabled)
+      $0.currentState = .disabled
+      
+      $0.layer.cornerRadius = 160 / 2
+      $0.clipsToBounds = true
+      $0.backgroundColor = SystemColor.gray100.uiColor
+      $0.layer.borderWidth = 1
+      $0.layer.borderColor = SystemColor.gray300.uiColor.cgColor
+    }
+        
+    contentView.addSubview(profleImageTextBoxView)
     contentView.addSubview(profileImagePickerView)
+
     profileImagePickerView.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(96)
-      $0.leading.trailing.equalToSuperview()
+      $0.size.equalTo(160)
+      $0.centerX.centerY.equalToSuperview()
+    }
+    profleImageTextBoxView.snp.makeConstraints {
+      $0.bottom.equalTo(profileImagePickerView.snp.top).offset(-12)
+      $0.centerX.equalToSuperview()
+      $0.width.equalTo(204)
+      $0.height.equalTo(47)
     }
     self.profileImagePickerView = profileImagePickerView
+    self.profileImageTextBoxView = profleImageTextBoxView
+
   }
   
   private func setupMBTIView() {
@@ -246,5 +279,18 @@ extension OnboardingProfileView {
   
   public func updateMBTIView(_ mbti: MBTI) {
     mbtiView?.updateMBTIView(mbti)
+  }
+  
+  public func updateProfileImageView(_ image: UIImage?) {
+    if image == nil {
+      profileImageTextBoxView?.updateProfileImage(false)
+      profileImagePickerView?.currentState = .disabled
+    } else {
+      profileImageTextBoxView?.updateProfileImage(true)
+      profileImagePickerView?.updateStateConfigure(.enabled, image: image ?? UIImage())
+      profileImagePickerView?.currentState = .enabled
+//      imageView.contentMode = .center
+//      imageView.tintColor = SystemColor.gray600.uiColor
+    }
   }
 }

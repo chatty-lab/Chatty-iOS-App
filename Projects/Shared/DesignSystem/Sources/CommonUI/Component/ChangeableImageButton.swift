@@ -85,7 +85,7 @@ extension ChangeableImageButton: StateConfigurable {
   }
   
   public struct Configuration {
-    let image: UIImage
+    var image: UIImage
     let isEnabled: Bool
     
     public init(image: UIImage, isEnabled: Bool) {
@@ -100,5 +100,9 @@ extension ChangeableImageButton: StateConfigurable {
     imageView.tintColor = SystemColor.gray300.uiColor
     imageView.image = config.image
     isEnabled = config.isEnabled
+  }
+  
+  public func updateStateConfigure(_ state: State, image: UIImage) {
+    configurations[state]?.image = image
   }
 }

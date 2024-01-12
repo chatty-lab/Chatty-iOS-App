@@ -21,8 +21,8 @@ public final class OnboardingProfileCoordinator: OnboardingProfileCoordinatorPro
   
   public func start() {
     let profileState = OnboardingProfileReactor.State(state: .init(
-      type: .gender,
-      nickName: "",
+      type: .profileImage,
+      nickName: "nickName",
       gender: .none,
       porfileImage: UIImage(),
       birth: Date(),

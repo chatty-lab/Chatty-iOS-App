@@ -74,6 +74,7 @@ extension OnboardingNickNameController: ReactorKit.View {
     reactor.state
       .map(\.isTextEmpty)
       .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, bool in
         owner.nickNameView.updateResetButton(bool)
       }
@@ -82,6 +83,7 @@ extension OnboardingNickNameController: ReactorKit.View {
     reactor.state
       .map(\.isButtonEnabled)
       .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, bool in
         owner.nickNameView.updateContinueButtonEnabled(bool)
       }
@@ -90,6 +92,7 @@ extension OnboardingNickNameController: ReactorKit.View {
     reactor.state
       .map(\.checkedResult)
       .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, result in
         owner.nickNameView.updateTextFieldBottomLine(result)
       }
@@ -98,6 +101,7 @@ extension OnboardingNickNameController: ReactorKit.View {
     reactor.state
       .map(\.successSave)
       .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, result in
         if result {
           owner.delegate?.pushToProfile(reactor.currentState.nickNameText)
@@ -109,6 +113,7 @@ extension OnboardingNickNameController: ReactorKit.View {
     reactor.state
       .map(\.isLoading)
       .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, result in
         // 로딩뷰
       }

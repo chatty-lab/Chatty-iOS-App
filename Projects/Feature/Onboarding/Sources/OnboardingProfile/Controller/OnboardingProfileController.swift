@@ -82,6 +82,7 @@ extension OnboardingProfileController: ReactorKit.View {
     reactor.state
       .map(\.viewState.type)
       .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, type in
         owner.profileView.updateTitleTextView(type, nickName: reactor.currentState.viewState.nickName)
       }
@@ -90,6 +91,7 @@ extension OnboardingProfileController: ReactorKit.View {
     reactor.state
       .map(\.isContinueEnabled)
       .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, state in
         owner.profileView.updateContinuBtn(state)
       }
@@ -99,6 +101,7 @@ extension OnboardingProfileController: ReactorKit.View {
     reactor.state
       .map(\.viewState.gender)
       .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, gender in
         owner.profileView.setGender(gender)
       }
@@ -108,6 +111,7 @@ extension OnboardingProfileController: ReactorKit.View {
     reactor.state
       .map(\.isPickingImage)
       .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, result in
         if result {
           owner.delegate?.presentModal()
@@ -119,6 +123,7 @@ extension OnboardingProfileController: ReactorKit.View {
     // MBTI
     reactor.state
       .map(\.viewState.mbti)
+      .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, mbti in
         owner.profileView.updateMBTIView(mbti)
       }
