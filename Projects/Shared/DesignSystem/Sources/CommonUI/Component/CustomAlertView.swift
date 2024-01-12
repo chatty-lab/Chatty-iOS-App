@@ -9,16 +9,24 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-public final class CustomAlertView: BaseControl, Touchable, Fadeable, Zoomable, Transformable {
+final class CustomAlertView: BaseControl, Touchable, Fadeable, Zoomable, Transformable {
   // MARK: - View Property
-  private let titleContainerView: UIView = UIView()
+  private let containerView: UIView = UIView()
+  
+  private let labelStackView: UIStackView = UIStackView().then {
+    $0.spacing = 8
+    $0.alignment = .fill
+    $0.distribution = .fill
+    $0.axis = .vertical
+  }
+  
   private let titleLabel: UILabel = UILabel().then {
     $0.font = SystemFont.title03.font
     $0.textColor = SystemColor.basicBlack.uiColor
     $0.textAlignment = .center
   }
   
-  private let subTitleLabel: UILabel = UILabel().then {
+  private let messageLabel: UILabel = UILabel().then {
     $0.font = SystemFont.body03.font
     $0.textColor = SystemColor.gray700.uiColor
     $0.textAlignment = .center
@@ -26,34 +34,21 @@ public final class CustomAlertView: BaseControl, Touchable, Fadeable, Zoomable, 
     $0.lineBreakMode = .byCharWrapping
   }
   
-  private let positiveButton: CustomAlertButton = CustomAlertButton().then {
-    typealias Configuration = CustomAlertButton.Configuration
-    let positiveConfig = Configuration(backgroundColor: SystemColor.primaryNormal.uiColor, textColor:  SystemColor.basicWhite.uiColor)
-
-    $0.title = "전송"
-    $0.setState(positiveConfig, for: .positive)
-    $0.currentState = .positive
+  private let buttonStackView: UIStackView = UIStackView().then {
+    $0.spacing = 4
+    $0.alignment = .fill
+    $0.distribution = .fillEqually
+    $0.axis = .vertical
   }
   
-  private let negativeButton: CustomAlertButton = CustomAlertButton().then {
-    typealias Configuration = CustomAlertButton.Configuration
-    let negativeConfig = Configuration(backgroundColor: SystemColor.basicWhite.uiColor, textColor: SystemColor.basicBlack.uiColor)
-    
-    $0.title = "취소"
-    $0.setState(negativeConfig, for: .negative)
-    $0.currentState = .negative
-  }
+  private let title: String?
+  private let message: String?
   
-  public var title: String? {
-    didSet {
-      titleLabel.text = title
-    }
-  }
-  
-  public var subTitle: String? {
-    didSet {
-      subTitleLabel.text = subTitle
-    }
+  public init(title: String?, message: String?) {
+    self.title = title
+    self.message = message
+    super.init(frame: .zero)
+    setupTitleAndMessageLabel(title, message)
   }
   
   // MARK: - Touchable
@@ -64,81 +59,86 @@ public final class CustomAlertView: BaseControl, Touchable, Fadeable, Zoomable, 
     backgroundColor = SystemColor.basicWhite.uiColor
     alpha = 0
     
-    addSubview(titleContainerView)
-    titleContainerView.addSubview(titleLabel)
-    titleContainerView.addSubview(subTitleLabel)
-    titleContainerView.addSubview(positiveButton)
-    titleContainerView.addSubview(negativeButton)
+    addSubview(containerView)
+    containerView.addSubview(messageLabel)
     
-    titleContainerView.snp.makeConstraints {
+    containerView.snp.makeConstraints {
       $0.top.equalToSuperview().offset(28)
       $0.horizontalEdges.equalToSuperview().inset(20)
-      $0.bottom.equalToSuperview().offset(-16)
+      $0.bottom.equalToSuperview().offset(-20)
     }
-    
-    titleLabel.snp.makeConstraints {
+  }
+  
+  private func setupTitleAndMessageLabel(_ title: String?, _ message: String?) {
+    containerView.addSubview(labelStackView)
+    labelStackView.snp.makeConstraints {
       $0.top.equalToSuperview()
-      $0.leading.trailing.equalToSuperview().inset(6)
+      $0.horizontalEdges.equalToSuperview().inset(6)
     }
     
-    subTitleLabel.snp.makeConstraints {
-      $0.top.equalTo(titleLabel.snp.bottom).offset(8)
-      $0.leading.trailing.equalToSuperview().inset(6)
-    }
+    guard let title else { return }
+    titleLabel.text = title
+    labelStackView.addArrangedSubview(titleLabel)
     
-    positiveButton.snp.makeConstraints {
-      $0.top.equalTo(subTitleLabel.snp.bottom).offset(32)
-      $0.leading.trailing.equalToSuperview().inset(6)
-      $0.height.equalTo(46)
+    guard let message else { return }
+    messageLabel.text = message
+    labelStackView.addArrangedSubview(messageLabel)
+  }
+  
+  public func setAction(_ alertAction: CustomAlertAction) {
+    guard let style = alertAction.currentState else { return }
+    setupButtonStackView()
+    switch style {
+    case .destructive:
+      setupDestructiveButton(alertAction)
+    case .cancel:
+      setupCancelButton(alertAction)
     }
-    
-    negativeButton.snp.makeConstraints {
-      $0.top.equalTo(positiveButton.snp.bottom).offset(4)
-      $0.leading.trailing.equalToSuperview().inset(6)
+  }
+  
+  private func setupButtonStackView() {
+    guard !containerView.subviews.contains(buttonStackView) else { return }
+    containerView.addSubview(buttonStackView)
+    buttonStackView.snp.makeConstraints {
+      $0.top.equalTo(labelStackView.snp.bottom).offset(32)
+      $0.horizontalEdges.equalToSuperview().inset(6)
       $0.bottom.equalToSuperview()
+    }
+  }
+  
+  private func setupDestructiveButton(_ positiveButton: CustomAlertAction) {
+    guard !self.buttonStackView.arrangedSubviews.contains(positiveButton) else { return }
+    buttonStackView.addArrangedSubview(positiveButton)
+    positiveButton.snp.makeConstraints {
       $0.height.equalTo(46)
     }
-    
-  }
-  
-  private func setupTitleLabel(_ title: String?) {
-    
-  }
-  
-  private func setupSubTitleLabel(_ title: String?) {
-    
-  }
-  
-  private func addButton(_ title: String, for action: Action) {
-    switch action {
-    case .positive:
-      positiveButton.title = title
-    case .negative:
-      negativeButton.title = title
-    }
-  }
-  
-  public override func bind() {
-    negativeButton.touchEventRelay
-      .map { .negative }
-      .bind(to: touchEventRelay)
-      .disposed(by: disposeBag)
-    
     positiveButton.touchEventRelay
-      .map { .positive }
+      .map { .destructive }
       .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
+  }
+  
+  private func setupCancelButton(_ negativeButton: CustomAlertAction) {
+    guard !self.buttonStackView.arrangedSubviews.contains(negativeButton) else { return }
+    buttonStackView.addArrangedSubview(negativeButton)
+    negativeButton.snp.makeConstraints {
+      $0.height.equalTo(46)
+    }
+    negativeButton.touchEventRelay
+      .map { .cancel }
+      .bind(to: touchEventRelay)
+      .disposed(by: disposeBag)
+    
+    // CancelButton 추가 시 ContainerView 바닥 여백 조정
+    containerView.snp.updateConstraints {
+      $0.bottom.equalToSuperview().offset(-12)
+    }
   }
 }
 
 extension CustomAlertView {
   public enum TouchEventType {
-    case positive
-    case negative
-  }
-  
-  enum Action {
-    case positive
-    case negative
+    case destructive
+    case cancel
   }
 }
