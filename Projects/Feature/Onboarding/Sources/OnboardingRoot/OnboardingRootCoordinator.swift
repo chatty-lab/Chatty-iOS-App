@@ -18,7 +18,7 @@ public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol 
   public init(_ navigationController: CustomNavigationController) {
     self.navigationController = navigationController
   }
-  
+   
   public func start() {
     let onboardingRootController = OnboardingRootController()
     onboardingRootController.delegate = self

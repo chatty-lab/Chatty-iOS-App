@@ -13,6 +13,7 @@ public final class OnboardingProfileCoordinator: OnboardingProfileCoordinatorPro
   public var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: CustomNavigationController
   public var childCoordinators: [Coordinator] = []
+  public var childViewControllers: ChildViewController = .init()
   public var type: CoordinatorType = .onboarding(.profileUpdate(.profiles))
   
   public init(_ navigationController: CustomNavigationController) {
@@ -21,7 +22,7 @@ public final class OnboardingProfileCoordinator: OnboardingProfileCoordinatorPro
   
   public func start() {
     let profileState = OnboardingProfileReactor.State(state: .init(
-      type: .profileImage,
+      type: .gender,
       nickName: "nickName",
       gender: .none,
       porfileImage: UIImage(),
@@ -37,21 +38,23 @@ public final class OnboardingProfileCoordinator: OnboardingProfileCoordinatorPro
   public func pushToNextView(_ state: ProfileState) {
     var state = state
     state.type = state.type.nextViewType
+    
     let profileState = OnboardingProfileReactor.State(state: state)
     let onboardingProfileReator = OnboardingProfileReactor(profileState)
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReator)
+    
     onboardingProfileController.delegate = self
     navigationController.pushViewController(onboardingProfileController, animated: true)
+    childViewControllers.increase()
   }
   
   public func presentModal() {
-    print("hi -> coordinator 2")
-    let onboardingImageGuideCoordinator = OnboardingImageGuideCoordinator(onboardingImageGuideController: OnboardingImageGuideController(reactor: OnboardingImageGuideReactor()), navigationController: navigationController)
-    childCoordinators.append(onboardingImageGuideCoordinator)
-    onboardingImageGuideCoordinator.finishDelegate = self
-    onboardingImageGuideCoordinator.start()
+    let onboardingImageGuideContoller = OnboardingImageGuideController(reactor: OnboardingImageGuideReactor())
+
+    onboardingImageGuideContoller.modalPresentationStyle = .pageSheet
+    onboardingImageGuideContoller.delegate = self
+    navigationController.present(onboardingImageGuideContoller, animated: true)
   }
-  
   
   public func switchToMainTab() {
     print("profile - nil")
@@ -62,14 +65,17 @@ public final class OnboardingProfileCoordinator: OnboardingProfileCoordinatorPro
   }
 }
 
-extension OnboardingProfileCoordinator: CoordinatorFinishDelegate {
-  public func coordinatorDidFinish(childCoordinator: Shared.Coordinator) {
-    for (index, coordinator) in childCoordinators.enumerated() {
-      
-      if coordinator === childCoordinator {
-        childCoordinators.remove(at: index)
-        break
-      }
+extension OnboardingProfileCoordinator: OnboardingImageGuideDelegate {
+  public func pushToImagePicker() {
+    print("profile - pushToImagePicker")
+  }
+}
+
+extension OnboardingProfileCoordinator: BaseNavigationDelegate {
+  public func popViewController() {
+    childViewControllers.decrease()
+    if childViewControllers.isFinished {
+      finish()
     }
   }
 }

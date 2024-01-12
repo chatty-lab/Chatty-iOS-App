@@ -10,10 +10,10 @@ import Shared
 import SharedDesignSystem
 
 public final class OnboardingNickNameCoordinator: OnboardingNickNameCoordinatorProtocol {
-  public var finishDelegate: Shared.CoordinatorFinishDelegate?
+  public var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: CustomNavigationController
-  public var childCoordinators: [Shared.Coordinator] = []
-  public var type: Shared.CoordinatorType = .onboarding(.profileUpdate(.nickName))
+  public var childCoordinators: [Coordinator] = []
+  public var type: CoordinatorType = .onboarding(.profileUpdate(.nickName))
   
   public init(_ navigationController: CustomNavigationController) {
     self.navigationController = navigationController
@@ -26,7 +26,7 @@ public final class OnboardingNickNameCoordinator: OnboardingNickNameCoordinatorP
     navigationController.pushViewController(onboardingNickNameController, animated: true)
   }
   
-  public func pushToProfile(_ nickName: String) {
+  public func pushToProfiles() {
     let onboardingProfileCoordinator = OnboardingProfileCoordinator(navigationController)
     childCoordinators.append(onboardingProfileCoordinator)
     
@@ -41,6 +41,6 @@ public final class OnboardingNickNameCoordinator: OnboardingNickNameCoordinatorP
 
 extension OnboardingNickNameCoordinator: CoordinatorFinishDelegate {
   public func coordinatorDidFinish(childCoordinator: Shared.Coordinator) {
-    
+    finish()
   }
 }

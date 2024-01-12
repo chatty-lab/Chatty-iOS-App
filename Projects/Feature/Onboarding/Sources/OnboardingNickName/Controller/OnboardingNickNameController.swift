@@ -104,7 +104,7 @@ extension OnboardingNickNameController: ReactorKit.View {
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, result in
         if result {
-          owner.delegate?.pushToProfile(reactor.currentState.nickNameText)
+          owner.delegate?.pushToProfiles()
           owner.reactor?.action.onNext(.didPushed)
         }
       }
