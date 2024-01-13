@@ -29,11 +29,6 @@ public final class OnboardingProfileController: BaseController {
     configureUI()
   }
   
-  public override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    reactor?.action.onNext(.viewWillAppear)
-  }
-  
   // MARK: - Initialize Method
   required init(reactor: Reactor) {
     defer {

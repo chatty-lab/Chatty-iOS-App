@@ -12,10 +12,10 @@ import ReactorKit
 public final class OnboardingProfileReactor: Reactor {
   /// 뷰에서 수행할 수 있는 사용자의 액션
   public enum Action {
-    case viewWillAppear
     case toggleGender(Gender)
     case selectBirth(Date)
     case toggleMBTI(MBTISeletedState, Bool)
+    case selectImage(UIImage)
     case tabContinueButton
     case tabImagePicker
     case didPushed
@@ -23,10 +23,10 @@ public final class OnboardingProfileReactor: Reactor {
   
   /// 화면의 상태가 변화하는 요인
   public enum Mutation {
-    case viewWillAppear
     case inputedGender(Gender)
     case inputedBirth(Date)
     case toggleMBTI(MBTISeletedState, Bool)
+    case inputedImage(UIImage)
     case tabContinueButton
     case tabImagePicker
     case didPushed
@@ -45,6 +45,19 @@ public final class OnboardingProfileReactor: Reactor {
     init(state: ProfileType) {
       self.viewState = state
       self.profileData = SampleUserService.fetchDate()
+      print("image = \(profileData)")
+      switch viewState {
+      case .gender:
+        self.isContinueEnabled = profileData.gender != .none
+      case .birth:
+        self.isContinueEnabled = true
+      case .profileImage:
+        self.isContinueEnabled = profileData.porfileImage != nil
+      case .mbti:
+        self.isContinueEnabled = profileData.mbti.didSeletedAll
+      case .none:
+        print("none")
+      }
     }
   }
   public var initialState: State
@@ -57,12 +70,12 @@ public final class OnboardingProfileReactor: Reactor {
 extension OnboardingProfileReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .viewWillAppear:
-      return .just(.viewWillAppear)
     case .toggleGender(let gender):
       return .just(.inputedGender(gender))
     case .selectBirth(let date):
       return .just(.inputedBirth(date))
+    case .selectImage(let image):
+      return .just(.inputedImage(image))
     case .tabContinueButton:
       return .just(.tabContinueButton)
     case .tabImagePicker:
@@ -75,20 +88,21 @@ extension OnboardingProfileReactor {
         .just(.toggleMBTI(mbti, state)),
         .just(.isLoading(false))
       ])
+    
     }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
-    case .viewWillAppear:
-      /// viewWillAppear 시점에 입력된 Profile 데이터를 가져와요
-      newState.profileData = SampleUserService.fetchDate()
     case .inputedGender(let gender):
       newState.profileData.gender = gender
       newState.isContinueEnabled = true
     case .inputedBirth(let date):
       newState.profileData.birth = date
+      newState.isContinueEnabled = true
+    case .inputedImage(let image):
+      newState.profileData.porfileImage = image
       newState.isContinueEnabled = true
     case .tabImagePicker:
       newState.isPickingImage = true
@@ -100,8 +114,8 @@ extension OnboardingProfileReactor {
       newState.isPickingImage = false
     case .isLoading(let bool):
       newState.isLoading = bool
-    
-    /// 저장 api 통신 혹은 다음뷰로 가는 코드
+      
+      /// 저장 api 통신 혹은 다음뷰로 가는 코드
     case .tabContinueButton:
       switch currentState.viewState {
       case .gender, .birth, .profileImage, .none:

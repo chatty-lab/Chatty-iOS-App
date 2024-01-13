@@ -71,7 +71,7 @@ extension OnboardingProfileCoordinator: OnboardingImageGuideDelegate, PHPickerVi
     
     navigationController.present(picker, animated: true)
   }
-  
+    
   public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
     picker.dismiss(animated: true)
     
@@ -83,8 +83,7 @@ extension OnboardingProfileCoordinator: OnboardingImageGuideDelegate, PHPickerVi
         if let image = image as? UIImage {
           DispatchQueue.main.async {
             if let vc = self.navigationController.viewControllers.last as? OnboardingProfileController {
-              SampleUserService.setImage(image)
-              vc.reactor?.action.onNext(.viewWillAppear)
+              vc.reactor?.action.onNext(.selectImage(image))
             }
           }
         }
