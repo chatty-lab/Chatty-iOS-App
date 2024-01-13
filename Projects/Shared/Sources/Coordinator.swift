@@ -13,7 +13,7 @@ public protocol Coordinator: AnyObject {
   var navigationController: CustomNavigationController { get set }
   var childCoordinators: [Coordinator] { get set }
   var childViewControllers: ChildViewController { get set }
-  var type: CoordinatorType { get set }
+  var type: CoordinatorType { get }
   
   func start()
   func finish()
