@@ -22,7 +22,7 @@ public final class OnboardingProfileCoordinator: Coordinator {
   }
   
   public func start() {
-    let profileState = OnboardingProfileReactor.State(state: .gender)
+    let profileState = OnboardingProfileReactor.State(state: .mbti)
     let onboardingProfileReactor = OnboardingProfileReactor(profileState)
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReactor)
     onboardingProfileController.delegate = self

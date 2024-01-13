@@ -296,7 +296,6 @@ extension OnboardingProfileView {
       profileImageTextBoxView?.updateProfileImage(true)
       profileImagePickerView?.updateStateConfigure(.customImage, image: image ?? UIImage())
       profileImagePickerView?.currentState = .customImage
-//      imageView.tintColor = SystemColor.gray600.uiColor
     }
   }
 }
