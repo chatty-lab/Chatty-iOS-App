@@ -154,10 +154,26 @@ extension OnboardingProfileView {
   }
   
   private func setupGenderCheckBoxView() {
-    let maleCheckBoxView = GenderCheckBoxView()
-    let femaleCheckBoxView = GenderCheckBoxView()
-    maleCheckBoxView.genderType = .male
-    femaleCheckBoxView.genderType = .female
+    let maleCheckBoxView = GenderCheckBoxView().then {
+      typealias Configuration = GenderCheckBoxView.Configuration
+      let unchecked = Configuration(tintColor: SystemColor.gray500.uiColor)
+      let checked = Configuration(tintColor: SystemColor.primaryNormal.uiColor)
+      
+      $0.setState(unchecked, for: .unChecked)
+      $0.setState(checked, for: .checked)
+      $0.currentState = .unChecked
+      $0.genderType = .male
+    }
+    let femaleCheckBoxView = GenderCheckBoxView().then {
+      typealias Configuration = GenderCheckBoxView.Configuration
+      let unchecked = Configuration(tintColor: SystemColor.gray500.uiColor)
+      let checked = Configuration(tintColor: SystemColor.primaryNormal.uiColor)
+      
+      $0.setState(unchecked, for: .unChecked)
+      $0.setState(checked, for: .checked)
+      $0.currentState = .unChecked
+      $0.genderType = .female
+    }
     
     contentView.addSubview(maleCheckBoxView)
     contentView.addSubview(femaleCheckBoxView)
