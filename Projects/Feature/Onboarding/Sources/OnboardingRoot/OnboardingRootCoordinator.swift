@@ -36,12 +36,7 @@ public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol 
   }
   
   public func pushToLogin() {
-    let onboardingPhoneAuthenticationCoordinator = OnboardingPhoneAuthenticationCoordinator(self.navigationController)
-    
-    childCoordinators.append(onboardingPhoneAuthenticationCoordinator)
-    
-    onboardingPhoneAuthenticationCoordinator.finishDelegate = self
-    onboardingPhoneAuthenticationCoordinator.start()
+    print("root - 로그인")
   }
   
   deinit {
@@ -51,12 +46,12 @@ public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol 
 
 extension OnboardingRootCoordinator: OnboardingTermsDelegate {
   public func signUp() {
-    let onboardingNickNameCoordinator = OnboardingNickNameCoordinator(self.navigationController)
+    let onboardingPhoneAuthenticationCoordinator = OnboardingPhoneAuthenticationCoordinator(self.navigationController)
     
-    childCoordinators.append(onboardingNickNameCoordinator)
+    childCoordinators.append(onboardingPhoneAuthenticationCoordinator)
     
-    onboardingNickNameCoordinator.finishDelegate = self
-    onboardingNickNameCoordinator.start()
+    onboardingPhoneAuthenticationCoordinator.finishDelegate = self
+    onboardingPhoneAuthenticationCoordinator.start()
   }
 }
 

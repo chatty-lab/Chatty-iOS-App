@@ -45,6 +45,7 @@ extension OnboardingProfileCoordinator: OnboardingProfileDelegate {
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReator)
     
     onboardingProfileController.delegate = self
+    
     navigationController.pushViewController(onboardingProfileController, animated: true)
     childViewControllers.increase()
   }
@@ -54,6 +55,7 @@ extension OnboardingProfileCoordinator: OnboardingProfileDelegate {
 
     onboardingImageGuideContoller.modalPresentationStyle = .pageSheet
     onboardingImageGuideContoller.delegate = self
+    
     navigationController.present(onboardingImageGuideContoller, animated: true)
   }
   
