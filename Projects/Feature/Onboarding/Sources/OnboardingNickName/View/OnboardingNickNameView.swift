@@ -15,7 +15,7 @@ import SharedDesignSystem
 public final class OnboardingNickNameView: BaseView, Touchable, InputReceivable {
   // MARK: - View Property
   private let titleTextView: TitleTextView = TitleTextView().then {
-    $0.updateTitleLabels(.nickName)
+    $0.updateTitleLabels(.none)
   }
   
   private let nickNameTextField: BottomLineTextField = BottomLineTextField(maxTextLength: 10).then {
@@ -31,23 +31,13 @@ public final class OnboardingNickNameView: BaseView, Touchable, InputReceivable 
     $0.textField.tintColor = SystemColor.primaryNormal.uiColor
   }
   
-  private let resetTextButton: ChangeableImageButton = ChangeableImageButton().then {
-    typealias Configuration = ChangeableImageButton.Configuration
-    let enabled = Configuration(image: UIImage(systemName: "xmark.circle.fill")!, tintColor: SystemColor.gray300.uiColor, isEnabled: true)
-    let disabled = Configuration(image: UIImage(), isEnabled: false)
-    
-    $0.setState(enabled, for: .enabled)
-    $0.setState(disabled, for: .disabled)
-    $0.currentState = .disabled
-  }
-  
   private let textValidLabel: UILabel = UILabel().then {
     $0.font = SystemFont.caption02.font
     $0.textColor = SystemColor.systemErrorRed.uiColor
   }
   
   private let warningLabel: UILabel = UILabel().then {
-    $0.text = ProfileType.nickName.warningDescription
+    $0.text = "다른 사람에게 불쾌감을 주는 닉네임은 제재돼요."
     $0.font = SystemFont.caption02.font
     $0.textColor = SystemColor.basicBlack.uiColor
   }
@@ -87,7 +77,6 @@ public final class OnboardingNickNameView: BaseView, Touchable, InputReceivable 
   public override func configureUI() {
     setupTitleTextView()
     setupTextField()
-    setupCheckBoxImageView()
     setupTextValidLabel()
     setupContinueButton()
     setupWarningLabel()
@@ -97,11 +86,6 @@ public final class OnboardingNickNameView: BaseView, Touchable, InputReceivable 
   public override func bind() {
     continueButton.touchEventRelay
       .map { TouchType.continueButton }
-      .bind(to: self.touchEventRelay)
-      .disposed(by: disposeBag)
-    
-    resetTextButton.touchEventRelay
-      .map { TouchType.removeText }
       .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
     
@@ -118,14 +102,13 @@ extension OnboardingNickNameView {
   }
   
   public enum TouchType {
-    case removeText
     case continueButton
   }
 
   private func setupTitleTextView() {
     addSubview(titleTextView)
     titleTextView.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(111)
+      $0.top.equalToSuperview().offset(16)
       $0.leading.trailing.equalToSuperview()
       $0.height.equalTo(91)
     }
@@ -137,16 +120,6 @@ extension OnboardingNickNameView {
       $0.top.equalTo(titleTextView.snp.bottom).offset(64)
       $0.leading.trailing.equalToSuperview().inset(20)
       $0.height.equalTo(50)
-    }
-  }
-  
-  private func setupCheckBoxImageView() {
-    addSubview(resetTextButton)
-    resetTextButton.snp.makeConstraints {
-      $0.width.equalTo(22)
-      $0.size.equalTo(22)
-      $0.trailing.equalTo(nickNameTextField.snp.trailing)
-      $0.centerY.equalTo(nickNameTextField.snp.centerY)
     }
   }
   
@@ -171,25 +144,14 @@ extension OnboardingNickNameView {
   private func setupContinueButton() {
     addSubview(continueButton)
     continueButton.snp.makeConstraints {
-      $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-16)
       $0.height.equalTo(52)
       $0.leading.trailing.equalToSuperview().inset(20)
+      $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-16)
     }
   }
 }
 
 extension OnboardingNickNameView {
-  public func updateResetButton(_ isTextEmpty: Bool) {
-    print("isTextEmpty -> \(isTextEmpty)")
-    if isTextEmpty {
-      resetTextButton.currentState = .disabled
-      nickNameTextField.textField.text = ""
-    } else {
-      resetTextButton.currentState = .enabled
-    }
-    
-  }
-  
   public func updateTextFieldBottomLine(_ state: CheckedResultType) {
     textValidLabel.text = state.description
   }

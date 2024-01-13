@@ -10,6 +10,9 @@ import Shared
 import SharedDesignSystem
 
 public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol {
+  
+  public var childViewControllers: ChildViewController = .init()
+  
   public weak var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: CustomNavigationController
   public var childCoordinators: [Coordinator] = []
@@ -18,7 +21,7 @@ public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol 
   public init(_ navigationController: CustomNavigationController) {
     self.navigationController = navigationController
   }
-  
+   
   public func start() {
     let onboardingRootController = OnboardingRootController()
     onboardingRootController.delegate = self
@@ -33,7 +36,12 @@ public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol 
   }
   
   public func pushToLogin() {
-    print("로그인")
+    let onboardingPhoneAuthenticationCoordinator = OnboardingPhoneAuthenticationCoordinator(self.navigationController)
+    
+    childCoordinators.append(onboardingPhoneAuthenticationCoordinator)
+    
+    onboardingPhoneAuthenticationCoordinator.finishDelegate = self
+    onboardingPhoneAuthenticationCoordinator.start()
   }
   
   deinit {
@@ -43,17 +51,17 @@ public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol 
 
 extension OnboardingRootCoordinator: OnboardingTermsDelegate {
   public func signUp() {
-    let onboardingPhoneAuthenticationCoordinator = OnboardingPhoneAuthenticationCoordinator(self.navigationController)
+    let onboardingNickNameCoordinator = OnboardingNickNameCoordinator(self.navigationController)
     
-    childCoordinators.append(onboardingPhoneAuthenticationCoordinator)
+    childCoordinators.append(onboardingNickNameCoordinator)
     
-    onboardingPhoneAuthenticationCoordinator.finishDelegate = self
-    onboardingPhoneAuthenticationCoordinator.start()
+    onboardingNickNameCoordinator.finishDelegate = self
+    onboardingNickNameCoordinator.start()
   }
 }
 
 extension OnboardingRootCoordinator: CoordinatorFinishDelegate {
   public func coordinatorDidFinish(childCoordinator: Coordinator) {
-    finish()
+    removeChildCoordinator(childCoordinator)
   }
 }

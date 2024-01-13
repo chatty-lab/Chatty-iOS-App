@@ -13,6 +13,10 @@ import Then
 import SharedDesignSystem
 import ReactorKit
 
+public protocol OnboardingImageGuideDelegate: AnyObject {
+  func pushToImagePicker()
+}
+
 public final class OnboardingImageGuideController: BaseController {
   // MARK: - View Property
   private lazy var mainView = OnboardingImageGuideModalView()
@@ -21,13 +25,13 @@ public final class OnboardingImageGuideController: BaseController {
   public typealias Reactor = OnboardingImageGuideReactor
   
   // MARK: - Rx Property
-  private let imageRelay = PublishRelay<UIImage?>()
   
-  // MARK: - Initialize Method
+  // MARK: - LifeCycle Method
   public override func viewDidLoad() {
     super.viewDidLoad()
   }
   
+  // MARK: - Initialize Method
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     setupSheet()
@@ -40,7 +44,7 @@ public final class OnboardingImageGuideController: BaseController {
     super.init()
   }
   
-  weak var delegate: OnboardingImageGuideCoordinatorDelegate?
+  weak var delegate: OnboardingImageGuideDelegate?
   
   public override func configureUI() {
     view.addSubview(mainView)
@@ -48,6 +52,10 @@ public final class OnboardingImageGuideController: BaseController {
     mainView.snp.makeConstraints {
       $0.top.leading.trailing.equalToSuperview()
     }
+  }
+  
+  deinit {
+    print("해제됨: ImageGuideController")
   }
 }
 
@@ -64,20 +72,6 @@ extension OnboardingImageGuideController: ReactorKit.View {
       }
       .disposed(by: disposeBag)
     
-    imageRelay
-      .map { Reactor.Action.seletedImage($0) }
-      .bind(to: reactor.action)
-      .disposed(by: disposeBag)
-    
-    reactor.state
-      .map(\.seletedImage)
-      .distinctUntilChanged()
-      .observe(on: MainScheduler.asyncInstance)
-      .bind(with: self) { owner, image in
-        owner.delegate?.didFinishPick(image)
-      }
-      .disposed(by: disposeBag)
-    
     reactor.state
       .map(\.isFirstSegment)
       .distinctUntilChanged()
@@ -88,12 +82,13 @@ extension OnboardingImageGuideController: ReactorKit.View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map(\.isSeleted)
+      .map(\.didPushed)
       .distinctUntilChanged()
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, result in
         if result {
-          owner.delegate?.pushToAlbumView()
+          owner.dismiss(animated: true)
+          owner.delegate?.pushToImagePicker()
           owner.reactor?.action.onNext(.didPushed)
         }
       }
@@ -113,9 +108,3 @@ extension OnboardingImageGuideController {
     }
   }
 }
-
-//// 임시 이미지 픽커
-//extension OnboardingImageGuideController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-//  
-//}
-

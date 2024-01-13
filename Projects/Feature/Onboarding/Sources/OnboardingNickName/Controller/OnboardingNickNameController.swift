@@ -33,18 +33,20 @@ public final class OnboardingNickNameController: BaseController {
     super.init()
   }
   
-  deinit {
-    print("해제됨: OnboardingNickNameController")
-  }
-  
   public weak var delegate: OnboardingNickNameCoordinatorProtocol?
   
   // MARK: - UIConfigurable
   public override func configureUI() {
+    baseNavigationController?.setBaseNavigationBarHidden(false, animated: true)
     view.addSubview(nickNameView)
     nickNameView.snp.makeConstraints {
-      $0.top.leading.trailing.bottom.equalToSuperview()
+      $0.top.equalTo(view.safeAreaLayoutGuide).offset(52)
+      $0.leading.trailing.bottom.equalToSuperview()
     }
+  }
+  
+  deinit {
+    print("해제됨: NickNameController - NickName")
   }
 }
 
@@ -53,8 +55,6 @@ extension OnboardingNickNameController: ReactorKit.View {
     nickNameView.touchEventRelay
       .bind(with: self) { owner, touch in
         switch touch {
-        case .removeText:
-          owner.reactor?.action.onNext(.tabResetText)
         case .continueButton:
           owner.reactor?.action.onNext(.tabContinueButton)
         }
@@ -67,16 +67,6 @@ extension OnboardingNickNameController: ReactorKit.View {
         case .nickNameText(let nickName):
           owner.reactor?.action.onNext(.inputText(nickName))
         }
-      }
-      .disposed(by: disposeBag)
-    
-    
-    reactor.state
-      .map(\.isTextEmpty)
-      .distinctUntilChanged()
-      .observe(on: MainScheduler.asyncInstance)
-      .bind(with: self) { owner, bool in
-        owner.nickNameView.updateResetButton(bool)
       }
       .disposed(by: disposeBag)
     
@@ -104,7 +94,7 @@ extension OnboardingNickNameController: ReactorKit.View {
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, result in
         if result {
-          owner.delegate?.pushToProfile(reactor.currentState.nickNameText)
+          owner.delegate?.pushToProfiles()
           owner.reactor?.action.onNext(.didPushed)
         }
       }

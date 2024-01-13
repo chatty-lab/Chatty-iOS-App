@@ -13,21 +13,18 @@ public final class OnboardingImageGuideReactor: Reactor {
   public enum Action {
     case toggleSegment(Bool)
     case tabPresentAlbumButton
-    case seletedImage(UIImage?)
     case didPushed
   }
   
   public enum Mutation {
     case toggleSegment(Bool)
     case tabPresentAlbumButton
-    case seletedImage(UIImage?)
     case didPushed
   }
   
   public struct State {
-    var seletedImage: UIImage? = nil
     var isFirstSegment: Bool = true
-    var isSeleted = false
+    var didPushed = false
   }
   
   public var initialState: State = State()
@@ -42,8 +39,6 @@ extension OnboardingImageGuideReactor {
       return .just(.tabPresentAlbumButton)
     case .didPushed:
       return .just(.didPushed)
-    case .seletedImage(let image):
-      return .just(.seletedImage(image))
     }
   }
   
@@ -53,11 +48,9 @@ extension OnboardingImageGuideReactor {
     case .toggleSegment(let bool):
       newState.isFirstSegment = bool
     case .tabPresentAlbumButton:
-      newState.isSeleted = true
+      newState.didPushed = true
     case .didPushed:
-      newState.isSeleted = false
-    case .seletedImage(let image):
-      newState.seletedImage = image
+      newState.didPushed = false
     }
     return newState
   }

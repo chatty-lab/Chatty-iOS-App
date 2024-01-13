@@ -10,6 +10,12 @@ import ReactorKit
 import RxSwift
 import SharedDesignSystem
 
+public protocol OnboardingProfileDelegate: AnyObject {
+  func pushToNextView(_ state: ProfileType)
+  func presentImageGuideModal()
+  func switchToMainTab()
+}
+
 public final class OnboardingProfileController: BaseController {
   // MARK: - View
   private let profileView: OnboardingProfileView = OnboardingProfileView()
@@ -31,14 +37,21 @@ public final class OnboardingProfileController: BaseController {
     super.init()
   }
   
-  public weak var delegate: OnboardingProfileCoordinatorProtocol?
+  public weak var delegate: OnboardingProfileDelegate?
   
   // MARK: - UIConfigurable
   public override func configureUI() {
+    baseNavigationController?.setBaseNavigationBarHidden(false, animated: true)
     view.addSubview(profileView)
     profileView.snp.makeConstraints {
-      $0.top.leading.trailing.bottom.equalToSuperview()
+      $0.top.equalTo(view.safeAreaLayoutGuide).offset(52)
+      $0.leading.trailing.bottom.equalToSuperview()
     }
+  }
+  
+  deinit {
+    self.delegate = nil
+    print("해제됨: ProfileController - delegate\(delegate == nil) ")
   }
 }
 
@@ -68,7 +81,7 @@ extension OnboardingProfileController: ReactorKit.View {
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, result in
         if result {
-          let nextType = reactor.currentState.viewState.type.nextViewType
+          let nextType = reactor.currentState.viewState.nextViewType
           if nextType != .none {
             owner.delegate?.pushToNextView(reactor.currentState.viewState)
             owner.reactor?.action.onNext(.didPushed)
@@ -80,11 +93,11 @@ extension OnboardingProfileController: ReactorKit.View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map(\.viewState.type)
+      .map(\.viewState)
       .distinctUntilChanged()
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, type in
-        owner.profileView.updateTitleTextView(type, nickName: reactor.currentState.viewState.nickName)
+        owner.profileView.updateTitleTextView(type, nickName: reactor.currentState.profileData.nickName)
       }
       .disposed(by: disposeBag)
     
@@ -99,7 +112,7 @@ extension OnboardingProfileController: ReactorKit.View {
     
     // Gender
     reactor.state
-      .map(\.viewState.gender)
+      .map(\.profileData.gender)
       .distinctUntilChanged()
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, gender in
@@ -114,15 +127,24 @@ extension OnboardingProfileController: ReactorKit.View {
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, result in
         if result {
-          owner.delegate?.presentModal()
+          owner.delegate?.presentImageGuideModal()
           owner.reactor?.action.onNext(.didPushed)
         }
       }
       .disposed(by: disposeBag)
     
+    reactor.state
+      .map(\.profileData.porfileImage)
+      .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
+      .bind(with: self) { owner, image in
+        owner.profileView.updateProfileImageView(image)
+      }
+      .disposed(by: disposeBag)
+    
     // MBTI
     reactor.state
-      .map(\.viewState.mbti)
+      .map(\.profileData.mbti)
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, mbti in
         owner.profileView.updateMBTIView(mbti)

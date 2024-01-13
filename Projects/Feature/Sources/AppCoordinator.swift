@@ -16,6 +16,8 @@ protocol AppCoordinatorProtocol: Coordinator {
 }
 
 public final class AppCoordinator: AppCoordinatorProtocol {
+  public var childViewControllers: ChildViewController = .init()
+  
   public weak var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: CustomNavigationController
   public var childCoordinators: [Coordinator] = []

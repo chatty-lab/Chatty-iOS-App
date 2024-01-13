@@ -111,13 +111,14 @@ extension ChangeableImageButton: StateConfigurable {
     
     switch currentState {
     case .enabled, .disabled, .customImage:
+      imageView.contentMode = .scaleAspectFill
       image = config.image
     case .systemImage:
+      imageView.contentMode = .center
       let symbolConfig = UIImage.SymbolConfiguration(pointSize: config.size)
       let systemImage = config.image.withConfiguration(symbolConfig)
       image = systemImage
     }
-    imageView.contentMode = .center
     imageView.tintColor = config.tintColor
     imageView.image = image
     isEnabled = config.isEnabled

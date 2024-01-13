@@ -18,7 +18,6 @@ public final class MBTIView: UIView, Touchable {
     $0.axis = .horizontal
     $0.alignment = .center
     $0.spacing = 8
-//    $0.distribution = .equalSpacing
     $0.distribution = .fillEqually
   }
   
@@ -83,28 +82,23 @@ extension MBTIView {
   private func configureUI() {
     addSubview(stackView)
     stackView.snp.makeConstraints {
-      $0.top.bottom.equalToSuperview()
+      $0.top.height.equalToSuperview()
       $0.leading.trailing.equalToSuperview().inset(35.5)
     }
 
     firstSelectToggleButton.snp.makeConstraints {
-      $0.width.greaterThanOrEqualTo(70)
-//      $0.width.equalTo(70)
       $0.height.equalTo(160)
     }
+    
     secondSelectToggleButton.snp.makeConstraints {
-      $0.width.greaterThanOrEqualTo(70)
-      $0.width.equalTo(70)
       $0.height.equalTo(160)
     }
+    
     thirdSelectToggleButton.snp.makeConstraints {
-      $0.width.greaterThanOrEqualTo(70)
-      $0.width.equalTo(70)
       $0.height.equalTo(160)
     }
+    
     fourthSelectToggleButton.snp.makeConstraints {
-      $0.width.greaterThanOrEqualTo(70)
-      $0.width.equalTo(70)
       $0.height.equalTo(160)
     }
     
