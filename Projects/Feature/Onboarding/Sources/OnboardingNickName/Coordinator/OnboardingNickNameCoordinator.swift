@@ -32,9 +32,9 @@ public final class OnboardingNickNameCoordinator: OnboardingNickNameCoordinatorP
   public func pushToProfiles() {
     let onboardingProfileCoordinator = OnboardingProfileCoordinator(self.navigationController)
     
-    onboardingProfileCoordinator.finishDelegate = self
     childCoordinators.append(onboardingProfileCoordinator)
     
+    onboardingProfileCoordinator.finishDelegate = self
     onboardingProfileCoordinator.start()
   }
   
