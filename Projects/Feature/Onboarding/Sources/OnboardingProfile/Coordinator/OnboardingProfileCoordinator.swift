@@ -10,7 +10,7 @@ import PhotosUI
 import Shared
 import SharedDesignSystem
 
-public final class OnboardingProfileCoordinator: OnboardingProfileCoordinatorProtocol {
+public final class OnboardingProfileCoordinator: Coordinator {
   public var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: CustomNavigationController
   public var childCoordinators: [Coordinator] = []

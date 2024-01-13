@@ -26,11 +26,12 @@ public final class OnboardingImageGuideController: BaseController {
   
   // MARK: - Rx Property
   
-  // MARK: - Initialize Method
+  // MARK: - LifeCycle Method
   public override func viewDidLoad() {
     super.viewDidLoad()
   }
   
+  // MARK: - Initialize Method
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     setupSheet()
@@ -82,6 +83,7 @@ extension OnboardingImageGuideController: ReactorKit.View {
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, result in
         if result {
+          owner.dismiss(animated: true)
           owner.delegate?.pushToImagePicker()
           owner.reactor?.action.onNext(.didPushed)
         }

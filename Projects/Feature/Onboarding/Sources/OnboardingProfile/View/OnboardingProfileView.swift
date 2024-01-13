@@ -291,11 +291,11 @@ extension OnboardingProfileView {
   public func updateProfileImageView(_ image: UIImage?) {
     if image == nil {
       profileImageTextBoxView?.updateProfileImage(false)
-      profileImagePickerView?.currentState = .customImage
+      profileImagePickerView?.currentState = .systemImage
     } else {
       profileImageTextBoxView?.updateProfileImage(true)
-      profileImagePickerView?.updateStateConfigure(.systemImage, image: image ?? UIImage())
-      profileImagePickerView?.currentState = .systemImage
+      profileImagePickerView?.updateStateConfigure(.customImage, image: image ?? UIImage())
+      profileImagePickerView?.currentState = .customImage
 //      imageView.tintColor = SystemColor.gray600.uiColor
     }
   }
