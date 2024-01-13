@@ -15,7 +15,6 @@ public final class OnboardingNickNameReactor: Reactor {
   /// 뷰에서 수행할 수 있는 사용자의 액션
   public enum Action {
     case inputText(String)
-    case tabResetText
     case tabContinueButton
     case didPushed
   }
@@ -36,10 +35,6 @@ public final class OnboardingNickNameReactor: Reactor {
     var successSave: Bool = false
     var isLoading: Bool = false
     
-    var isTextEmpty: Bool {
-      return nickNameText.isEmpty
-    }
-    
     init() {
       nickNameText = ""
     }
@@ -53,8 +48,6 @@ extension OnboardingNickNameReactor {
     switch action {
     case .inputText(let string):
       return .just(.inputedText(string))
-    case .tabResetText:
-      return .just(.inputedText(""))
     case .tabContinueButton:
       return .concat([
         .just(.isLoading(true)),

@@ -55,8 +55,6 @@ extension OnboardingNickNameController: ReactorKit.View {
     nickNameView.touchEventRelay
       .bind(with: self) { owner, touch in
         switch touch {
-        case .removeText:
-          owner.reactor?.action.onNext(.tabResetText)
         case .continueButton:
           owner.reactor?.action.onNext(.tabContinueButton)
         }
@@ -69,16 +67,6 @@ extension OnboardingNickNameController: ReactorKit.View {
         case .nickNameText(let nickName):
           owner.reactor?.action.onNext(.inputText(nickName))
         }
-      }
-      .disposed(by: disposeBag)
-    
-    
-    reactor.state
-      .map(\.isTextEmpty)
-      .distinctUntilChanged()
-      .observe(on: MainScheduler.asyncInstance)
-      .bind(with: self) { owner, bool in
-        owner.nickNameView.updateResetButton(bool)
       }
       .disposed(by: disposeBag)
     
