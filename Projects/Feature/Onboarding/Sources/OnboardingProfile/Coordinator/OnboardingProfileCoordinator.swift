@@ -10,8 +10,8 @@ import PhotosUI
 import Shared
 import SharedDesignSystem
 
-public final class OnboardingProfileCoordinator: Coordinator {
-  public var finishDelegate: CoordinatorFinishDelegate?
+public final class OnboardingProfileCoordinator: Coordinator, BaseNavigationDelegate {
+  public weak var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: CustomNavigationController
   public var childCoordinators: [Coordinator] = []
   public var childViewControllers: ChildViewController = .init()
@@ -19,18 +19,20 @@ public final class OnboardingProfileCoordinator: Coordinator {
   
   public init(_ navigationController: CustomNavigationController) {
     self.navigationController = navigationController
+    navigationController.baseDelegate = self
   }
   
   public func start() {
-    let profileState = OnboardingProfileReactor.State(state: .mbti)
+    let profileState = OnboardingProfileReactor.State(state: .gender)
     let onboardingProfileReactor = OnboardingProfileReactor(profileState)
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReactor)
     onboardingProfileController.delegate = self
     navigationController.pushViewController(onboardingProfileController, animated: true)
+    childViewControllers.increase()
   }
   
   deinit {
-    print("deinit - Onboarding Profile Coordinator")
+    print("해제됨: Profile Coordinator")
   }
 }
 
@@ -88,15 +90,6 @@ extension OnboardingProfileCoordinator: OnboardingImageGuideDelegate, PHPickerVi
           }
         }
       }
-    }
-  }
-}
-
-extension OnboardingProfileCoordinator: BaseNavigationDelegate {
-  public func popViewController() {
-    childViewControllers.decrease()
-    if childViewControllers.isFinished {
-      finish()
     }
   }
 }

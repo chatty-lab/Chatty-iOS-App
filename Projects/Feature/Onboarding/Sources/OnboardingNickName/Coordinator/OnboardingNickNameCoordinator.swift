@@ -9,14 +9,16 @@ import UIKit
 import Shared
 import SharedDesignSystem
 
-public final class OnboardingNickNameCoordinator: OnboardingNickNameCoordinatorProtocol {
-  public var finishDelegate: CoordinatorFinishDelegate?
+public final class OnboardingNickNameCoordinator: OnboardingNickNameCoordinatorProtocol, CoordinatorFinishDelegate, BaseNavigationDelegate {
+  public weak var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: CustomNavigationController
   public var childCoordinators: [Coordinator] = []
+  public var childViewControllers: ChildViewController = .init()
   public var type: CoordinatorType = .onboarding(.profileUpdate(.nickName))
   
   public init(_ navigationController: CustomNavigationController) {
     self.navigationController = navigationController
+    navigationController.baseDelegate = self
   }
   
   public func start() {
@@ -24,23 +26,19 @@ public final class OnboardingNickNameCoordinator: OnboardingNickNameCoordinatorP
     let onboardingNickNameController = OnboardingNickNameController(reactor: onboardingNickNameReactor)
     onboardingNickNameController.delegate = self
     navigationController.pushViewController(onboardingNickNameController, animated: true)
+    childViewControllers.increase()
   }
   
   public func pushToProfiles() {
-    let onboardingProfileCoordinator = OnboardingProfileCoordinator(navigationController)
-    childCoordinators.append(onboardingProfileCoordinator)
+    let onboardingProfileCoordinator = OnboardingProfileCoordinator(self.navigationController)
     
     onboardingProfileCoordinator.finishDelegate = self
+    childCoordinators.append(onboardingProfileCoordinator)
+    
     onboardingProfileCoordinator.start()
   }
   
   deinit {
-    print("deinit - Onboarding NickName Coordinator")
-  }
-}
-
-extension OnboardingNickNameCoordinator: CoordinatorFinishDelegate {
-  public func coordinatorDidFinish(childCoordinator: Shared.Coordinator) {
-    finish()
+    print("해제됨: NickName Coordinator")
   }
 }

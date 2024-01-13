@@ -53,6 +53,10 @@ public final class OnboardingImageGuideController: BaseController {
       $0.top.leading.trailing.equalToSuperview()
     }
   }
+  
+  deinit {
+    print("해제됨: ImageGuideController")
+  }
 }
 
 extension OnboardingImageGuideController: ReactorKit.View {

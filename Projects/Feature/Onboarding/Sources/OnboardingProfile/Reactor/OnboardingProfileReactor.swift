@@ -45,7 +45,6 @@ public final class OnboardingProfileReactor: Reactor {
     init(state: ProfileType) {
       self.viewState = state
       self.profileData = SampleUserService.fetchDate()
-      print("image = \(profileData)")
       switch viewState {
       case .gender:
         self.isContinueEnabled = profileData.gender != .none
