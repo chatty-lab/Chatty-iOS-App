@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import PhotosUI
 import Shared
 import SharedDesignSystem
 
@@ -21,23 +22,21 @@ public final class OnboardingProfileCoordinator: OnboardingProfileCoordinatorPro
   }
   
   public func start() {
-    let profileState = OnboardingProfileReactor.State(state: .init(
-      type: .gender,
-      nickName: "nickName",
-      gender: .none,
-      porfileImage: UIImage(),
-      birth: Date(),
-      mbti: .init())
-    )
+    let profileState = OnboardingProfileReactor.State(state: .gender)
     let onboardingProfileReactor = OnboardingProfileReactor(profileState)
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReactor)
     onboardingProfileController.delegate = self
     navigationController.pushViewController(onboardingProfileController, animated: true)
   }
   
-  public func pushToNextView(_ state: ProfileState) {
-    var state = state
-    state.type = state.type.nextViewType
+  deinit {
+    print("deinit - Onboarding Profile Coordinator")
+  }
+}
+
+extension OnboardingProfileCoordinator: OnboardingProfileDelegate {
+  public func pushToNextView(_ state: ProfileType) {
+    let state: ProfileType = state.nextViewType
     
     let profileState = OnboardingProfileReactor.State(state: state)
     let onboardingProfileReator = OnboardingProfileReactor(profileState)
@@ -48,7 +47,7 @@ public final class OnboardingProfileCoordinator: OnboardingProfileCoordinatorPro
     childViewControllers.increase()
   }
   
-  public func presentModal() {
+  public func presentImageGuideModal() {
     let onboardingImageGuideContoller = OnboardingImageGuideController(reactor: OnboardingImageGuideReactor())
 
     onboardingImageGuideContoller.modalPresentationStyle = .pageSheet
@@ -59,15 +58,38 @@ public final class OnboardingProfileCoordinator: OnboardingProfileCoordinatorPro
   public func switchToMainTab() {
     print("profile - nil")
   }
-  
-  deinit {
-    print("deinit - Onboarding Profile Coordinator")
-  }
 }
 
-extension OnboardingProfileCoordinator: OnboardingImageGuideDelegate {
+extension OnboardingProfileCoordinator: OnboardingImageGuideDelegate, PHPickerViewControllerDelegate {
   public func pushToImagePicker() {
-    print("profile - pushToImagePicker")
+    var configuration = PHPickerConfiguration()
+    configuration.selectionLimit = 1
+    configuration.filter = .any(of: [.images])
+    
+    let picker = PHPickerViewController(configuration: configuration)
+    picker.delegate = self
+    
+    navigationController.present(picker, animated: true)
+  }
+  
+  public func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+    picker.dismiss(animated: true)
+    
+    let itemProvider = results.first?.itemProvider
+    
+    if let itemProvider = itemProvider,
+       itemProvider.canLoadObject(ofClass: UIImage.self) {
+      itemProvider.loadObject(ofClass: UIImage.self) { image, error in
+        if let image = image as? UIImage {
+          DispatchQueue.main.async {
+            if let vc = self.navigationController.viewControllers.last as? OnboardingProfileController {
+              SampleUserService.setImage(image)
+              vc.reactor?.action.onNext(.viewWillAppear)
+            }
+          }
+        }
+      }
+    }
   }
 }
 

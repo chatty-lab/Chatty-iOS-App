@@ -8,29 +8,23 @@
 import Foundation
 
 public enum ProfileType: CaseIterable {
-  case nickName, gender, birth, profileImage, mbti, none
+  case gender, birth, profileImage, mbti, none
   
   var nextViewType: ProfileType {
     switch self {
-    case .nickName:
-      return .gender
     case .gender:
       return .birth
     case .birth:
       return .profileImage
     case .profileImage:
       return .mbti
-    case .mbti:
+    case .mbti, .none:
       return .none
-    case .none:
-      return .nickName
     }
   }
   
   func getTitleText(_ nickName: String = "") -> String {
     switch self {
-    case .nickName:
-      return "닉네임을 만들어 주세요"
     case .gender:
       return "반가워요! \(nickName)님\n성별을 알려주세요."
     case .birth:
@@ -46,8 +40,6 @@ public enum ProfileType: CaseIterable {
   
   var description: String {
     switch self {
-    case .nickName:
-      return "상대방에게 보여지는 이름이에요.\n나중에 변경할 수 있어요."
     case .gender:
       return "알려주신 성별은 대화할 친구를 찾는데 사용해요."
     case .birth:
@@ -63,8 +55,6 @@ public enum ProfileType: CaseIterable {
   
   var warningDescription: String {
     switch self {
-    case .nickName:
-      return "다른 사람에게 불쾌감을 주는 닉네임은 제재돼요."
     case .profileImage:
       return ""
     case .gender, .birth:

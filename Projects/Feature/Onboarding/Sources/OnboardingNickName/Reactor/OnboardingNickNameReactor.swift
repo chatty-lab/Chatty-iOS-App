@@ -98,6 +98,7 @@ extension OnboardingNickNameReactor {
   }
   
   private func saveNickName(_ nickNameText: String) -> Bool {
+    SampleUserService.setNickNameDate(currentState.nickNameText)
     return nickNameText == "1" ? false : true
   }
 }

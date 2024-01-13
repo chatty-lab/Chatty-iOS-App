@@ -62,7 +62,13 @@ extension TitleTextView {
   }
   
   public func updateTitleLabels(_ type: ProfileType, nickName: String = "") {
-    titleTextField.text = type.getTitleText(nickName)
-    descriptionTextField.text = type.description
+    if type != .none {
+      titleTextField.text = type.getTitleText(nickName)
+      descriptionTextField.text = type.description
+    } else {
+      titleTextField.text = "닉네임을 만들어 주세요"
+      descriptionTextField.text = "상대방에게 보여지는 이름이에요.\n나중에 변경할 수 있어요."
+    }
+    
   }
 }

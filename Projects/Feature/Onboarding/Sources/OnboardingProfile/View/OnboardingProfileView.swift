@@ -266,7 +266,7 @@ extension OnboardingProfileView {
     case .profileImage:
       setupProfileImagePicker()
       bindProfileImage()
-    case .none, .nickName:
+    case .none:
       print("none")
     }
   }

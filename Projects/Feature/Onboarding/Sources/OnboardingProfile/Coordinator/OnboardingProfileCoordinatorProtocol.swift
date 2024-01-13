@@ -9,7 +9,7 @@ import Foundation
 import Shared
 
 public protocol OnboardingProfileCoordinatorProtocol: Coordinator {
-  func pushToNextView(_ state: ProfileState)
-  func presentModal()
+  func pushToNextView(_ state: ProfileType)
+  func presentImageGuideModal()
   func switchToMainTab()
 }

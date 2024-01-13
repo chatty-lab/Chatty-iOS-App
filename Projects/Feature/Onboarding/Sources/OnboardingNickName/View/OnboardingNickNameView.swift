@@ -15,7 +15,7 @@ import SharedDesignSystem
 public final class OnboardingNickNameView: BaseView, Touchable, InputReceivable {
   // MARK: - View Property
   private let titleTextView: TitleTextView = TitleTextView().then {
-    $0.updateTitleLabels(.nickName)
+    $0.updateTitleLabels(.none)
   }
   
   private let nickNameTextField: BottomLineTextField = BottomLineTextField(maxTextLength: 10).then {
@@ -47,7 +47,7 @@ public final class OnboardingNickNameView: BaseView, Touchable, InputReceivable 
   }
   
   private let warningLabel: UILabel = UILabel().then {
-    $0.text = ProfileType.nickName.warningDescription
+    $0.text = "다른 사람에게 불쾌감을 주는 닉네임은 제재돼요."
     $0.font = SystemFont.caption02.font
     $0.textColor = SystemColor.basicBlack.uiColor
   }
