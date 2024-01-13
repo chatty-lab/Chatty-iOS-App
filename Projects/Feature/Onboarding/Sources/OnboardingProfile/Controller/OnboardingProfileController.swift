@@ -41,10 +41,17 @@ public final class OnboardingProfileController: BaseController {
   
   // MARK: - UIConfigurable
   public override func configureUI() {
+    baseNavigationController?.setBaseNavigationBarHidden(false, animated: true)
     view.addSubview(profileView)
     profileView.snp.makeConstraints {
-      $0.top.leading.trailing.bottom.equalToSuperview()
+      $0.top.equalTo(view.safeAreaLayoutGuide).offset(52)
+      $0.leading.trailing.bottom.equalToSuperview()
     }
+  }
+  
+  deinit {
+    self.delegate = nil
+    print("해제됨: ProfileController - delegate\(delegate == nil) ")
   }
 }
 

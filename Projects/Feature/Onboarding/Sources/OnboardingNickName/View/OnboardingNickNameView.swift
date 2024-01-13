@@ -125,7 +125,7 @@ extension OnboardingNickNameView {
   private func setupTitleTextView() {
     addSubview(titleTextView)
     titleTextView.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(111)
+      $0.top.equalToSuperview().offset(16)
       $0.leading.trailing.equalToSuperview()
       $0.height.equalTo(91)
     }
@@ -171,16 +171,15 @@ extension OnboardingNickNameView {
   private func setupContinueButton() {
     addSubview(continueButton)
     continueButton.snp.makeConstraints {
-      $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-16)
       $0.height.equalTo(52)
       $0.leading.trailing.equalToSuperview().inset(20)
+      $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-16)
     }
   }
 }
 
 extension OnboardingNickNameView {
   public func updateResetButton(_ isTextEmpty: Bool) {
-    print("isTextEmpty -> \(isTextEmpty)")
     if isTextEmpty {
       resetTextButton.currentState = .disabled
       nickNameTextField.textField.text = ""

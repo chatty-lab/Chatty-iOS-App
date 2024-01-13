@@ -11,7 +11,8 @@ import RxCocoa
 import Then
 import SharedDesignSystem
 
-public final class OnboardingProfileView: UIView {
+public final class OnboardingProfileView: BaseView, Touchable {
+  
   // MARK: - View Property
   private let containerView: UIView = UIView()
   private let titleTextView = TitleTextView()
@@ -54,16 +55,23 @@ public final class OnboardingProfileView: UIView {
   // MARK: - Life Method
   public override init(frame: CGRect) {
     super.init(frame: frame)
-    bind()
-    configureUI()
   }
   
-  required init?(coder: NSCoder) {
-    super.init(coder: coder)
+  // MARK: - UIConfigurable
+  override public func configureUI() {
+    setContainView()
+  }
+  
+  // MARK: - UIBindable
+  override public func bind() {
+    continueButton.touchEventRelay
+      .map { TouchType.continueButton }
+      .bind(to: self.touchEventRelay)
+      .disposed(by: disposeBag)
   }
 }
 
-extension OnboardingProfileView: Touchable {
+extension OnboardingProfileView {
   public enum TouchType {
     case tabGender(Gender)
     case setBirth(Date)
@@ -71,15 +79,7 @@ extension OnboardingProfileView: Touchable {
     case tabImagePicker
     case toggleMBTI(MBTISeletedState, Bool)
   }
-}
 
-extension OnboardingProfileView {
-  private func bind() {
-    continueButton.touchEventRelay
-      .map { TouchType.continueButton }
-      .bind(to: self.touchEventRelay)
-      .disposed(by: disposeBag)
-  }
   private func bindGender() {
     maleCheckBoxView?.touchEventRelay
       .map { TouchType.tabGender(.male) }
@@ -91,18 +91,21 @@ extension OnboardingProfileView {
       .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
+  
   private func bindBirth() {
     birthDatePicker?.rx.date
       .map { TouchType.setBirth($0) }
       .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
+  
   private func bindProfileImage() {
     profileImagePickerView?.touchEventRelay
       .map { TouchType.tabImagePicker }
       .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
+  
   private func bindMBTI() {
     mbtiView?.touchEventRelay
       .map { touch in TouchType.toggleMBTI(touch.0, touch.1) }
@@ -112,9 +115,6 @@ extension OnboardingProfileView {
 }
 
 extension OnboardingProfileView {
-  private func configureUI() {
-    setContainView()
-  }
   
   private func setContainView() {
     addSubview(containerView)
@@ -124,11 +124,12 @@ extension OnboardingProfileView {
     containerView.addSubview(continueButton)
     
     containerView.snp.makeConstraints{
-      $0.top.leading.trailing.bottom.equalToSuperview()
+      $0.top.equalToSuperview().offset(16)
+      $0.leading.trailing.bottom.equalToSuperview()
     }
     
     titleTextView.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(112)
+      $0.top.equalToSuperview()
       $0.leading.trailing.equalToSuperview()
       $0.height.greaterThanOrEqualTo(75)
     }
@@ -148,7 +149,7 @@ extension OnboardingProfileView {
     continueButton.snp.makeConstraints {
       $0.height.equalTo(52)
       $0.leading.trailing.equalToSuperview().inset(20)
-      $0.bottom.equalToSuperview().inset(30)
+      $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-16)
     }
   }
   
