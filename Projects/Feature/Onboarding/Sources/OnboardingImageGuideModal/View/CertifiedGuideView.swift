@@ -49,15 +49,16 @@ extension CertifiedGuideView {
     containerView.addSubview(firstImageView)
     containerView.addSubview(secondImageView)
     
-    let viewWidth = 375
+    /// 사용자 기기의 프레임 width 값
+    let viewWidth = CGRect.appFrame.width
+    /// padding 값을 뺀 width 값
     let containerWidth = viewWidth - 40
+    /// 335: 213 의 비율로 계산된 height 값
     let containerHeight = (containerWidth * 213) / 335
-    print("jeight - \(containerHeight)")
+    
     containerView.snp.makeConstraints {
       $0.top.bottom.equalToSuperview()
-      $0.width.equalTo(containerWidth)
       $0.leading.trailing.equalToSuperview().inset(20)
-      $0.centerX.equalToSuperview()
     }
     
     titleLabel.snp.makeConstraints {
@@ -66,18 +67,18 @@ extension CertifiedGuideView {
       $0.centerX.equalToSuperview()
     }
     
+    /// 213:150 비율로 계산된 내부 정사각형의 높이값
     let imageViewHeight = (containerHeight * 150) / 213
-    print(imageViewHeight)
     
     firstImageView.snp.makeConstraints {
       $0.top.equalTo(titleLabel.snp.bottom).offset(14)
-      $0.height.width.equalTo(imageViewHeight)
+      $0.size.equalTo(imageViewHeight)
       $0.leading.equalToSuperview().inset(12)
     }
     
     secondImageView.snp.makeConstraints {
       $0.top.equalTo(titleLabel.snp.bottom).offset(14)
-      $0.height.width.equalTo(imageViewHeight)
+      $0.size.equalTo(imageViewHeight)
       $0.trailing.equalToSuperview().inset(12)
     }
   }

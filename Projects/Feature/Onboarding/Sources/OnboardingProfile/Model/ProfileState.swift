@@ -9,7 +9,6 @@ import UIKit
 import Shared
 
 public struct ProfileState {
-  var type: ProfileType
   var nickName: String
   var gender: Gender
   var porfileImage: UIImage? = nil

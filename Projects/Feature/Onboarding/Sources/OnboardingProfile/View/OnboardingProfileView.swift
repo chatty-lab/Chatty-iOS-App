@@ -11,7 +11,8 @@ import RxCocoa
 import Then
 import SharedDesignSystem
 
-public final class OnboardingProfileView: UIView {
+public final class OnboardingProfileView: BaseView, Touchable {
+  
   // MARK: - View Property
   private let containerView: UIView = UIView()
   private let titleTextView = TitleTextView()
@@ -34,12 +35,15 @@ public final class OnboardingProfileView: UIView {
     $0.title = "계속하기"
     $0.setState(enabledCofig, for: .enabled)
     $0.setState(disabledConfig, for: .disabled)
+    
+    $0.layer.cornerRadius = 8
   }
   
   private weak var maleCheckBoxView: GenderCheckBoxView?
   private weak var femaleCheckBoxView: GenderCheckBoxView?
   private weak var birthDatePicker: UIDatePicker?
-  private weak var profileImagePickerView: ProfileImagePickerView?
+  private weak var profileImagePickerView: ChangeableImageButton?
+  private weak var profileImageTextBoxView: TextBoxView?
   private weak var mbtiView: MBTIView?
   
   // MARK: - Rx Property
@@ -51,16 +55,23 @@ public final class OnboardingProfileView: UIView {
   // MARK: - Life Method
   public override init(frame: CGRect) {
     super.init(frame: frame)
-    bind()
-    configureUI()
   }
   
-  required init?(coder: NSCoder) {
-    super.init(coder: coder)
+  // MARK: - UIConfigurable
+  override public func configureUI() {
+    setContainView()
+  }
+  
+  // MARK: - UIBindable
+  override public func bind() {
+    continueButton.touchEventRelay
+      .map { TouchType.continueButton }
+      .bind(to: self.touchEventRelay)
+      .disposed(by: disposeBag)
   }
 }
 
-extension OnboardingProfileView: Touchable {
+extension OnboardingProfileView {
   public enum TouchType {
     case tabGender(Gender)
     case setBirth(Date)
@@ -68,15 +79,7 @@ extension OnboardingProfileView: Touchable {
     case tabImagePicker
     case toggleMBTI(MBTISeletedState, Bool)
   }
-}
 
-extension OnboardingProfileView {
-  private func bind() {
-    continueButton.touchEventRelay
-      .map { TouchType.continueButton }
-      .bind(to: self.touchEventRelay)
-      .disposed(by: disposeBag)
-  }
   private func bindGender() {
     maleCheckBoxView?.touchEventRelay
       .map { TouchType.tabGender(.male) }
@@ -88,18 +91,21 @@ extension OnboardingProfileView {
       .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
+  
   private func bindBirth() {
     birthDatePicker?.rx.date
       .map { TouchType.setBirth($0) }
       .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
+  
   private func bindProfileImage() {
     profileImagePickerView?.touchEventRelay
       .map { TouchType.tabImagePicker }
       .bind(to: self.touchEventRelay)
       .disposed(by: disposeBag)
   }
+  
   private func bindMBTI() {
     mbtiView?.touchEventRelay
       .map { touch in TouchType.toggleMBTI(touch.0, touch.1) }
@@ -109,9 +115,6 @@ extension OnboardingProfileView {
 }
 
 extension OnboardingProfileView {
-  private func configureUI() {
-    setContainView()
-  }
   
   private func setContainView() {
     addSubview(containerView)
@@ -121,11 +124,12 @@ extension OnboardingProfileView {
     containerView.addSubview(continueButton)
     
     containerView.snp.makeConstraints{
-      $0.top.leading.trailing.bottom.equalToSuperview()
+      $0.top.equalToSuperview().offset(16)
+      $0.leading.trailing.bottom.equalToSuperview()
     }
     
     titleTextView.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(112)
+      $0.top.equalToSuperview()
       $0.leading.trailing.equalToSuperview()
       $0.height.greaterThanOrEqualTo(75)
     }
@@ -145,15 +149,31 @@ extension OnboardingProfileView {
     continueButton.snp.makeConstraints {
       $0.height.equalTo(52)
       $0.leading.trailing.equalToSuperview().inset(20)
-      $0.bottom.equalToSuperview().inset(30)
+      $0.bottom.equalTo(self.keyboardLayoutGuide.snp.top).offset(-16)
     }
   }
   
   private func setupGenderCheckBoxView() {
-    let maleCheckBoxView = GenderCheckBoxView()
-    let femaleCheckBoxView = GenderCheckBoxView()
-    maleCheckBoxView.genderType = .male
-    femaleCheckBoxView.genderType = .female
+    let maleCheckBoxView = GenderCheckBoxView().then {
+      typealias Configuration = GenderCheckBoxView.Configuration
+      let unchecked = Configuration(tintColor: SystemColor.gray500.uiColor)
+      let checked = Configuration(tintColor: SystemColor.primaryNormal.uiColor)
+      
+      $0.setState(unchecked, for: .unChecked)
+      $0.setState(checked, for: .checked)
+      $0.currentState = .unChecked
+      $0.genderType = .male
+    }
+    let femaleCheckBoxView = GenderCheckBoxView().then {
+      typealias Configuration = GenderCheckBoxView.Configuration
+      let unchecked = Configuration(tintColor: SystemColor.gray500.uiColor)
+      let checked = Configuration(tintColor: SystemColor.primaryNormal.uiColor)
+      
+      $0.setState(unchecked, for: .unChecked)
+      $0.setState(checked, for: .checked)
+      $0.currentState = .unChecked
+      $0.genderType = .female
+    }
     
     contentView.addSubview(maleCheckBoxView)
     contentView.addSubview(femaleCheckBoxView)
@@ -187,13 +207,50 @@ extension OnboardingProfileView {
   }
   
   private func setupProfileImagePicker() {
-    let profileImagePickerView = ProfileImagePickerView()
+    let profleImageTextBoxView = TextBoxView()
+    let profileImagePickerView = ChangeableImageButton().then {
+      typealias Configuration = ChangeableImageButton.Configuration
+      
+      let emptyState = Configuration(
+        image: UIImage(systemName: "plus")!,
+        tintColor: SystemColor.gray600.uiColor,
+        size: 26.67,
+        isEnabled: true
+      )
+      let inpuedState = Configuration(
+        image: UIImage(),
+        tintColor: .clear,
+        size: 0,
+        isEnabled: true
+      )
+      
+      $0.setState(emptyState, for: .systemImage)
+      $0.setState(inpuedState, for: .customImage)
+      $0.currentState = .systemImage
+      
+      $0.layer.cornerRadius = 160 / 2
+      $0.clipsToBounds = true
+      $0.backgroundColor = SystemColor.gray100.uiColor
+      $0.layer.borderWidth = 1
+      $0.layer.borderColor = SystemColor.gray300.uiColor.cgColor
+    }
+        
+    contentView.addSubview(profleImageTextBoxView)
     contentView.addSubview(profileImagePickerView)
+
     profileImagePickerView.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(96)
-      $0.leading.trailing.equalToSuperview()
+      $0.size.equalTo(160)
+      $0.centerX.centerY.equalToSuperview()
+    }
+    profleImageTextBoxView.snp.makeConstraints {
+      $0.bottom.equalTo(profileImagePickerView.snp.top).offset(-12)
+      $0.centerX.equalToSuperview()
+      $0.width.equalTo(204)
+      $0.height.equalTo(47)
     }
     self.profileImagePickerView = profileImagePickerView
+    self.profileImageTextBoxView = profleImageTextBoxView
+
   }
   
   private func setupMBTIView() {
@@ -226,7 +283,7 @@ extension OnboardingProfileView {
     case .profileImage:
       setupProfileImagePicker()
       bindProfileImage()
-    case .none, .nickName:
+    case .none:
       print("none")
     }
   }
@@ -246,5 +303,16 @@ extension OnboardingProfileView {
   
   public func updateMBTIView(_ mbti: MBTI) {
     mbtiView?.updateMBTIView(mbti)
+  }
+  
+  public func updateProfileImageView(_ image: UIImage?) {
+    if image == nil {
+      profileImageTextBoxView?.updateProfileImage(false)
+      profileImagePickerView?.currentState = .systemImage
+    } else {
+      profileImageTextBoxView?.updateProfileImage(true)
+      profileImagePickerView?.updateStateConfigure(.customImage, image: image ?? UIImage())
+      profileImagePickerView?.currentState = .customImage
+    }
   }
 }

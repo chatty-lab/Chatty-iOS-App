@@ -15,9 +15,9 @@ public final class OnboardingProfileReactor: Reactor {
     case toggleGender(Gender)
     case selectBirth(Date)
     case toggleMBTI(MBTISeletedState, Bool)
+    case selectImage(UIImage)
     case tabContinueButton
     case tabImagePicker
-    case seletedImage(UIImage?)
     case didPushed
   }
   
@@ -26,7 +26,7 @@ public final class OnboardingProfileReactor: Reactor {
     case inputedGender(Gender)
     case inputedBirth(Date)
     case toggleMBTI(MBTISeletedState, Bool)
-    case inputedImage(UIImage?)
+    case inputedImage(UIImage)
     case tabContinueButton
     case tabImagePicker
     case didPushed
@@ -35,14 +35,28 @@ public final class OnboardingProfileReactor: Reactor {
   
   /// 화면의 상태를 나타내는 구조체
   public struct State {
-    var viewState: ProfileState
+    var viewState: ProfileType
+    var profileData: ProfileState
     var isContinueEnabled: Bool = false
     var isPickingImage: Bool = false
     var isSuccessSave: Bool = false
     var isLoading: Bool = false
     
-    init(state: ProfileState) {
+    init(state: ProfileType) {
       self.viewState = state
+      self.profileData = SampleUserService.fetchDate()
+      switch viewState {
+      case .gender:
+        self.isContinueEnabled = profileData.gender != .none
+      case .birth:
+        self.isContinueEnabled = true
+      case .profileImage:
+        self.isContinueEnabled = profileData.porfileImage != nil
+      case .mbti:
+        self.isContinueEnabled = profileData.mbti.didSeletedAll
+      case .none:
+        print("none")
+      }
     }
   }
   public var initialState: State
@@ -59,20 +73,21 @@ extension OnboardingProfileReactor {
       return .just(.inputedGender(gender))
     case .selectBirth(let date):
       return .just(.inputedBirth(date))
+    case .selectImage(let image):
+      return .just(.inputedImage(image))
     case .tabContinueButton:
       return .just(.tabContinueButton)
     case .tabImagePicker:
       return .just(.tabImagePicker)
     case .didPushed:
       return .just(.didPushed)
-    case .seletedImage(let image):
-      return .just(.inputedImage(image))
     case .toggleMBTI(let mbti, let state):
       return .concat([
         .just(.isLoading(true)),
         .just(.toggleMBTI(mbti, state)),
         .just(.isLoading(false))
       ])
+    
     }
   }
   
@@ -80,35 +95,36 @@ extension OnboardingProfileReactor {
     var newState = state
     switch mutation {
     case .inputedGender(let gender):
-      newState.viewState.gender = gender
+      newState.profileData.gender = gender
       newState.isContinueEnabled = true
     case .inputedBirth(let date):
-      newState.viewState.birth = date
+      newState.profileData.birth = date
+      newState.isContinueEnabled = true
+    case .inputedImage(let image):
+      newState.profileData.porfileImage = image
       newState.isContinueEnabled = true
     case .tabImagePicker:
       newState.isPickingImage = true
+    case .toggleMBTI(let mbti, let state):
+      newState.profileData.mbti.setMBTI(mbti: mbti, state: state)
+      newState.isContinueEnabled = newState.profileData.mbti.didSeletedAll
     case .didPushed:
       newState.isSuccessSave = false
       newState.isPickingImage = false
-    case .inputedImage(let image):
-      newState.viewState.porfileImage = image
-    case .toggleMBTI(let mbti, let state):
-      newState.viewState.mbti.setMBTI(mbti: mbti, state: state)
-      newState.isContinueEnabled = newState.viewState.mbti.didSeletedAll
     case .isLoading(let bool):
       newState.isLoading = bool
-    
-    /// 저장 api 통신 혹은 다음뷰로 가는 코드
-    case .tabContinueButton:
       
-      switch currentState.viewState.type {
-      case .nickName, .gender, .birth, .profileImage, .none:
+      /// 저장 api 통신 혹은 다음뷰로 가는 코드
+    case .tabContinueButton:
+      switch currentState.viewState {
+      case .gender, .birth, .profileImage, .none:
+        SampleUserService.setDate(currentState.profileData)
         newState.isSuccessSave = true
       case .mbti:
         // Core.saveProfiles
+        SampleUserService.setDate(currentState.profileData)
         newState.isSuccessSave = true
       }
-
     }
     return newState
   }

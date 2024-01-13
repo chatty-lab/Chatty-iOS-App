@@ -132,15 +132,19 @@ extension GenderCheckBoxView: StateConfigurable {
   }
   
   public func updateForCurrentState() {
-
+    guard let currentState,
+          let config = configurations[currentState] else { return }
+    self.layer.borderColor = config.tintColor.cgColor
   }
 }
 
 extension GenderCheckBoxView {
   public func updateForCurrentState(_ gender: Gender) {
     if genderType == gender {
+      currentState = .checked
       self.checkBoxImageView.currentState = .checked
     } else {
+      currentState = .unChecked
       self.checkBoxImageView.currentState = .unChecked
     }
   }

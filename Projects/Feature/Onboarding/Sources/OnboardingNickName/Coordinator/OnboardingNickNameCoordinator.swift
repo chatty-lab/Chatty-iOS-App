@@ -9,14 +9,16 @@ import UIKit
 import Shared
 import SharedDesignSystem
 
-public final class OnboardingNickNameCoordinator: OnboardingNickNameCoordinatorProtocol {
-  public var finishDelegate: Shared.CoordinatorFinishDelegate?
+public final class OnboardingNickNameCoordinator: OnboardingNickNameCoordinatorProtocol, CoordinatorFinishDelegate, BaseNavigationDelegate {
+  public weak var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: CustomNavigationController
-  public var childCoordinators: [Shared.Coordinator] = []
-  public var type: Shared.CoordinatorType = .onboarding(.profileUpdate(.nickName))
+  public var childCoordinators: [Coordinator] = []
+  public var childViewControllers: ChildViewController = .init()
+  public var type: CoordinatorType = .onboarding(.profileUpdate(.nickName))
   
   public init(_ navigationController: CustomNavigationController) {
     self.navigationController = navigationController
+    navigationController.baseDelegate = self
   }
   
   public func start() {
@@ -24,23 +26,19 @@ public final class OnboardingNickNameCoordinator: OnboardingNickNameCoordinatorP
     let onboardingNickNameController = OnboardingNickNameController(reactor: onboardingNickNameReactor)
     onboardingNickNameController.delegate = self
     navigationController.pushViewController(onboardingNickNameController, animated: true)
+    childViewControllers.increase()
   }
   
-  public func pushToProfile(_ nickName: String) {
-    let onboardingProfileCoordinator = OnboardingProfileCoordinator(navigationController)
-    childCoordinators.append(onboardingProfileCoordinator)
+  public func pushToProfiles() {
+    let onboardingProfileCoordinator = OnboardingProfileCoordinator(self.navigationController)
     
     onboardingProfileCoordinator.finishDelegate = self
+    childCoordinators.append(onboardingProfileCoordinator)
+    
     onboardingProfileCoordinator.start()
   }
   
   deinit {
-    print("deinit - Onboarding NickName Coordinator")
-  }
-}
-
-extension OnboardingNickNameCoordinator: CoordinatorFinishDelegate {
-  public func coordinatorDidFinish(childCoordinator: Shared.Coordinator) {
-    
+    print("해제됨: NickName Coordinator")
   }
 }
