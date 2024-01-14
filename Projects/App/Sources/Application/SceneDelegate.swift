@@ -27,7 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     let navigationController = CustomNavigationController()
     appCoordinator = AppCoordinator(window: window, navigationController)
     appCoordinator?.start()
-    }
+  }
 
   func sceneDidDisconnect(_ scene: UIScene) {
     // Called as the scene is being released by the system.
