@@ -10,32 +10,9 @@ import RxSwift
 import RxCocoa
 import SnapKit
 
-open class CustomNavigationBarButton<TouchEventType>: BaseControl, Touchable, Highlightable {
-  // MARK: - View Property
-  private var imageView: UIImageView = UIImageView().then {
-    $0.contentMode = .scaleAspectFit
-  }
-  
-  // MARK: - Touchable
-  public var touchEventRelay: PublishRelay<TouchEventType> = .init()
-  
-  // MARK: - Initialize Method
-  public convenience init(image: UIImage) {
-    self.init(frame: .zero)
-    setupImageView(image)
-  }
-  
-  // MARK: - UIConfigurable
-  open override func configureUI() {
-    addSubview(imageView)
-    imageView.snp.makeConstraints {
-      $0.leading.trailing.top.bottom.equalToSuperview()
-    }
-  }
-  
-  private func setupImageView(_ image: UIImage) {
-    self.imageView.image = image
-  }
+open class CustomNavigationBarButton: CustomNavigationBarItem, Touchable, Highlightable {
+  // MARK: - Reactor Property
+  public var touchEventRelay: RxRelay.PublishRelay<Void> = .init()
   
   // MARK: - UIBindable
   open override func bind() {
@@ -55,5 +32,10 @@ open class CustomNavigationBarButton<TouchEventType>: BaseControl, Touchable, Hi
       self.unhighlight(self)
     }
     .disposed(by: disposeBag)
+    
+    self.rx.controlEvent(.touchUpInside)
+      .map { () }
+      .bind(to: touchEventRelay)
+      .disposed(by: disposeBag)
   }
 }
