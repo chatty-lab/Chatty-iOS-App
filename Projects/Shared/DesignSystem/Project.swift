@@ -1,3 +1,10 @@
+//
+//  Project.swift
+//  ProjectDescriptionHelpers
+//
+//  Created by walkerhilla on 12/12/23.
+//
+
 import ProjectDescription
 import ProjectDescriptionHelpers
 import DependencyPlugin
