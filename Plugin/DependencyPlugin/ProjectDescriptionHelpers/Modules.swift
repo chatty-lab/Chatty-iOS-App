@@ -59,6 +59,7 @@ public extension ModulePath {
 
 public extension ModulePath {
   enum Shared: String, CaseIterable {
+    case ThirdPartyLib
     case DesignSystem
     
     public static let name: String = "Shared"
