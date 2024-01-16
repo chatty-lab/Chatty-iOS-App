@@ -18,13 +18,13 @@ public class RequestHeader {
 }
 
 public enum HeaderCase {
-  case accessToken
+  case accessToken(String)
   case json
   
   var dict: [String: String] {
     switch self {
-    case .accessToken:
-      return ["Authorization": "token"]
+    case .accessToken(let token):
+      return ["Authorization": token]
     case .json:
       return ["Content-Type": "application/json"]
     }

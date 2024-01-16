@@ -1,8 +1,8 @@
 //
-//  ApiServiceProtocol.swift
+//  APIServiceProtocol.swift
 //  CoreNetwork
 //
-//  Created by 윤지호 on 1/15/24.
+//  Created by walkerhilla on 1/15/24.
 //
 
 import Foundation
@@ -24,13 +24,13 @@ import RxSwift
 ///   응답은 `Decodable` 모델로 반환됩니다. 
 ///   반환 타입은 `Single<Model>`로, RxSwift의 Single Trait을 사용하여 단일 이벤트를 나타냅니다.
 ///
-public protocol ApiServiceProtocol {
+public protocol APIServiceProtocol {
   associatedtype Router: TargetType
-  var provider: MoyaProvider<Router> { get set }
+  var provider: MoyaProvider<Router> { get }
   func request<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Single<Model>
 }
 
-public extension ApiServiceProtocol {
+public extension APIServiceProtocol {
   func request<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Single<Model> {
     return provider.rx.request(endPoint).flatMap { response -> Single<Model> in
       print(response.statusCode)

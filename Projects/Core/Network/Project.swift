@@ -9,10 +9,6 @@ import ProjectDescription
 import ProjectDescriptionHelpers
 import DependencyPlugin
 
-let infoPlist: [String: Plist.Value] = [
-  "baseURL": "$(baseURL)",
-]
-
 let project = Project.makeModule(
   name: ModulePath.Core.name+ModulePath.Core.Network.rawValue,
   targets: [
@@ -27,7 +23,6 @@ let project = Project.makeModule(
     .core(
       implements: .Network,
       factory: .init(
-        infoPlist: .extendingDefault(with: infoPlist),
         dependencies: [
           .core(interface: .Network)
         ]
