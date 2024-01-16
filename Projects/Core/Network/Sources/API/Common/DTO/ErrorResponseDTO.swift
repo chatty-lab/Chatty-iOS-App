@@ -12,3 +12,4 @@ public struct ErrorResponseDTO: Decodable, Error {
   let status: String
   let message: String
 }
+
