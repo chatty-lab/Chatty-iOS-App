@@ -8,7 +8,7 @@
 import Foundation
 import Moya
 
-public enum AuthAPIRouter: Router {
+public enum AuthAPIRouter: RouterProtocol {
   case mobile(MobileRequestDTO)
   case refresh(RefreshRequestDTO)
   case token(TokenRequestDTO)

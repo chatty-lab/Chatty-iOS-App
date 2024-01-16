@@ -1,5 +1,5 @@
 //
-//  Router.swift
+//  RouterProtocol.swift
 //  CoreNetwork
 //
 //  Created by walkerhilla on 1/16/24.
@@ -8,6 +8,6 @@
 import Foundation
 import Moya
 
-public protocol Router: TargetType {
+public protocol RouterProtocol: TargetType {
   var basePath: String { get }
 }

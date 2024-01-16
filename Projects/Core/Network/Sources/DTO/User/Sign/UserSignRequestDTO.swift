@@ -1,15 +1,15 @@
 //
-//  UserSignRequestDTO.swift
-//  CoreNetworkInterface
+//  UserAuthRequestDTO.swift
+//  CoreNetwork
 //
-//  Created by 윤지호 on 1/15/24.
+//  Created by walkerhilla on 1/16/24.
 //
 
 import Foundation
 
 public struct UserSignRequestDTO: Encodable {
   let mobileNumber: String
-  let deviceId: String
   let authenticationNumber: String
+  let deviceId: String
   let deviceToken: String
 }

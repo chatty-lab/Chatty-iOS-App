@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct UserAuthResponseDTO: CommonResponseDTO {
+public struct UserSignResponseDTO: CommonResponseDTO {
   public var code: Int
   public var status: String
   public var message: String

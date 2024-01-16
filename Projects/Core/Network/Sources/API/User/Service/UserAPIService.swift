@@ -8,9 +8,14 @@
 import Foundation
 import Moya
 
-public final class UserAPIService: APIServiceProtocol {
+public final class UserAPIService: APIServiceProtocol {  
   public typealias Router = UserAPIRouter
-  public let provider: MoyaProvider<UserAPIRouter> = .init()
-  
+  public var provider: MoyaProvider<UserAPIRouter> = .init(plugins: [
+    MoyaLoggingPlugin(),
+    AccessTokenPlugin { target in
+      let accesstoken = "accesstoken"
+      return accesstoken
+    }
+  ])
   public init() { }
 }
