@@ -20,7 +20,12 @@ let SPM = SwiftPackageManagerDependencies(
   productTypes: [
     "RxGesture": .framework,
     "Then": .framework,
-    "ReactorKit": .framework
+    "ReactorKit": .framework,
+    "Moya": .framework,
+    "RxMoya": .framework,
+    "ReactiveMoya": .framework,
+    "CombineMoya": .framework,
+    "Alamofire": .framework,
   ],
   baseSettings: .settings(
     configurations: [

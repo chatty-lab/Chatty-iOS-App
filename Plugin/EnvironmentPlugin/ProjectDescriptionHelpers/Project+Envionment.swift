@@ -11,7 +11,7 @@ import ProjectDescription
 public extension Project {
   enum Environment {
     public static let appName = "Chatty"
-    public static let deploymentTarget = DeploymentTarget.iOS(targetVersion: "16.0", devices: [.iphone])
+    public static let deploymentTargets = DeploymentTargets.iOS("16.0")
     public static let bundleIdPrefix = "org.chattylab.chatty"
   }
 }
