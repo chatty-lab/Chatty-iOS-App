@@ -1,9 +1,9 @@
 name: UploadTestflight
 
 on:
-  create:
+  push:
     branches:
-      - release/*
+      - 'release/*'
 
 jobs:
   upload_testflight:
