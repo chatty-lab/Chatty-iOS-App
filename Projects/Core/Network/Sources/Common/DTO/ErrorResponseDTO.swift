@@ -11,5 +11,13 @@ public struct ErrorResponseDTO: Decodable, Error {
   let errorCode: String
   let status: String
   let message: String
+  
+  func toMappedError() -> NetworkError {
+    if let existableErrorCase = ExistableErrorCode(rawValue: errorCode) {
+      let errorCase = existableErrorCase.toCase()
+      return NetworkError(errorCase: errorCase, massage: errorCase.message)
+    } else {
+      return NetworkError(errorCase: .UnknownError, massage: message)
+    }
+  }
 }
-
