@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     application.registerForRemoteNotifications()
 
-    AppMessegingService.Firebase.setDelegate(self)
+    AppMessagingService.Firebase.setDelegate(self)
     
     return true
   }
