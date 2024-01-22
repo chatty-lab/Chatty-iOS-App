@@ -15,6 +15,7 @@ let targets: [Target] = [
       dependencies: [
         .shared(implements: .DesignSystem),
         .shared(implements: .ThirdPartyLib),
+        .shared(implements: .Firebase),
         .shared(implements: .Util)
       ]
     )
