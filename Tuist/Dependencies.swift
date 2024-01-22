@@ -36,6 +36,6 @@ let SPM = SwiftPackageManagerDependencies(
 )
 
 let dependencies = Dependencies(
-  swiftPackageManager: SPM,
-  platforms: [.iOS]
+    swiftPackageManager: SPM,
+    platforms: [.iOS]
 )
