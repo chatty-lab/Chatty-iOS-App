@@ -40,7 +40,8 @@ public extension APIServiceProtocol {
       } catch {
         do {
           let errorResponse = try JSONDecoder().decode(ErrorResponseDTO.self, from: response.data)
-          return Single.error(errorResponse)
+          let mappedError = errorResponse.toMappedError()
+          return Single.error(mappedError)
         } catch {
           return Single.error(error)
         }
