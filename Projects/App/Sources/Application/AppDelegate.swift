@@ -11,8 +11,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     if let filePath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") {
       AppFirebase.Firebase.configure(with: filePath)
     }
-    
-    // 앱 실행 시 사용자에게 알림 허용 권한을 받음
+
     UNUserNotificationCenter.current().delegate = self
     
     let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound] // 필요한 알림 권한을 설정
@@ -22,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     )
     
     application.registerForRemoteNotifications()
-
+    
     AppMessagingService.Firebase.setDelegate(self)
     
     return true

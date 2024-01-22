@@ -65,6 +65,7 @@ public extension AppFirebase {
 public extension AppMessagingService {
   enum Firebase {
     static var messagingManager: FirebaseMessagingServiceable = FirebaseMessagingManager()
+    
     public static func setDelegate(_ delegate: MessagingDelegate) {
       messagingManager.setDelegate(delegate)
     }
