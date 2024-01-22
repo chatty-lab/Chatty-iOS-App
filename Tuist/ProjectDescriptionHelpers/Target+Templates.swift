@@ -118,6 +118,7 @@ public extension Target {
       newFactory.bundleId = Project.Environment.bundleIdPrefix + configuration.bundleIdSuffix
       newFactory.sources = ["Sources/**"]
       newFactory.resources = ["Resources/**"]
+      newFactory.entitlements = .file(path: "Chatty.entitlements")
       newFactory.settings = .settings(
         base: [
           "VERSIONING_SYSTEM": "apple-generic"
