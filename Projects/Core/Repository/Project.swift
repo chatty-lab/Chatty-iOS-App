@@ -1,19 +1,12 @@
-//
-//  Project.swift
-//  ProjectDescriptionHelpers
-//
-//  Created by walkerhilla on 12/12/23.
-//
-
 import ProjectDescription
 import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.makeModule(
-  name: ModulePath.Core.name+ModulePath.Core.Network.rawValue,
+  name: ModulePath.Core.name+ModulePath.Core.Repository.rawValue,
   targets: [
     .core(
-      interface: .Network,
+      interface: .Repository,
       factory: .init(
         dependencies: [
           .shared
@@ -21,28 +14,28 @@ let project = Project.makeModule(
       )
     ),
     .core(
-      implements: .Network,
+      implements: .Repository,
       factory: .init(
         dependencies: [
-          .core(interface: .Network)
+          .core(interface: .Repository)
         ]
       )
     ),
     .core(
-      testing: .Network,
+      testing: .Repository,
       factory: .init(
         dependencies: [
-          .core(interface: .Network)
+          .core(interface: .Repository)
         ]
       )
     ),
     .core(
-      tests: .Network,
+      tests: .Repository,
       factory: .init(
         dependencies: [
-          .core(testing: .Network)
+          .core(testing: .Repository)
         ]
       )
-    )
+    ),
   ]
 )

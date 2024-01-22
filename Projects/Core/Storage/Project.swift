@@ -21,15 +21,14 @@ let project = Project.makeModule(
         ]
       )
     ),
-    
-      .core(
-        testing: .Storage,
-        factory: .init(
-          dependencies: [
-            .core(interface: .Storage)
-          ]
-        )
-      ),
+    .core(
+      testing: .Storage,
+      factory: .init(
+        dependencies: [
+          .core(interface: .Storage)
+        ]
+      )
+    ),
     .core(
       tests: .Storage,
       factory: .init(

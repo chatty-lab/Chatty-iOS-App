@@ -49,6 +49,7 @@ public extension ModulePath {
 
 public extension ModulePath {
   enum Core: String, CaseIterable {
+    case Repository
     case Storage
     case Network
     

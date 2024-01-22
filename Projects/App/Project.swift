@@ -31,7 +31,8 @@ let infoPlist: [String: Plist.Value] = [
   ],
   "UIBackgroundModes": [
     "remote-notification"
-  ]
+  ],
+  "baseURL": "$(baseURL)"
 ]
 
 func createGoogleServiceInfoScript(for target: ProjectDeployTarget) -> TargetScript {
