@@ -34,7 +34,6 @@ public enum ErrorCase: Error {
   case E016InvalidExtension
   case E017NonExistentMatch
   case E018DailyMatchingLimitOver
-  case E019TooManyRequests
   
   // Common Error
   case E097WrongEndpointRequest
@@ -84,8 +83,6 @@ public enum ErrorCase: Error {
       return "존재하지 않는 매치입니다."
     case .E018DailyMatchingLimitOver:
       return "일일 매칭 횟수 제한을 초과했습니다."
-    case .E019TooManyRequests:
-      return "너무 많은 요청을 보냈습니다."
     
     // Common Error
     case .E097WrongEndpointRequest:
@@ -123,7 +120,6 @@ public enum ErrorCode: String {
   case E016
   case E017
   case E018
-  case E019
   
   // Common Error
   case E097
@@ -172,8 +168,6 @@ public enum ErrorCode: String {
       return .E017NonExistentMatch
     case .E018:
       return .E018DailyMatchingLimitOver
-    case .E019:
-      return .E019TooManyRequests
       
     // Common Error
     case .E097:
