@@ -61,6 +61,7 @@ public extension ModulePath {
 
 public extension ModulePath {
   enum Shared: String, CaseIterable {
+    case Firebase
     case Util
     case ThirdPartyLib
     case DesignSystem
