@@ -28,7 +28,8 @@ let infoPlist: [String: Plist.Value] = [
         ]
       ]
     ]
-  ]
+  ],
+  "baseURL": "$(baseURL)"
 ]
 
 let targets: [Target] = [
