@@ -28,8 +28,29 @@ let infoPlist: [String: Plist.Value] = [
         ]
       ]
     ]
+  ],
+  "UIBackgroundModes": [
+    "remote-notification"
   ]
 ]
+
+func createGoogleServiceInfoScript(for target: ProjectDeployTarget) -> TargetScript {
+  let plistSuffix: String
+  switch target {
+  case .debug:
+    plistSuffix = "-Debug"
+  case .qa:
+    plistSuffix = "-QA"
+  case .release:
+    plistSuffix = "-Release"
+  }
+  
+  let script = """
+                 cp -r "${SRCROOT}/Resources/Firebase/GoogleService-Info\(plistSuffix).plist" "${SRCROOT}/Resources/GoogleService-Info.plist"
+                """
+  
+  return TargetScript.pre(script: script, name: "Copy GoogleService-Info.plist")
+}
 
 let targets: [Target] = [
   .app(
@@ -37,6 +58,9 @@ let targets: [Target] = [
     configuration: .debug,
     factory: .init(
       infoPlist: .extendingDefault(with: infoPlist),
+      scripts: [
+        createGoogleServiceInfoScript(for: .debug)
+      ],
       dependencies: [
         .feature
       ]
@@ -47,6 +71,9 @@ let targets: [Target] = [
     configuration: .qa,
     factory: .init(
       infoPlist: .extendingDefault(with: infoPlist),
+      scripts: [
+        createGoogleServiceInfoScript(for: .qa)
+      ],
       dependencies: [
         .feature
       ]
@@ -57,6 +84,9 @@ let targets: [Target] = [
     configuration: .release,
     factory: .init(
       infoPlist: .extendingDefault(with: infoPlist),
+      scripts: [
+        createGoogleServiceInfoScript(for: .release)
+      ],
       dependencies: [
         .feature
       ]
@@ -67,5 +97,11 @@ let targets: [Target] = [
 let project: Project = .makeModule(
   name: "Chatty",
   targets: targets,
+  settings: .settings(
+    configurations: [
+      .debug(name: .debug),
+      .release(name: .release)
+    ]
+  ),
   additionalFiles: ["\(Path.sharedXcconfig.pathString)"]
 )
