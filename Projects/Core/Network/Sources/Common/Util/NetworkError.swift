@@ -101,7 +101,7 @@ public enum ErrorCase: Error {
   }
 }
 
-public enum ExistableErrorCode: String {
+public enum ErrorCode: String {
   // Common Error
   case E000
   case E001
