@@ -3,10 +3,10 @@ import ProjectDescriptionHelpers
 import DependencyPlugin
 
 let project = Project.makeModule(
-  name: ModulePath.Core.name+ModulePath.Core.Storage.rawValue,
+  name: ModulePath.Core.name+ModulePath.Core.Repository.rawValue,
   targets: [
     .core(
-      interface: .Storage,
+      interface: .Repository,
       factory: .init(
         dependencies: [
           .shared
@@ -14,26 +14,26 @@ let project = Project.makeModule(
       )
     ),
     .core(
-      implements: .Storage,
+      implements: .Repository,
       factory: .init(
         dependencies: [
-          .core(interface: .Storage)
+          .core(interface: .Repository)
         ]
       )
     ),
     .core(
-      testing: .Storage,
+      testing: .Repository,
       factory: .init(
         dependencies: [
-          .core(interface: .Storage)
+          .core(interface: .Repository)
         ]
       )
     ),
     .core(
-      tests: .Storage,
+      tests: .Repository,
       factory: .init(
         dependencies: [
-          .core(testing: .Storage)
+          .core(testing: .Repository)
         ]
       )
     ),
