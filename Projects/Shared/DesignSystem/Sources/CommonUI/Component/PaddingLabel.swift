@@ -14,7 +14,7 @@ public final class BasePaddingLabel: UILabel {
     self.init()
     self.padding = padding
   }
-  
+   
   public override func drawText(in rect: CGRect) {
     super.drawText(in: rect.inset(by: padding))
   }
