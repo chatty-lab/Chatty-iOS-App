@@ -44,6 +44,7 @@ public final class OnboardingProfileView: BaseView, Touchable {
   private weak var birthDatePicker: UIDatePicker?
   private weak var profileImagePickerView: ChangeableImageButton?
   private weak var profileImageTextBoxView: TextBoxView?
+  private weak var interestTagCollectionView: InterestTagCollectionView?
   private weak var mbtiView: MBTIView?
   
   // MARK: - Rx Property
@@ -77,6 +78,7 @@ extension OnboardingProfileView {
     case setBirth(Date)
     case continueButton
     case tabImagePicker
+    case tabTag(String)
     case toggleMBTI(MBTISeletedState, Bool)
   }
 
@@ -106,6 +108,13 @@ extension OnboardingProfileView {
       .disposed(by: disposeBag)
   }
   
+  private func bindInterest() {
+    interestTagCollectionView?.touchEventRelay
+      .map { TouchType.tabTag($0) }
+      .bind(to: self.touchEventRelay)
+      .disposed(by: disposeBag)
+  }
+
   private func bindMBTI() {
     mbtiView?.touchEventRelay
       .map { touch in TouchType.toggleMBTI(touch.0, touch.1) }
@@ -137,7 +146,7 @@ extension OnboardingProfileView {
     contentView.snp.makeConstraints {
       $0.top.equalTo(titleTextView.snp.bottom)
       $0.leading.trailing.equalToSuperview()
-      $0.height.lessThanOrEqualTo(400)
+      $0.height.lessThanOrEqualTo(600)
     }
     
     warningLabel.snp.makeConstraints {
@@ -253,6 +262,18 @@ extension OnboardingProfileView {
 
   }
   
+  private func setupInterestTagView() {
+    let interestTagCollectionView = InterestTagCollectionView()
+    
+    contentView.addSubview(interestTagCollectionView)
+    interestTagCollectionView.snp.makeConstraints {
+      $0.top.equalToSuperview().inset(56)
+      $0.height.equalTo(400)
+      $0.leading.trailing.equalToSuperview().inset(20)
+    }
+    self.interestTagCollectionView = interestTagCollectionView
+  }
+  
   private func setupMBTIView() {
     let mbtiView = MBTIView()
     contentView.addSubview(mbtiView)
@@ -277,12 +298,15 @@ extension OnboardingProfileView {
     case .birth:
       setupDatePicker()
       bindBirth()
-    case .mbti:
-      setupMBTIView()
-      bindMBTI()
     case .profileImage:
       setupProfileImagePicker()
       bindProfileImage()
+    case .interest:
+      setupInterestTagView()
+      bindInterest()
+    case .mbti:
+      setupMBTIView()
+      bindMBTI()
     case .none:
       print("none")
     }
@@ -301,10 +325,6 @@ extension OnboardingProfileView {
     }
   }
   
-  public func updateMBTIView(_ mbti: MBTI) {
-    mbtiView?.updateMBTIView(mbti)
-  }
-  
   public func updateProfileImageView(_ image: UIImage?) {
     if image == nil {
       profileImageTextBoxView?.updateProfileImage(false)
@@ -315,4 +335,18 @@ extension OnboardingProfileView {
       profileImagePickerView?.currentState = .customImage
     }
   }
+  
+  public func updateInterestCollectionView(_ tags: [String]) {
+    interestTagCollectionView?.updateCollectionView(tags)
+  }
+  
+  public func updateInterestCollectionCell(_ tags: [String]) {
+    interestTagCollectionView?.updateCell(tags)
+  }
+  
+  public func updateMBTIView(_ mbti: MBTI) {
+    mbtiView?.updateMBTIView(mbti)
+  }
+  
+ 
 }
