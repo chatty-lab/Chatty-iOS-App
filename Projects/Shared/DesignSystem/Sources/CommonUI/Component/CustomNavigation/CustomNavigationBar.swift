@@ -1,0 +1,139 @@
+//
+//  CustomNavigationBar.swift
+//  SharedDesignSystem
+//
+//  Created by walkerhilla on 1/2/24.
+//
+
+import UIKit
+import RxSwift
+import RxCocoa
+import SnapKit
+import Then
+
+public class CustomNavigationBar: BaseView, Touchable, Fadeable, CustomNavigationBarConfigurable {
+  // MARK: - View Property
+  public lazy var backButton: CustomNavigationBarButton? = nil {
+    didSet {
+      fadeOutView([oldValue])
+      setBackButton(backButton)
+      fadeInView([backButton])
+    }
+  }
+  
+  public lazy var titleView: CustomNavigationBarItem? = nil {
+    didSet {
+      fadeOutView([oldValue])
+      setTitleView(titleView, alignment: titleAlignment)
+      fadeInView([titleView])
+    }
+  }
+  
+  public var titleAlignment: TitleAlignment = .center
+  
+  public lazy var rightButtons: [CustomNavigationBarButton] = [] {
+    didSet {
+      fadeOutView(oldValue)
+      setRightButtons(rightButtons)
+      fadeInView(rightButtons)
+    }
+  }
+  
+  private let rightButtonStackView: UIStackView = UIStackView().then {
+    $0.axis = .horizontal
+    $0.spacing = 16
+    $0.alignment = .fill
+    $0.distribution = .equalSpacing
+  }
+  
+  // MARK: - Touchable
+  public var touchEventRelay: PublishRelay<TouchEventType> = .init()
+  
+  // MARK: - Rx Property
+  private let disposeBag = DisposeBag()
+  
+  open override func configureUI() {
+    setRightButtonStackView()
+  }
+  
+  private func setBackButton(_ backButton: CustomNavigationBarButton?) {
+    guard let backButton else { return }
+    addSubview(backButton)
+    backButton.snp.makeConstraints {
+      $0.leading.equalToSuperview().offset(16)
+      $0.centerY.equalToSuperview()
+      $0.size.equalTo(24)
+    }
+    
+    backButton.rx.controlEvent(.touchUpInside)
+      .withUnretained(self)
+      .map { _ in .back }
+      .bind(to: touchEventRelay)
+      .disposed(by: disposeBag)
+  }
+  
+  private func setTitleView(_ titleView: CustomNavigationBarItem?, alignment: TitleAlignment) {
+    guard let titleView else { return }
+    addSubview(titleView)
+    
+    switch alignment {
+    case .center:
+      titleView.snp.makeConstraints {
+        $0.center.equalToSuperview()
+      }
+    case .leading:
+      titleView.snp.makeConstraints {
+        $0.leading.equalToSuperview().offset(20)
+        $0.centerY.equalToSuperview()
+      }
+    }
+  }
+  
+  private func setRightButtons(_ rightButton: [CustomNavigationBarButton]) {
+    rightButtonStackView.removeAllSubviews()
+    rightButton.forEach {
+      rightButtonStackView.addArrangedSubview($0)
+    }
+  }
+  
+  private func setRightButtonStackView() {
+    addSubview(rightButtonStackView)
+    rightButtonStackView.snp.makeConstraints {
+      $0.trailing.equalToSuperview().offset(-20)
+      $0.centerY.equalToSuperview()
+      $0.height.equalTo(24)
+    }
+  }
+  
+  private func fadeOutView(_ views: [UIView?]) {
+    self.fadeOut(views, duration: .fast, alpha: .transparent) {
+      views.forEach {
+        $0?.removeFromSuperview()
+      }
+    }
+  }
+  
+  private func fadeInView(_ views: [UIView?]) {
+    views.forEach {
+      $0?.alpha = 0
+    }
+    self.fadeIn(views, duration: .normal, alpha: .full)
+  }
+}
+
+extension CustomNavigationBar {
+  public enum TouchEventType {
+    case back
+  }
+  
+  public enum TitleAlignment {
+    case center
+    case leading
+  }
+  
+  func setNavigation(with config: CustomNavigationBarConfiguration) {
+    self.titleView = config.titleView
+    self.titleAlignment = config.titleAlignment
+    self.rightButtons = config.rightButtons
+  }
+}
