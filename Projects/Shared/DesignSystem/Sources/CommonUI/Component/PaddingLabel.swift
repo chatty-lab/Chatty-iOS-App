@@ -10,11 +10,11 @@ import UIKit
 public final class BasePaddingLabel: UILabel {
   private var padding = UIEdgeInsets(top: 12.0, left: 16.0, bottom: 12.0, right: 16.0)
   
-  convenience init(padding: UIEdgeInsets) {
+  public convenience init(padding: UIEdgeInsets) {
     self.init()
     self.padding = padding
   }
-  
+   
   public override func drawText(in rect: CGRect) {
     super.drawText(in: rect.inset(by: padding))
   }

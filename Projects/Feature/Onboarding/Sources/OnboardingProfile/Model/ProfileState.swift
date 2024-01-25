@@ -13,5 +13,6 @@ public struct ProfileState {
   var gender: Gender
   var porfileImage: UIImage? = nil
   var birth: Date
+  var interest: [String]
   var mbti: MBTI
 }

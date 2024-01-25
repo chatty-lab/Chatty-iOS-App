@@ -51,7 +51,7 @@ public final class OnboardingProfileController: BaseController {
   
   deinit {
     self.delegate = nil
-    print("해제됨: ProfileController - delegate\(delegate == nil) ")
+    print("해제됨: ProfileController - delegate \(delegate == nil) ")
   }
 }
 
@@ -69,8 +69,11 @@ extension OnboardingProfileController: ReactorKit.View {
           owner.reactor?.action.onNext(.tabContinueButton)
         case .tabImagePicker:
           owner.reactor?.action.onNext(.tabImagePicker)
+        case .tabTag(let tag):
+          owner.reactor?.action.onNext(.tabTag(tag))
         case .toggleMBTI(let mbti, let state):
           owner.reactor?.action.onNext(.toggleMBTI(mbti, state))
+        
         }
       }
       .disposed(by: disposeBag)
@@ -139,6 +142,25 @@ extension OnboardingProfileController: ReactorKit.View {
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, image in
         owner.profileView.updateProfileImageView(image)
+      }
+      .disposed(by: disposeBag)
+    
+    // Interest Tag
+    reactor.state
+      .map(\.interestTags)
+      .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
+      .bind(with: self) { owner, tags in
+        owner.profileView.updateInterestCollectionView(tags)
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.profileData.interest)
+      .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
+      .bind(with: self) { owner, tags in
+        owner.profileView.updateInterestCollectionCell(tags)
       }
       .disposed(by: disposeBag)
     

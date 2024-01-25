@@ -8,7 +8,7 @@
 import UIKit
 
 public final class SampleUserService {
-  static var profileData: ProfileState = .init(nickName: "nickName", gender: .none, birth: Date.now, mbti: .init())
+  static var profileData: ProfileState = .init(nickName: "nickName", gender: .none, birth: Date.now, interest: [], mbti: .init())
   
   public static func setNickNameDate(_ nickName: String) {
     profileData.nickName = nickName

@@ -34,6 +34,10 @@ public enum SystemColor {
   case primaryMedium
   /// F32F4C
   case primaryNormal
+  /// E6E6E6
+  case neutralStroke
+  /// FBB9C2
+  case primaryStroke
   /// DC0328
   case systemErrorRed
   
@@ -65,6 +69,10 @@ public enum SystemColor {
       UIColor(asset: Colors.primaryMedium)!
     case .primaryNormal:
       UIColor(asset: Colors.primaryNormal)!
+    case .primaryStroke:
+      UIColor(asset: Colors.primaryStroke)!
+    case .neutralStroke:
+      UIColor(asset: Colors.neutralStroke)!
     case .systemErrorRed:
       UIColor(asset: Colors.primaryNormal)!
     }
