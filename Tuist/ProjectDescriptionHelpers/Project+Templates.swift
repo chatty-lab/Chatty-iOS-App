@@ -3,7 +3,12 @@ import DependencyPlugin
 import ConfigurationPlugin
 
 public extension Project {
-  static func makeModule(name: String, targets: [Target], settings: Settings? = nil, additionalFiles: [FileElement] = []) -> Self {
+  static func makeModule(
+    name: String,
+    targets: [Target],
+    settings: Settings? = nil,
+    additionalFiles: [FileElement] = [],
+    resourceSynthesizers: [ResourceSynthesizer] = []) -> Self {
     let name: String = name
     let organizationName: String? = nil
     let options: Project.Options = .options()
@@ -13,7 +18,7 @@ public extension Project {
     let schemes: [Scheme] = []
     let fileHeaderTemplate: FileHeaderTemplate? = nil
     let additionalFiles: [FileElement] = additionalFiles
-    let resourceSynthesizers: [ResourceSynthesizer] = []
+    let resourceSynthesizers: [ResourceSynthesizer] = resourceSynthesizers
     
     return .init(
       name: name,

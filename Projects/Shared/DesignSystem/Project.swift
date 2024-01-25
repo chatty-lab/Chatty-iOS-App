@@ -16,8 +16,17 @@ let project = Project.makeModule(
       implements: .DesignSystem,
       factory: .init(
         dependencies: [
+          .external(name: "RxSwift"),
+          .external(name: "RxGesture"),
+          .external(name: "SnapKit"),
+          .external(name: "Then")
         ]
       )
     )
+  ],
+  resourceSynthesizers: [
+    .assets(),
+    .fonts(),
+    .strings()
   ]
 )
