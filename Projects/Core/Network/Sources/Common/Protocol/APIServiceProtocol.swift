@@ -24,14 +24,14 @@ import RxSwift
 ///   응답은 `Decodable` 모델로 반환됩니다. 
 ///   반환 타입은 `Single<Model>`로, RxSwift의 Single Trait을 사용하여 단일 이벤트를 나타냅니다.
 ///
-public protocol APIServiceProtocol {
+public protocol APIServiceProtocol: AnyObject {
   associatedtype Router: TargetType
   var provider: MoyaProvider<Router> { get }
-  func request<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Single<Model>
+  func request<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Observable<Model>
 }
 
 public extension APIServiceProtocol {
-  func request<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Single<Model> {
+  func request<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Observable<Model> {
     return provider.rx.request(endPoint).flatMap { response -> Single<Model> in
       print(response.statusCode)
       do {
@@ -47,6 +47,7 @@ public extension APIServiceProtocol {
         }
       }
     }
+    .asObservable()
   }
 }
 

@@ -13,8 +13,6 @@ let targets: [Target] = [
   .core(
     factory: .init(
       dependencies: [
-        .core(implements: .Network),
-        .core(implements: .Storage),
         .core(implements: .Repository),
         .shared
       ]
