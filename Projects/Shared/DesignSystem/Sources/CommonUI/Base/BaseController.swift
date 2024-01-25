@@ -57,7 +57,7 @@ open class BaseController: UIViewController, UIConfigurable, Bindable {
   }
   
   open func setNavigationBar() {
-    customNavigationController?.customNavigationBarConfig = .init()
+    customNavigationController?.customNavigationBarConfig = CustomNavigationBarConfiguration()
   }
   
   // MARK: - Bindable

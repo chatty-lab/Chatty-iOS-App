@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 
 /// `CustomNavigationController`는 NavigationController에서 공통적으로 처리하는 로직의 인터페이스를 정의해요.
 ///
@@ -16,13 +17,14 @@ import RxSwift
 ///
 public final class CustomNavigationController: UINavigationController, Bindable {
   // MARK: - View Property
-  private var customNavigationBarConfigStack: [CustomNavigationBarConfiguration] = []
+  private var customNavigationBarConfigStack: [any CustomNavigationBarConfigurable] = []
   
   private var customNavigationBar: CustomNavigationBar = CustomNavigationBar()
   
-  public var customNavigationBarConfig: CustomNavigationBarConfiguration = .init() {
+  public var customNavigationBarConfig: (any CustomNavigationBarConfigurable)? = nil {
     willSet {
-      if !customNavigationBarConfigStack.contains(where: { $0 == newValue }) {
+      guard let newValue else { return }
+      if !customNavigationBarConfigStack.contains(where: { $0.identifier == newValue.identifier }) {
         customNavigationBarConfigStack.append(newValue)
       }
       setCustomNavigationBar(newValue)
@@ -39,6 +41,7 @@ public final class CustomNavigationController: UINavigationController, Bindable 
   
   // MARK: - Rx Property
   private let disposeBag = DisposeBag()
+  private let navigationBarRightButtonsRelay: PublishRelay<Int> = .init()
   
   // MARK: - BaseNavigation Delegate
   public weak var baseDelegate: BaseNavigationDelegate?
@@ -85,9 +88,22 @@ extension CustomNavigationController {
         case .back:
           let _ = owner.popViewController(animated: true)
           owner.baseDelegate?.popViewController()
+        case .rightButtons(let button):
+          owner.navigationBarRightButtonsRelay.accept(button.rawValue)
         }
       }
       .disposed(by: disposeBag)
+  }
+  
+  public func navigationBarEvents<T: IntCaseIterable>(of enumType: T.Type) -> PublishRelay<T> {
+    let relay = PublishRelay<T>()
+    
+    navigationBarRightButtonsRelay
+      .compactMap { enumType.init(rawValue: $0) }
+      .bind(to: relay)
+      .disposed(by: disposeBag)
+    
+    return relay
   }
   
   public func setCustomNavigationBarHidden(_ hidden: Bool, animated: Bool) {
@@ -116,8 +132,8 @@ extension CustomNavigationController {
     }
   }
   
-  private func setCustomNavigationBar(_ config: CustomNavigationBarConfiguration) {
-    customNavigationBar.setNavigation(with: config)
+  private func setCustomNavigationBar(_ config: any CustomNavigationBarConfigurable) {
+    customNavigationBar.setNavigationBar(with: config)
   }
   
   private func setBackButton(_ viewControllers: [UIViewController]) {

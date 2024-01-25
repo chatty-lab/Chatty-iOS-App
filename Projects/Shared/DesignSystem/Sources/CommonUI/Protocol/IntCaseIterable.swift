@@ -6,3 +6,5 @@
 //
 
 import Foundation
+
+public protocol IntCaseIterable: RawRepresentable, CaseIterable where RawValue == Int { }

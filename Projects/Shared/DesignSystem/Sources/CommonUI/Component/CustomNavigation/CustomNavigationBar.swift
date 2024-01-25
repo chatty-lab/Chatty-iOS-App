@@ -12,6 +12,8 @@ import SnapKit
 import Then
 
 public class CustomNavigationBar: BaseView, Touchable, Fadeable, CustomNavigationBarConfigurable {
+  public lazy var identifier: UUID = UUID()
+  
   // MARK: - View Property
   public lazy var backButton: CustomNavigationBarButton? = nil {
     didSet {
@@ -90,9 +92,15 @@ public class CustomNavigationBar: BaseView, Touchable, Fadeable, CustomNavigatio
   }
   
   private func setRightButtons(_ rightButton: [CustomNavigationBarButton]) {
-    rightButtonStackView.removeAllSubviews()
-    rightButton.forEach {
-      rightButtonStackView.addArrangedSubview($0)
+    rightButtonStackView.removeAllArrangedSubViews()
+    rightButton.enumerated().forEach { [weak self] index, item in
+      guard let self else { return }
+      self.rightButtonStackView.addArrangedSubview(item)
+      self.touchEventRelay
+        .withUnretained(self)
+        .map { _ in .rightButtons(.allCases[index]) }
+        .bind(to: self.touchEventRelay)
+        .disposed(by: disposeBag)
     }
   }
   
@@ -124,6 +132,11 @@ public class CustomNavigationBar: BaseView, Touchable, Fadeable, CustomNavigatio
 extension CustomNavigationBar {
   public enum TouchEventType {
     case back
+    case rightButtons(RightButton)
+  }
+  
+  public enum RightButton: Int, CaseIterable {
+    case button1, button2, button3, button4
   }
   
   public enum TitleAlignment {
@@ -131,7 +144,7 @@ extension CustomNavigationBar {
     case leading
   }
   
-  func setNavigation(with config: CustomNavigationBarConfiguration) {
+  func setNavigationBar(with config: any CustomNavigationBarConfigurable) {
     self.titleView = config.titleView
     self.titleAlignment = config.titleAlignment
     self.rightButtons = config.rightButtons
