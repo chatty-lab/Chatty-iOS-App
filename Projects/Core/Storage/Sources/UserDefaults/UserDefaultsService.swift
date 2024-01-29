@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import RxSwift
 
 public final class UserDefaultsService {
+  
   public init() { }
   
   public func creat(type: UserDefaultsRouter) {
@@ -17,12 +19,12 @@ public final class UserDefaultsService {
   /// JSON은 Data타입으로 encoding해서 받고 Data타입으로 반환합니다.
   /// 반환된 value값은 옵셔널 타입으로 타입 캐스팅 해서 사용할 수 있습니다
   /// 예시) service.read(type: .exampleDictionary()) as [String: Any]?
-  public func read<T>(type: UserDefaultsRouter) -> T? {
+  public func read<T>(type: UserDefaultsRouter) -> Observable<T?> {
     let data = UserDefaults.standard.object(forKey: type.key)
     guard data != nil else {
-      return nil
+      return .just(nil)
     }
-    return data as? T
+    return .just(data as? T)
   }
   
   public func delete(type: UserDefaultsRouter) {

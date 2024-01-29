@@ -63,7 +63,8 @@ let targets: [Target] = [
         createGoogleServiceInfoScript(for: .debug)
       ],
       dependencies: [
-        .feature
+        .feature,
+        .core
       ]
     )
   ),
@@ -76,7 +77,8 @@ let targets: [Target] = [
         createGoogleServiceInfoScript(for: .qa)
       ],
       dependencies: [
-        .feature
+        .feature,
+        .core
       ]
     )
   ),
@@ -89,7 +91,8 @@ let targets: [Target] = [
         createGoogleServiceInfoScript(for: .release)
       ],
       dependencies: [
-        .feature
+        .feature,
+        .core
       ]
     )
   )

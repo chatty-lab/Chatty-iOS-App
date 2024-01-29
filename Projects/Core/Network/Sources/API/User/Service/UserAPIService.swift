@@ -7,8 +7,9 @@
 
 import Foundation
 import Moya
+import RxSwift
 
-public final class UserAPIService: APIServiceProtocol {  
+public final class UserAPIService: APIServiceProtocol {
   public typealias Router = UserAPIRouter
   public var provider: MoyaProvider<UserAPIRouter> = .init(plugins: [
     MoyaLoggingPlugin(),

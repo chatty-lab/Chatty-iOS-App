@@ -1,6 +1,6 @@
 import XCTest
 
-final class RepositoryTests: XCTestCase {
+final class NetworkTests: XCTestCase {
   override func setUpWithError() throws {}
 
   override func tearDownWithError() throws {}

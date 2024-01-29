@@ -7,6 +7,12 @@
 
 import Foundation
 
+public enum UserDefaultsReadType<T: Decodable> {
+  case string
+  case json(data: T.Type)
+  case dict
+}
+
 public enum UserDefaultsRouter {
   case exampleString(_ string: String = "")
   case exampleInt(_ int: Int = 0)

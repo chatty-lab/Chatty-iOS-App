@@ -13,8 +13,8 @@ let targets: [Target] = [
   .domain(
     factory: .init(
       dependencies: [
-        .core,
-        .domain(implements: .Auth)
+        .domain(implements: .Auth),
+        .domain(implements: .User)
       ]
     )
   )
