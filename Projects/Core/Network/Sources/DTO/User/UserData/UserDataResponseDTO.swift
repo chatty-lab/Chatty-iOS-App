@@ -8,13 +8,13 @@
 import Foundation
 
 public struct UserDataReponseDTO: Decodable {
-  let id: Int
-  let mobileNumber: String
-  let nickname: String
-  let birth: String
-  let gender: String
-  let mbti: String
-  let address: String
-  let authority: String
-  let imageUrl: String
+  public let id: Int
+  public let mobileNumber: String
+  public let nickname: String
+  public let birth: String
+  public let gender: String
+  public let mbti: String
+  public let address: String?
+  public let authority: String
+  public let imageUrl: String
 }
