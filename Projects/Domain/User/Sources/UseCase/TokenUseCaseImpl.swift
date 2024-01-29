@@ -6,24 +6,16 @@
 //
 
 import Foundation
-import CoreRepository
-import CoreNetwork
+import DomainUserInterface
+import DomainCommonInterface
 import RxSwift
-
-public protocol TokenUseCaseProtocol {
-  func saveToken(accessToken: String, refreshToken: String) -> Single<Bool>
-  func requestAccessToken() -> Single<String>
-  func requestTokenRefresh() -> Single<String>
-  func requestDeviceToken()
-  func requestDeviceId()
-}
 
 public final class DefaultTokenUseCase: TokenUseCaseProtocol {
   
-  private let keychainRepository: KeychainReposotoryProtocol
-  private let authAPIRepository: AuthApiRepositoryProtocol
+  private let keychainRepository: KeychainReposotory
+  private let authAPIRepository: AuthApiRepository
   
-  public init(keychainRepository: KeychainReposotoryProtocol, authAPIRepository: AuthApiRepositoryProtocol) {
+  public init(keychainRepository: KeychainReposotory, authAPIRepository: AuthApiRepository) {
     self.keychainRepository = keychainRepository
     self.authAPIRepository = authAPIRepository
   }
@@ -38,17 +30,14 @@ public final class DefaultTokenUseCase: TokenUseCaseProtocol {
   }
   
   public func requestAccessToken() -> Single<String> {
-    let accessTokenObserverable = keychainRepository.requestRead(type: .accessToken(""))
-      
-    return accessTokenObserverable
+    return keychainRepository.requestRead(type: .accessToken())
   }
   
   public func requestTokenRefresh() -> Single<String> {
     return keychainRepository.requestRead(type: .refreshToken())
-      .flatMap { [weak self] refreshToken -> Single<TokenResponseDTO> in
+      .flatMap { [weak self] refreshToken -> Single<Token> in
         guard let self = self else { return .error(NSError(domain: "self empty", code: -1)) }
-        let request = RefreshRequestDTO(refreshToken: refreshToken)
-        return self.authAPIRepository.requestTokenRefresh(request: request)
+        return self.authAPIRepository.requestTokenRefresh(refreshToken: refreshToken)
       }
       .flatMap { [weak self] response -> Single<String> in
         guard let self = self else { return .error(NSError(domain: "self empty", code: -1)) }

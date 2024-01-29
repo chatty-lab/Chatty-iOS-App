@@ -37,5 +37,3 @@ public extension APIServiceProtocol {
       .handleResponse(responseDTO: responseDTO)
   }
 }
-
-

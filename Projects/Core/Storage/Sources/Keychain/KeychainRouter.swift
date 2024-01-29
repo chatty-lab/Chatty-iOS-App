@@ -6,12 +6,26 @@
 //
 
 import Foundation
+import DomainCommonInterface
 
 public enum KeychainRouter {
   case accessToken(_ token: String = "")
   case refreshToken(_ token: String = "")
-  case diviceToken(_ token: String = "")
-  case diviceId(_ id: String)
+  case deviceToken(_ token: String = "")
+  case deviceId(_ id: String = "")
+  
+  public static func toRouterCase(type: KeychainCase) -> KeychainRouter {
+    switch type {
+    case .accessToken(let token):
+      return .accessToken(token)
+    case .refreshToken(let token):
+      return .refreshToken(token)
+    case .deviceToken(let token):
+      return .deviceToken(token)
+    case .deviceId(let id):
+      return .deviceId(id)
+    }
+  }
 }
 
 public extension KeychainRouter {
@@ -22,10 +36,10 @@ public extension KeychainRouter {
       return appName + "AccessToken"
     case .refreshToken:
       return appName + "RefreshToken"
-    case .diviceToken:
-      return appName + "DiviceToken"
-    case .diviceId:
-      return appName + "DiviceId"
+    case .deviceToken:
+      return appName + "DeviceToken"
+    case .deviceId:
+      return appName + "DeviceId"
     }
   }
   
@@ -36,9 +50,9 @@ public extension KeychainRouter {
       string = token
     case .refreshToken(let token):
       string = token
-    case .diviceToken(let token):
+    case .deviceToken(let token):
       string = token
-    case .diviceId(let id):
+    case .deviceId(let id):
       string = id
     }
     let data = string.data(using: .utf8, allowLossyConversion: false)

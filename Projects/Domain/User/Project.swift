@@ -9,7 +9,8 @@ let project = Project.makeModule(
       interface: .User,
       factory: .init(
         dependencies: [
-          .core
+          .shared,
+          .domain(interface: .Common)
         ]
       )
     ),

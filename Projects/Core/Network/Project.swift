@@ -16,7 +16,7 @@ let project = Project.makeModule(
       interface: .Network,
       factory: .init(
         dependencies: [
-          .shared
+          .domain
         ]
       )
     ),

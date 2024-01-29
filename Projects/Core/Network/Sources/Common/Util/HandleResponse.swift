@@ -33,7 +33,7 @@ extension PrimitiveSequence where Trait == SingleTrait, Element == Response {
     }
   }
   
-///
+
   /// 추후  Response가 Token 만료 Error인 경우 Core내에서 Refresh를 해주기위한 코드 진행사항입니다.
 //  func handleRefreshToken<Model: Decodable>(responseDTO: Model.Type) -> Single<Model> {
 //    return flatMap { response in
@@ -69,24 +69,24 @@ extension PrimitiveSequence where Trait == SingleTrait, Element == Response {
   
   /// APIServiceProtocol 에들어갈 request 코드 진행사항 입니다.
   
-  //  func request2<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Observable<Model> {
-  //    return provider.rx.request(endPoint)
-  //      .handleRefreshToken()
-  //      .retry(when: { errorObservable in
-  //        errorObservable
-  //          .flatMap { error -> Observable<Model> in
-  //            if let error = error as? NetworkError {
-  //              switch error.errorCase {
-  //              case .E002AccessTokenExpired:
-  //                return AuthAPIService().request(endPoint: <#T##AuthAPIRouter#>, responseDTO: <#T##Decodable.Protocol#>)
-  //              default:
+//    func request2<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Observable<Model> {
+//      return provider.rx.request(endPoint)
+//        .handleRefreshToken()
+//        .retry(when: { errorObservable in
+//          errorObservable
+//            .flatMap { error -> Observable<Model> in
+//              if let error = error as? NetworkError {
+//                switch error.errorCase {
+  //                case .E002AccessTokenExpired:
+  //                  return AuthAPIService().request(endPoint: <#T##AuthAPIRouter#>, responseDTO: <#T##Decodable.Protocol#>)
+  //                default:
   //
+  //                }
   //              }
   //            }
-  //          }
-  //      })
-  //      .retry(1)
-  //      .asObservable()
-  //  }
-  //}
+  //        })
+  //        .retry(1)
+  //        .asObservable()
 }
+
+

@@ -6,40 +6,27 @@
 //
 
 import Foundation
-import CoreRepository
-import CoreStorage
+import DomainUserInterface
+import DomainCommonInterface
 import RxSwift
 
-public protocol SaveProfileUseCase {
-  func requestNicknameSave(nickname: String) -> Single<Bool>
-  func requestProfileDataSave(
-    gender: String,
-    birth: String,
-    imageData: Data,
-    mbti: String
-  ) -> Single<Bool>
-  func requestProfileData() -> Single<UserData>
-}
-
 public final class DefaultSaveProfileUseCase: SaveProfileUseCase {
-  private let userApiRepository: UserApiRepositoryProtocol
-  private let userDataRepository: UserDataRepositoryProtocol
-  private let keychainReposotory: KeychainReposotoryProtocol
+  private let userApiRepository: UserApiRepository
+  private let userDataRepository: UserDataRepository
 
-  public init(userApiRepository: UserApiRepositoryProtocol, userDataRepository: UserDataRepositoryProtocol, keychainReposotory: KeychainReposotoryProtocol) {
+  public init(userApiRepository: UserApiRepository, userDataRepository: UserDataRepository) {
     self.userApiRepository = userApiRepository
     self.userDataRepository = userDataRepository
-    self.keychainReposotory = keychainReposotory
   }
   
   
   public func requestNicknameSave(nickname: String) -> Single<Bool> {
     let result = userApiRepository.saveNickname(nickname: nickname)
-      .flatMap { response -> Single<Bool> in
+      .flatMap { userData -> Single<Bool> in
         /// 최종적으로 저장된 데이터를 UserService에 저장해 둡니다.
         /// Single로 데이터를 전달받으니 weak self  사용시 self를 찾지 못했습니다.
         /// 추후 원인을 찾아보고 해결하겠습니다.
-        self.userDataRepository.saveUserData(userData: response.data)
+        self.userDataRepository.saveUserData(userData: userData)
         return .just(true)
       }
     
@@ -61,9 +48,9 @@ public final class DefaultSaveProfileUseCase: SaveProfileUseCase {
       .flatMap { _, _, _ in
         return saveMbti
       }
-      .map { response in
+      .map { userData in
         /// 최종적으로 저장된 데이터를 UserService에 저장해 둡니다.
-        self.userDataRepository.saveUserData(userData: response.data)
+        self.userDataRepository.saveUserData(userData: userData)
         return true
       }
   }

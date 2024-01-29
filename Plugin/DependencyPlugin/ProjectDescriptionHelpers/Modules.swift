@@ -39,6 +39,7 @@ public extension ModulePath {
 
 public extension ModulePath {
   enum Domain: String, CaseIterable {
+    case Common
     case User
     case Auth
     

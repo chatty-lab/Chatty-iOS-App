@@ -9,6 +9,7 @@ import Foundation
 import RxSwift
 
 public final class UserDefaultsService {
+  
   public init() { }
   
   public func creat(type: UserDefaultsRouter) {

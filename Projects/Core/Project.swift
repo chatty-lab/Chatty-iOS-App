@@ -14,7 +14,8 @@ let targets: [Target] = [
     factory: .init(
       dependencies: [
         .core(implements: .Repository),
-        .shared
+        .core(implements: .Network),
+        .core(implements: .Storage),
       ]
     )
   )

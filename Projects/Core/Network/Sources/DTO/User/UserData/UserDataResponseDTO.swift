@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainCommonInterface
 
 public struct UserDataReponseDTO: Decodable {
   public let id: Int
@@ -17,4 +18,17 @@ public struct UserDataReponseDTO: Decodable {
   public let address: String?
   public let authority: String
   public let imageUrl: String
+  
+  public func toDomain() -> UserData {
+    return UserData(
+      nickname: nickname,
+      mobileNumber: mobileNumber,
+      birth: birth,
+      gender: gender,
+      mbti: mbti,
+      address: address,
+      authority: authority,
+      imageUrl: imageUrl
+    )
+  }
 }
