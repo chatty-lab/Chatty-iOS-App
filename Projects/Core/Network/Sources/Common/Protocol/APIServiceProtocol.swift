@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreStorage
 import Moya
 import RxMoya
 import RxSwift
@@ -27,27 +28,14 @@ import RxSwift
 public protocol APIServiceProtocol: AnyObject {
   associatedtype Router: TargetType
   var provider: MoyaProvider<Router> { get }
-  func request<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Observable<Model>
+  func request<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Single<Model>
 }
 
 public extension APIServiceProtocol {
-  func request<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Observable<Model> {
-    return provider.rx.request(endPoint).flatMap { response -> Single<Model> in
-      print(response.statusCode)
-      do {
-        let response = try JSONDecoder().decode(responseDTO.self, from: response.data)
-        return Single.just(response)
-      } catch {
-        do {
-          let errorResponse = try JSONDecoder().decode(ErrorResponseDTO.self, from: response.data)
-          let mappedError = errorResponse.toMappedError()
-          return Single.error(mappedError)
-        } catch {
-          return Single.error(error)
-        }
-      }
-    }
-    .asObservable()
+  func request<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Single<Model> {
+    return provider.rx.request(endPoint)
+      .handleResponse(responseDTO: responseDTO)
   }
 }
+
 
