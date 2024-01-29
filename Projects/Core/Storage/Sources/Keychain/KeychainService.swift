@@ -17,18 +17,18 @@ public final class KeychainService {
     let status = SecItemAdd(type.query as CFDictionary, nil)
     
     if status == errSecDuplicateItem {
-      print("create - Duplicate")
+      print("create - Duplicate - \(type.typeKey)")
       if isForce {
         return update(type: type)
       }
     } 
     
     if status == errSecSuccess {
-      print("create -add success status = \(status)")
+      print("create -add success status = \(status) - \(type.typeKey)")
       return .just(true)
     } else {
       print("create -add false status = \(status)")
-      return .just(false)
+      return .error(NSError(domain: "fail creat Keychain", code: -1))
     }
   }
   
@@ -63,7 +63,7 @@ public final class KeychainService {
       return .just(true)
     } else {
       print("update - false staus = \(status)")
-      return .just(false)
+      return .error(NSError(domain: "fail update Keychain", code: -1))
     }
   }
 
@@ -75,10 +75,10 @@ public final class KeychainService {
       return .just(true)
     } else if status == errSecItemNotFound {
       print("delete - ItemNotFound  status = \(status)")
-      return .just(false)
+      return .error(NSError(domain: "fail delete Keychain", code: -1))
     } else {
       print("delete - false  status = \(status)")
-      return .just(false)
+      return .error(NSError(domain: "fail delete Keychain", code: -1))
     }
   }
 }

@@ -27,7 +27,8 @@ public final class DefaultKeychainReposotory: KeychainReposotoryProtocol {
   }
   
   public func requestRead(type: KeychainRouter) -> Single<String> {
-    return keychainService.read(type: type)
+    return .just("aaaddd")
+//    return keychainService.read(type: type)
   }
   
   public func requestDelete(type: KeychainRouter) -> Single<Bool> {
