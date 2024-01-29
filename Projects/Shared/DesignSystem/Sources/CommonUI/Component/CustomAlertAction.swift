@@ -1,5 +1,5 @@
 //
-//  CustomAlertButton.swift
+//  CustomAlertAction.swift
 //  SharedDesignSystem
 //
 //  Created by walkerhilla on 1/6/24.
@@ -11,33 +11,33 @@ import RxCocoa
 import SnapKit
 import Then
 
-open class CustomAlertButton: BaseControl, Touchable, Highlightable {
+open class CustomAlertAction: BaseControl, Touchable, Highlightable {
   // MARK: - View Property
   private let titleLabel: UILabel = UILabel().then {
     $0.font = SystemFont.title03.font
   }
   
   // MARK: - Stored Property
-  public var title: String? {
-    didSet {
-      setTitle(title)
-    }
-  }
+  public var title: String?
   
   // MARK: - Rx Property
   public let touchEventRelay: RxRelay.PublishRelay<Void> = .init()
   
   // MARK: - StateConfigurable
-  public var configurations: [State : Configuration] = [:]
-  public var currentState: State? {
-    didSet {
-      updateForCurrentState()
-    }
-  }
+  public var configurations: [State : Configuration] = [
+    .destructive: .init(backgroundColor: SystemColor.primaryNormal.uiColor, textColor: SystemColor.basicWhite.uiColor),
+    .cancel: .init(backgroundColor: SystemColor.basicWhite.uiColor, textColor: SystemColor.basicBlack.uiColor)
+  ]
+  public var currentState: State?
   
   // MARK: - Initialize Method
-  public override init(frame: CGRect) {
-    super.init(frame: frame)
+  public init(text: String?, style: Style) {
+    self.title = text
+    self.currentState = style
+    super.init(frame: .zero)
+    
+    setTitle()
+    updateForCurrentState()
   }
   
   // MARK: - Bindable
@@ -83,15 +83,17 @@ open class CustomAlertButton: BaseControl, Touchable, Highlightable {
     }
   }
   
-  private func setTitle(_ title: String?) {
+  private func setTitle() {
     titleLabel.text = title
   }
 }
 
-extension CustomAlertButton: StateConfigurable {
-  public enum State {
-    case positive
-    case negative
+extension CustomAlertAction: StateConfigurable {
+  public typealias State = Style
+  
+  public enum Style {
+    case destructive
+    case cancel
   }
   
   public struct Configuration {
@@ -111,4 +113,3 @@ extension CustomAlertButton: StateConfigurable {
     titleLabel.textColor = config.textColor
   }
 }
-

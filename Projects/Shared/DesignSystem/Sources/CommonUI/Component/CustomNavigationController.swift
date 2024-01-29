@@ -102,7 +102,7 @@ extension CustomNavigationController {
   
   private func setBackButton(_ navigationController: UINavigationController) {
     guard navigationController.viewControllers.count > 1 else { return }
-    let button = CustomNavigationBarButton<Void>(image: UIImage(asset: Images.arrowLeft)!)
+    let button = CustomNavigationBarButton(UIImage(asset: Images.arrowLeft)!)
     baseNavigationBar.backButton = button
   }
   

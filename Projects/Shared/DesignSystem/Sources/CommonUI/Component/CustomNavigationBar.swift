@@ -13,11 +13,17 @@ import Then
 
 open class CustomNavigationBar: BaseView, Touchable, Fadeable {  
   // MARK: - View Property
-  public var backButton: BaseControl? {
+  public var backButton: CustomNavigationBarItem? {
     didSet {
       setupBackButton(backButton)
     }
   }
+  
+  public var titleView: CustomNavigationBarItem?
+  
+  public lazy var leftItems: [CustomNavigationBarItem] = []
+  
+  public lazy var rightItems: [CustomNavigationBarItem] = []
   
   // MARK: - Touchable
   public var touchEventRelay: PublishRelay<TouchEventType> = .init()

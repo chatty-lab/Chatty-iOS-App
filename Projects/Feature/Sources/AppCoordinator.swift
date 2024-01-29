@@ -10,25 +10,24 @@ import Shared
 import SharedDesignSystem
 import FeatureOnboarding
 
-protocol AppCoordinatorProtocol: Coordinator {
+protocol AppCoordinatorProtocol {
   func showOnboardingFlow()
   func showMainFlow()
 }
 
-public final class AppCoordinator: AppCoordinatorProtocol {
-  public weak var finishDelegate: CoordinatorFinishDelegate?
-  public var navigationController: CustomNavigationController
-  public var childCoordinators: [Coordinator] = []
-  public var type: CoordinatorType = .app
+public final class AppCoordinator: BaseCoordinator, AppCoordinatorProtocol {
+  public override var type: CoordinatorType {
+    return .app
+  }
   
   var window: UIWindow
   
   public init(window: UIWindow, _ navigationController: CustomNavigationController) {
-    self.navigationController = navigationController
     self.window = window
+    super.init(navigationController: navigationController)
   }
   
-  public func start() {
+  public override func start() {
     showOnboardingFlow()
   }
   

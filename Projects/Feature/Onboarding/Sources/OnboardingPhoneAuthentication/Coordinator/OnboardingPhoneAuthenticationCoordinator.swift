@@ -9,7 +9,7 @@ import UIKit
 import Shared
 import SharedDesignSystem
 
-public final class OnboardingPhoneAuthenticationCoordinator: OnboardingPhoneAuthenticationCoordinatorProtocol {
+public final class OnboardingPhoneAuthenticationCoordinator: OnboardingPhoneAuthenticationCoordinatorProtocol, CoordinatorFinishDelegate, BaseNavigationDelegate {
   public weak var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: CustomNavigationController
   public var childCoordinators: [Coordinator] = []
@@ -24,7 +24,7 @@ public final class OnboardingPhoneAuthenticationCoordinator: OnboardingPhoneAuth
   deinit {
     print("해제됨: OnboardingPhoneAuthenticationCoordinator")
   }
-  
+   
   public func start() {
     let onboardingPhoneAuthenticationReactor = OnboardingPhoneAuthenticationReactor()
     let onboardingPhoneNumberEntryController = OnboardingPhoneNumberEntryController(reactor: onboardingPhoneAuthenticationReactor)
@@ -38,14 +38,5 @@ public final class OnboardingPhoneAuthenticationCoordinator: OnboardingPhoneAuth
     let onboardingVerificationCodeEntryController = OnboardingVerificationCodeEntryController(reactor: reactor)
     navigationController.pushViewController(onboardingVerificationCodeEntryController, animated: true)
     childViewControllers.increase()
-  }
-}
-
-extension OnboardingPhoneAuthenticationCoordinator: BaseNavigationDelegate {
-  public func popViewController() {
-    childViewControllers.decrease()
-    if childViewControllers.isFinished {
-      finish()
-    }
   }
 }

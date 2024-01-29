@@ -12,17 +12,39 @@ public protocol Coordinator: AnyObject {
   var finishDelegate: CoordinatorFinishDelegate? { get set }
   var navigationController: CustomNavigationController { get set }
   var childCoordinators: [Coordinator] { get set }
-//  var childViewControllers: [UIViewController] { get set }
-  var type: CoordinatorType { get set }
+  var childViewControllers: ChildViewController { get set }
+  var type: CoordinatorType { get }
   
   func start()
   func finish()
+  func removeChildCoordinator(_ childCoordinator: Coordinator)
 }
 
 extension Coordinator {
   public func finish() {
     childCoordinators.removeAll()
     finishDelegate?.coordinatorDidFinish(childCoordinator: self)
+  }
+  
+  public func removeChildCoordinator(_ childCoordinator: Coordinator) {
+    for (index, coordinator) in childCoordinators.enumerated() {
+      if coordinator === childCoordinator {
+        childCoordinators.remove(at: index)
+        break
+      }
+    }
+  }
+  
+  public func coordinatorDidFinish(childCoordinator: Coordinator) {
+    self.removeChildCoordinator(childCoordinator)
+    self.navigationController.baseDelegate = self as? any BaseNavigationDelegate
+  }
+  
+  public func popViewController() {
+    childViewControllers.decrease()
+    if childViewControllers.isFinished {
+      finish()
+    }
   }
 }
 

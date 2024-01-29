@@ -10,6 +10,9 @@ import Shared
 import SharedDesignSystem
 
 public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol {
+  
+  public var childViewControllers: ChildViewController = .init()
+  
   public weak var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: CustomNavigationController
   public var childCoordinators: [Coordinator] = []
@@ -18,7 +21,7 @@ public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol 
   public init(_ navigationController: CustomNavigationController) {
     self.navigationController = navigationController
   }
-  
+   
   public func start() {
     let onboardingRootController = OnboardingRootController()
     onboardingRootController.delegate = self
@@ -33,7 +36,7 @@ public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol 
   }
   
   public func pushToLogin() {
-    print("로그인")
+    print("root - 로그인")
   }
   
   deinit {
@@ -54,6 +57,6 @@ extension OnboardingRootCoordinator: OnboardingTermsDelegate {
 
 extension OnboardingRootCoordinator: CoordinatorFinishDelegate {
   public func coordinatorDidFinish(childCoordinator: Coordinator) {
-    finish()
+    removeChildCoordinator(childCoordinator)
   }
 }
