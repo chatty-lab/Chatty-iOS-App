@@ -23,16 +23,16 @@ import RxGesture
 open class BaseController: UIViewController, UIConfigurable, Bindable {
   public var disposeBag = DisposeBag()
   
-  public weak var baseNavigationController: CustomNavigationController? {
+  public weak var customNavigationController: CustomNavigationController? {
     return navigationController as? CustomNavigationController
   }
   
   open override func viewDidLoad() {
     super.viewDidLoad()
     configureUI()
+    setNavigationBar()
     setupBackgroundIfNotSet()
     bind()
-    navigationController?.delegate = self
   }
   
   public init() {
@@ -56,6 +56,10 @@ open class BaseController: UIViewController, UIConfigurable, Bindable {
     
   }
   
+  open func setNavigationBar() {
+    customNavigationController?.customNavigationBarConfig = CustomNavigationBarConfiguration()
+  }
+  
   // MARK: - Bindable
   open func bind() {
     
@@ -63,15 +67,5 @@ open class BaseController: UIViewController, UIConfigurable, Bindable {
   
   open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     self.view.endEditing(true)
-  }
-}
-
-extension BaseController: UINavigationControllerDelegate {
-  public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-    baseNavigationController?.navigationController(navigationController, willShow: viewController, animated: animated)
-  }
-  
-  public func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-    baseNavigationController?.navigationController(navigationController, didShow: viewController, animated: animated)
   }
 }

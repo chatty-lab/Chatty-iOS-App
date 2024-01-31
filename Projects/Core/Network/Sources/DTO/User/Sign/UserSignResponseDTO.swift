@@ -6,10 +6,15 @@
 //
 
 import Foundation
+import DomainCommonInterface
 
 public struct UserSignResponseDTO: CommonResponseDTO {
   public var code: Int
   public var status: String
   public var message: String
   public var data: TokenResponseDTO
+  
+  public func toDomain() -> Token {
+    return data.toDomain()
+  }
 }

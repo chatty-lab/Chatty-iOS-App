@@ -8,24 +8,30 @@
 import UIKit
 
 public protocol Fadeable: UIView {
-  func fadeIn(_ view: UIView, duration: Duration, alpha: Alpha, completion: (() -> Void)?)
-  func fadeOut(_ view: UIView, duration: Duration, alpha: Alpha, completion: (() -> Void)?)
+  func fadeIn(_ view: [UIView?], duration: Duration, alpha: Alpha, completion: (() -> Void)?)
+  func fadeOut(_ view: [UIView?], duration: Duration, alpha: Alpha, completion: (() -> Void)?)
   func flashAlpha(lowAlpha: CGFloat, highAlpha: CGFloat, duration: Duration, completion: (() -> Void)?)
 }
 
 public extension Fadeable {
-  func fadeIn(_ view: UIView, duration: Duration = .normal, alpha: Alpha, completion: (() -> Void)? = nil) {
+  func fadeIn(_ view: [UIView?], duration: Duration = .normal, alpha: Alpha, completion: (() -> Void)? = nil) {
     UIView.animate(withDuration: duration.value) {
-      view.alpha = alpha.value
+      view.forEach { view in
+        guard let view else { return }
+        view.alpha = alpha.value
+      }
     } completion: { _ in
       completion?()
     }
     
   }
   
-  func fadeOut(_ view: UIView, duration: Duration = .normal, alpha: Alpha, completion: (() -> Void)? = nil) {
+  func fadeOut(_ view: [UIView?], duration: Duration = .normal, alpha: Alpha, completion: (() -> Void)? = nil) {
     UIView.animate(withDuration: duration.value) {
-      view.alpha = alpha.value
+      view.forEach { view in
+        guard let view else { return }
+        view.alpha = alpha.value
+      }
     } completion: { _ in
       completion?()
     }

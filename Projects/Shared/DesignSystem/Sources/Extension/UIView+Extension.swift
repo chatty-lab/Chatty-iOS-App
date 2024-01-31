@@ -2,7 +2,7 @@
 //  UIView+Extension.swift
 //  SharedDesignSystem
 //
-//  Created by walkerhilla on 1/4/24.
+//  Created by HUNHIE LEE on 1/4/24.
 //
 
 import UIKit

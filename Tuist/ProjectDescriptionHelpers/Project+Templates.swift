@@ -3,7 +3,12 @@ import DependencyPlugin
 import ConfigurationPlugin
 
 public extension Project {
-  static func makeModule(name: String, targets: [Target], settings: Settings? = nil, additionalFiles: [FileElement] = [], resourceSynthesizers: [ResourceSynthesizer] = []) -> Self {
+  static func makeModule(
+    name: String,
+    targets: [Target],
+    settings: Settings? = nil,
+    additionalFiles: [FileElement] = [],
+    resourceSynthesizers: [ResourceSynthesizer] = []) -> Self {
     let name: String = name
     let organizationName: String? = nil
     let options: Project.Options = .options()

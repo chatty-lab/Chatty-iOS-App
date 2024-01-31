@@ -9,7 +9,7 @@ let project = Project.makeModule(
       interface: .Storage,
       factory: .init(
         dependencies: [
-          .shared
+          .domain
         ]
       )
     ),
@@ -36,6 +36,6 @@ let project = Project.makeModule(
           .core(testing: .Storage)
         ]
       )
-    ),
+    )
   ]
 )

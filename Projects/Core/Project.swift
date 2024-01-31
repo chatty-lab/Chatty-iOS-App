@@ -13,15 +13,13 @@ let targets: [Target] = [
   .core(
     factory: .init(
       dependencies: [
-        .core(implements: .Network),
-        .core(implements: .Storage),
         .core(implements: .Repository),
-        .shared
+        .core(implements: .Network),
+        .core(implements: .Storage)
       ]
     )
   )
 ]
-
 
 let project: Project = .makeModule(
   name: "Core",
