@@ -63,7 +63,7 @@ DerivedData/
 *.xcworkspace
 
 ### plist ###
-Projects/*.plist
+*.plist
 
 ### xcconfig ###
 *.xcconfig
