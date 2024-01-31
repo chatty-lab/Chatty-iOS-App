@@ -9,7 +9,9 @@ let project = Project.makeModule(
       interface: .Repository,
       factory: .init(
         dependencies: [
-          .domain
+          .domain,
+          .core(implements: .Network),
+          .core(implements: .Storage)
         ]
       )
     ),

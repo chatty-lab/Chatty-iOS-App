@@ -45,7 +45,6 @@ public final class OnboardingPhoneNumberEntryController: BaseController {
   
   // MARK: - UIConfigurable
   public override func configureUI() {
-    baseNavigationController?.setBaseNavigationBarHidden(false, animated: true)
     view.addSubview(mainView)
     mainView.snp.makeConstraints {
       $0.top.equalTo(view.safeAreaLayoutGuide).offset(52)
@@ -61,12 +60,13 @@ public final class OnboardingPhoneNumberEntryController: BaseController {
   private func requestSMS(with phoneNumber: String) {
     let title = phoneNumber.formattedPhoneNumber()
     let message = "이 전화번호로 인증번호 메시지를 보낼게요."
-    let alertController = CustomAlertController(title: title, message: message, delegate: self)
-    let sendAction = CustomAlertAction(text: "전송", style: .destructive)
-    let cancelAction = CustomAlertAction(text: "취소", style: .cancel)
-    
-    alertController.addAction(sendAction)
-    alertController.addAction(cancelAction)
+    let alertView = CustomAlertView().then {
+      $0.title = title
+      $0.subTitle = message
+    }
+    let alertController = CustomAlertController(alertView: alertView)
+    alertController.modalPresentationStyle = .overCurrentContext
+    alertController.delegate = self
     navigationController?.present(alertController, animated: false)
   }
 }

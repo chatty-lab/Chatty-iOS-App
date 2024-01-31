@@ -10,8 +10,8 @@ import RxSwift
 import RxCocoa
 
 public protocol CustomAlertDelegate: AnyObject {
-  func positiveAction()
-  func negativeAction()
+  func destructiveAction()
+  func cancelAction()
 }
 
 public final class CustomAlertController: BaseController {
@@ -72,9 +72,9 @@ public final class CustomAlertController: BaseController {
           owner.dismiss(animated: false)
           switch touch {
           case .positive:
-            owner.delegate?.positiveAction()
+            owner.delegate?.destructiveAction()
           case .negative:
-            owner.delegate?.negativeAction()
+            owner.delegate?.cancelAction()
           }
         }
       }

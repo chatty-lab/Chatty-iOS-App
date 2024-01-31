@@ -37,7 +37,6 @@ public final class OnboardingNickNameController: BaseController {
   
   // MARK: - UIConfigurable
   public override func configureUI() {
-    baseNavigationController?.setBaseNavigationBarHidden(false, animated: true)
     view.addSubview(nickNameView)
     nickNameView.snp.makeConstraints {
       $0.top.equalTo(view.safeAreaLayoutGuide).offset(52)

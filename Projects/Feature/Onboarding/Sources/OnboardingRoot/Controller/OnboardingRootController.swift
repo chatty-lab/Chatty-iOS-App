@@ -21,12 +21,10 @@ public final class OnboardingRootController: BaseController {
   
   public override func viewDidLoad() {
     super.viewDidLoad()
-    baseNavigationController?.setBaseNavigationBarHidden(true, animated: false)
   }
   
   public override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    baseNavigationController?.setBaseNavigationBarHidden(true, animated: true)
   }
   
   // MARK: - Delegate

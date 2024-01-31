@@ -41,7 +41,6 @@ public final class OnboardingVerificationCodeEntryController: BaseController {
   }
   
   public override func configureUI() {
-    baseNavigationController?.setBaseNavigationBarHidden(false, animated: true)
     view.addSubview(mainView)
     mainView.snp.makeConstraints {
       $0.top.equalTo(view.safeAreaLayoutGuide).offset(52)
