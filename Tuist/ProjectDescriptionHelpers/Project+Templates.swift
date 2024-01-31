@@ -8,12 +8,7 @@ public extension Project {
     let organizationName: String? = nil
     let options: Project.Options = .options()
     let packages: [Package] = []
-    let settings: Settings? = .settings(
-      configurations: [
-        .debug(name: .debug),
-        .release(name: .release)
-      ]
-    )
+    let settings: Settings? = settings
     let targets: [Target] = targets
     let schemes: [Scheme] = []
     let fileHeaderTemplate: FileHeaderTemplate? = nil
