@@ -38,7 +38,7 @@ xcuserdata/
 *.xcscmblueprint
 *.xccheckout
 
-## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
+## compatibility with Xcode 3 and earlier (ißgnoring not required starting Xcode 4)
 build/
 DerivedData/
 *.moved-aside
@@ -61,6 +61,9 @@ DerivedData/
 ### Projects ###
 *.xcodeproj
 *.xcworkspace
+
+### plist ###
+*.plist
 
 ### xcconfig ###
 *.xcconfig

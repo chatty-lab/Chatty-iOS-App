@@ -15,12 +15,17 @@ let SPM = SwiftPackageManagerDependencies(
     .remote(url: "https://github.com/ReactorKit/ReactorKit.git", requirement: .upToNextMajor(from: "3.2.0")),
     .remote(url: "https://github.com/Moya/Moya.git", requirement: .upToNextMajor(from: "15.0.3")),
     .remote(url: "https://github.com/devxoul/Then.git", requirement: .upToNextMajor(from: "3.0.0")),
-    .remote(url: "https://github.com/RxSwiftCommunity/RxGesture.git", requirement: .upToNextMajor(from: "4.0.4")),
+    .remote(url: "https://github.com/RxSwiftCommunity/RxGesture.git", requirement: .upToNextMajor(from: "4.0.4"))
   ],
   productTypes: [
     "RxGesture": .framework,
     "Then": .framework,
-    "ReactorKit": .framework
+    "ReactorKit": .framework,
+    "Moya": .framework,
+    "RxMoya": .framework,
+    "ReactiveMoya": .framework,
+    "CombineMoya": .framework,
+    "Alamofire": .framework,
   ],
   baseSettings: .settings(
     configurations: [

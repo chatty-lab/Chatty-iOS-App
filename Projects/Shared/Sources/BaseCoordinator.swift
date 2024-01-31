@@ -19,6 +19,7 @@ open class BaseCoordinator: Coordinator {
   
   public init(navigationController: CustomNavigationController) {
     self.navigationController = navigationController
+    self.navigationController.baseDelegate = self
   }
   
   open func start() {

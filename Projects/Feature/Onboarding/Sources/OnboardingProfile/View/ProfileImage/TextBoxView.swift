@@ -26,7 +26,7 @@ public final class TextBoxView: UIView {
     $0.clipsToBounds = true
   }
   
-  // MARK: - Innitialize Property
+  // MARK: - Initialize Property
   public override init(frame: CGRect) {
     super.init(frame: frame)
     configureUI()
