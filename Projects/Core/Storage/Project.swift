@@ -36,6 +36,6 @@ let project = Project.makeModule(
           .core(testing: .Storage)
         ]
       )
-    ),
+    )
   ]
 )

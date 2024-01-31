@@ -1,4 +1,5 @@
 import UIKit
+import SharedDesignSystem
 import SharedFirebase
 import FirebaseMessaging
 
@@ -8,6 +9,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
     
+    SharedDesignSystemFontFamily.registerAllCustomFonts()
+
     if let filePath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") {
       AppFirebase.Firebase.configure(with: filePath)
     }

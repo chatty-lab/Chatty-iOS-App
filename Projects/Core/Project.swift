@@ -15,12 +15,11 @@ let targets: [Target] = [
       dependencies: [
         .core(implements: .Repository),
         .core(implements: .Network),
-        .core(implements: .Storage),
+        .core(implements: .Storage)
       ]
     )
   )
 ]
-
 
 let project: Project = .makeModule(
   name: "Core",

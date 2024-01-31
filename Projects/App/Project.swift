@@ -29,6 +29,20 @@ let infoPlist: [String: Plist.Value] = [
       ]
     ]
   ],
+  "UIAppFonts": [
+    "Pretendard-Black.ttf",
+    "Pretendard-Bold.ttf",
+    "Pretendard-ExtraBold.ttf",
+    "Pretendard-ExtraLight.ttf",
+    "Pretendard-Light.ttf",
+    "Pretendard-Medium.ttf",
+    "Pretendard-Regular.ttf",
+    "Pretendard-SemiBold.ttf",
+    "Pretendard-Thin.ttf"
+  ],
+  "UISupportedInterfaceOrientations": [
+    "UIInterfaceOrientationPortrait"
+  ],
   "UIBackgroundModes": [
     "remote-notification"
   ],

@@ -103,10 +103,12 @@ extension FillButton: StateConfigurable {
   
   public struct Configuration {
     let backgroundColor: UIColor
+    let textColor: UIColor
     let isEnabled: Bool
     
-    public init(backgroundColor: UIColor, isEnabled: Bool) {
+    public init(backgroundColor: UIColor, textColor: UIColor = SystemColor.basicWhite.uiColor, isEnabled: Bool) {
       self.backgroundColor = backgroundColor
+      self.textColor = textColor
       self.isEnabled = isEnabled
     }
   }
@@ -115,6 +117,7 @@ extension FillButton: StateConfigurable {
     guard let currentState,
           let config = configurations[currentState] else { return }
     backgroundColor = config.backgroundColor
+    titleLabel.textColor = config.textColor
     isEnabled = config.isEnabled
   }
 }

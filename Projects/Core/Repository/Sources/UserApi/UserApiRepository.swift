@@ -15,45 +15,45 @@ import Moya
 
 public final class DefaultUserApiRepository<RouterType: TargetType>: UserApiRepositoryProtocol {
   
-  private let userApiService: UserApiService
+  private let userAPIService: UserAPIService
   
-  public init(userApiService: UserApiService) {
-    self.userApiService = userApiService
+  public init(userAPIService: UserAPIService) {
+    self.userAPIService = userAPIService
   }
   
   public func saveNickname(nickname: String) -> Single<UserData> {
     let endPoint = UserAPIRouter.nickname(nickname: nickname)
-    return userApiService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
+    return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
       .map { $0.toDomain() }
   }
   
   public func saveMBTI(mbti: String) -> Single<UserData> {
     let endPoint = UserAPIRouter.mbti(mbti: mbti)
-    return userApiService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
+    return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
       .map { $0.toDomain() }
   }
   
   public func saveImage(imageData: Data) -> Single<UserData> {
     let endPoint = UserAPIRouter.image(imageData: imageData)
-    return userApiService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
+    return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
       .map { $0.toDomain() }
   }
   
   public func saveGender(gender: String) -> Single<UserData> {
     let endPoint = UserAPIRouter.gender(gender: gender)
-    return userApiService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
+    return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
       .map { $0.toDomain() }
   }
   
   public func saveBirth(birth: String) -> Single<UserData> {
     let endPoint = UserAPIRouter.birth(birth: birth)
-    return userApiService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
+    return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
       .map { $0.toDomain() }
   }
   
   public func changeDeviceToken(deviceToken: String) -> Single<Token> {
     let endPoint = UserAPIRouter.deviceToken(deviceToken: deviceToken)
-    return userApiService.request(endPoint: endPoint, responseDTO: UserSignResponseDTO.self)
+    return userAPIService.request(endPoint: endPoint, responseDTO: UserSignResponseDTO.self)
       .map { $0.toDomain() }
   }
   
@@ -65,7 +65,7 @@ public final class DefaultUserApiRepository<RouterType: TargetType>: UserApiRepo
       deviceToken: deviceToken
     )
     let endPoint = UserAPIRouter.login(request: request)
-    return userApiService.request(endPoint: endPoint, responseDTO: UserSignResponseDTO.self)
+    return userAPIService.request(endPoint: endPoint, responseDTO: UserSignResponseDTO.self)
       .map { $0.toDomain() }
   }
   
@@ -77,7 +77,7 @@ public final class DefaultUserApiRepository<RouterType: TargetType>: UserApiRepo
       deviceToken: deviceToken
     )
     let endPoint = UserAPIRouter.join(request: request)
-    return userApiService.request(endPoint: endPoint, responseDTO: UserSignResponseDTO.self)
+    return userAPIService.request(endPoint: endPoint, responseDTO: UserSignResponseDTO.self)
       .map { $0.toDomain() }
   }
 }

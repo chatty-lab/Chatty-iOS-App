@@ -46,7 +46,7 @@ public final class SampleDIContainer {
   // Repository
   
   func getUserAPIRepository() -> DefaultUserApiRepository<UserAPIRouter> {
-    return DefaultUserApiRepository<UserAPIRouter>(userApiService: UserApiService())
+    return DefaultUserApiRepository<UserAPIRouter>(userAPIService: UserAPIService())
   }
   
   func getUserDataRepository() -> DefaultUserDataRepository {
