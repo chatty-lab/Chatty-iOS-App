@@ -24,9 +24,17 @@ jobs:
       - name: Bring ignored files
         uses: actions/checkout@v3
         with:
-          repository: chatty-lab/Chatty-iOS-fastlane-certificate
-          path: Projects/App/Config
+          repository: chatty-lab/Chatty-iOS-ignored
+          path: /
           token: ${{ secrets.ACTION_TOKEN }}
+          
+      - name: Move files from Firebase to Resources
+        run: |
+          mv Firebase Projects/App/Resources
+          
+      - name: Move files from xcconfig to Resources
+        run: |
+          mv xcconfig/* Projects/App/config
 
       - name: Setting Master Key
         run: echo -n "${{ secrets.MASTER_KEY }}" > ./Tuist/master.key
