@@ -12,10 +12,10 @@ import RxSwift
 
 public final class DefaultTokenUseCase: TokenUseCaseProtocol {
   
-  private let keychainRepository: KeychainReposotory
-  private let authAPIRepository: AuthApiRepository
+  private let keychainRepository: KeychainReposotoryProtocol
+  private let authAPIRepository: AuthAPIRepositoryProtocol
   
-  public init(keychainRepository: KeychainReposotory, authAPIRepository: AuthApiRepository) {
+  public init(keychainRepository: KeychainReposotoryProtocol, authAPIRepository: AuthAPIRepositoryProtocol) {
     self.keychainRepository = keychainRepository
     self.authAPIRepository = authAPIRepository
   }

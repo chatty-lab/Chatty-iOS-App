@@ -250,55 +250,55 @@ public extension Target {
   }
 }
 
-// MARK: Target + Core
+// MARK: Target + Data
 
 public extension Target {
-  static func core(factory: TargetFactory) -> Self {
+  static func data(factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.deploymentTargets = Project.Environment.deploymentTargets
-    newFactory.name = ModulePath.Core.name
+    newFactory.name = ModulePath.Data.name
     newFactory.product = .framework
-    newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Core.name
+    newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Data.name
     
     return make(factory: newFactory)
   }
   
-  static func core(implements module: ModulePath.Core, factory: TargetFactory) -> Self {
+  static func data(implements module: ModulePath.Data, factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.deploymentTargets = Project.Environment.deploymentTargets
-    newFactory.name = ModulePath.Core.name + module.rawValue
+    newFactory.name = ModulePath.Data.name + module.rawValue
     newFactory.product = .framework
-    newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Core.name + module.rawValue
+    newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Data.name + module.rawValue
     
     return make(factory: newFactory)
   }
   
-  static func core(tests module: ModulePath.Core, factory: TargetFactory) -> Self {
+  static func data(tests module: ModulePath.Data, factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.deploymentTargets = Project.Environment.deploymentTargets
-    newFactory.name = ModulePath.Core.name + module.rawValue + "Tests"
+    newFactory.name = ModulePath.Data.name + module.rawValue + "Tests"
     newFactory.product = .unitTests
     newFactory.sources = .tests
     
     return make(factory: newFactory)
   }
   
-  static func core(testing module: ModulePath.Core, factory: TargetFactory) -> Self {
+  static func data(testing module: ModulePath.Data, factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.deploymentTargets = Project.Environment.deploymentTargets
-    newFactory.name = ModulePath.Core.name + module.rawValue + "Testing"
+    newFactory.name = ModulePath.Data.name + module.rawValue + "Testing"
     newFactory.sources = .testing
     
     return make(factory: newFactory)
   }
   
-  static func core(interface module: ModulePath.Core, factory: TargetFactory) -> Self {
+  static func data(interface module: ModulePath.Data, factory: TargetFactory) -> Self {
     var newFactory = factory
     newFactory.deploymentTargets = Project.Environment.deploymentTargets
-    newFactory.name = ModulePath.Core.name + module.rawValue + "Interface"
+    newFactory.name = ModulePath.Data.name + module.rawValue + "Interface"
     newFactory.sources = .interface
     newFactory.product = .framework
-    newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Core.name + module.rawValue + "Interface"
+    newFactory.bundleId = Project.Environment.bundleIdPrefix + ModulePath.Data.name + module.rawValue + "Interface"
     
     return make(factory: newFactory)
   }

@@ -14,12 +14,12 @@ import RxSwift
 
 public final class DefaultSignUseCase: SignUseCase {
   
-  private let userApiRepository: UserApiRepository
-  private let keychainReposotory: KeychainReposotory
+  private let userApiRepository: UserAPIRepositoryProtocol
+  private let keychainReposotory: KeychainReposotoryProtocol
   
   private let tokenUseCase: TokenUseCaseProtocol
   
-  public init(userApiRepository: UserApiRepository, keychainReposotory: KeychainReposotory, tokenUseCase: TokenUseCaseProtocol) {
+  public init(userApiRepository: UserAPIRepositoryProtocol, keychainReposotory: KeychainReposotoryProtocol, tokenUseCase: TokenUseCaseProtocol) {
     self.userApiRepository = userApiRepository
     self.keychainReposotory = keychainReposotory
     self.tokenUseCase = tokenUseCase
