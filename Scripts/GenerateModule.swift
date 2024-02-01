@@ -4,7 +4,7 @@ import Foundation
 enum LayerType: String {
   case feature = "Feature"
   case domain = "Domain"
-  case core = "Core"
+  case data = "Data"
   case shared = "Shared"
 }
 
@@ -191,7 +191,7 @@ func updateFileContent(
 
 // MARK: - Starting point
 
-print("Enter layer name\n(Feature | Domain | Core | Shared)", terminator: " : ")
+print("Enter layer name\n(Feature | Domain | Data | Shared)", terminator: " : ")
 let layerInput = readLine()
 guard let layerInput, !layerInput.isEmpty, let layerUnwrapping = LayerType(rawValue: layerInput) else {
   print("Layer is empty or invalid")

@@ -78,7 +78,7 @@ let targets: [Target] = [
       ],
       dependencies: [
         .feature,
-        .core
+        .data
       ]
     )
   ),
@@ -92,7 +92,7 @@ let targets: [Target] = [
       ],
       dependencies: [
         .feature,
-        .core
+        .data
       ]
     )
   ),
@@ -106,7 +106,7 @@ let targets: [Target] = [
       ],
       dependencies: [
         .feature,
-        .core
+        .data
       ]
     )
   )

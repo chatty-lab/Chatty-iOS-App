@@ -40,15 +40,15 @@ public extension ProjectDescription.Path {
   }
 }
 
-// MARK: ProjectDescription.Path + Core
+// MARK: ProjectDescription.Path + Data
 
 public extension ProjectDescription.Path {
-  static var core: Self {
-    return .relativeToRoot("Projects/\(ModulePath.Core.name)")
+  static var data: Self {
+    return .relativeToRoot("Projects/\(ModulePath.Data.name)")
   }
   
-  static func core(implementation module: ModulePath.Core) -> Self {
-    return .relativeToRoot("Projects/\(ModulePath.Core.name)/\(module.rawValue)")
+  static func data(implementation module: ModulePath.Data) -> Self {
+    return .relativeToRoot("Projects/\(ModulePath.Data.name)/\(module.rawValue)")
   }
 }
 

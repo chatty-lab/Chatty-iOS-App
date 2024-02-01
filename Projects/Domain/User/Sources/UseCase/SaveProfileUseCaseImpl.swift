@@ -11,17 +11,17 @@ import DomainCommonInterface
 import RxSwift
 
 public final class DefaultSaveProfileUseCase: SaveProfileUseCase {
-  private let userApiRepository: UserApiRepository
-  private let userDataRepository: UserDataRepository
+  private let userAPIRepository: UserAPIRepositoryProtocol
+  private let userDataRepository: UserDataRepositoryProtocol
 
-  public init(userApiRepository: UserApiRepository, userDataRepository: UserDataRepository) {
-    self.userApiRepository = userApiRepository
+  public init(userApiRepository: UserAPIRepositoryProtocol, userDataRepository: UserDataRepositoryProtocol) {
+    self.userAPIRepository = userApiRepository
     self.userDataRepository = userDataRepository
   }
   
   
   public func requestNicknameSave(nickname: String) -> Single<Bool> {
-    let result = userApiRepository.saveNickname(nickname: nickname)
+    let result = userAPIRepository.saveNickname(nickname: nickname)
       .flatMap { userData -> Single<Bool> in
         /// 최종적으로 저장된 데이터를 UserService에 저장해 둡니다.
         /// Single로 데이터를 전달받으니 weak self  사용시 self를 찾지 못했습니다.
@@ -39,10 +39,10 @@ public final class DefaultSaveProfileUseCase: SaveProfileUseCase {
     imageData: Data,
     mbti: String
   ) -> Single<Bool> {
-    let saveGender = userApiRepository.saveGender(gender: gender)
-    let saveBirth = userApiRepository.saveBirth(birth: birth)
-    let saveImageData = userApiRepository.saveImage(imageData: imageData)
-    let saveMbti = userApiRepository.saveMBTI(mbti: mbti)
+    let saveGender = userAPIRepository.saveGender(gender: gender)
+    let saveBirth = userAPIRepository.saveBirth(birth: birth)
+    let saveImageData = userAPIRepository.saveImage(imageData: imageData)
+    let saveMbti = userAPIRepository.saveMBTI(mbti: mbti)
 
     return Single.zip(saveGender, saveBirth, saveImageData)
       .flatMap { _, _, _ in
