@@ -1,15 +1,15 @@
 //
 //  DefaultKeychainReposotory.swift
-//  CoreRepository
+//  DataRepository
 //
 //  Created by 윤지호 on 1/26/24.
 //
 
 import Foundation
+import RxSwift
 import DataStorageInterface
 import DataRepositoryInterface
-import DomainCommonInterface
-import RxSwift
+import DomainCommon
 
 public final class DefaultKeychainReposotory: KeychainReposotory {
   
@@ -19,14 +19,14 @@ public final class DefaultKeychainReposotory: KeychainReposotory {
     self.keychainService = keychainService
   }
   
-  public func requestCreat(type: KeychainCase) -> Single<Bool> {
+  public func requestCreate(type: KeychainCase) -> Single<Bool> {
     let request = KeychainRouter.toRouterCase(type: type)
     return keychainService.create(type: request, isForce: true)
   }
   
   public func requestRead(type: KeychainCase) -> Single<String> {
     let request = KeychainRouter.toRouterCase(type: type)
-      return keychainService.read(type: request)
+    return keychainService.read(type: request)
   }
   
   public func requestDelete(type: KeychainCase) -> Single<Bool> {

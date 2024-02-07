@@ -55,17 +55,26 @@ final class OnboardingVerificationCodeEntryView: BaseView, Touchable, InputRecei
     }
   }
   
+  // MARK: - Reactor Property
+  private let disposeBag = DisposeBag()
+  
   // MARK: - Touchable
   public let touchEventRelay: PublishRelay<Void> = .init()
   
   // MARK: - InputReceivable
-  public let inputEventRelay: PublishRelay<Void> = .init()
+  public let inputEventRelay: PublishRelay<String> = .init()
   
   public override func configureUI() {
     setupTitleLabel()
     setupSubTitleLabel()
     setupVerificationCodeField()
     setupRequestSMSButton()
+  }
+  
+  override func bind() {
+    verificationCodeField.inputEventRelay
+      .bind(to: inputEventRelay)
+      .disposed(by: disposeBag)
   }
 }
 
@@ -111,7 +120,7 @@ extension OnboardingVerificationCodeEntryView {
   private func setSubtitleLabel(_ phoneNumber: String?) {
     guard let phoneNumber else { return }
     
-    var paragraphStyle = NSMutableParagraphStyle()
+    let paragraphStyle = NSMutableParagraphStyle()
     paragraphStyle.lineHeightMultiple = 1.17
     let text = "번호가 담긴 메시지를 \(phoneNumber)로 보냈어요. 절대 타인에게 공유하면 안돼요."
     let attributedString = NSMutableAttributedString(string: text, attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])

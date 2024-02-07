@@ -1,6 +1,6 @@
 //
 //  KeychainService.swift
-//  CoreStorage
+//  DataStorage
 //
 //  Created by 윤지호 on 1/17/24.
 //
@@ -16,6 +16,9 @@ public final class KeychainService: KeychainServiceProtocol {
   /// isForce 강제로 중복된 keychain 내의 값을 업데이트 할것인지에 대한 Bool값 입니다.
   public func create(type: KeychainRouter, isForce: Bool) -> Single<Bool> {
     let status = SecItemAdd(type.query as CFDictionary, nil)
+    
+    print(type.typeKey)
+    print(type.readQuery)
     
     if status == errSecDuplicateItem {
       print("create - Duplicate - \(type.typeKey)")
@@ -37,6 +40,9 @@ public final class KeychainService: KeychainServiceProtocol {
     var item: AnyObject?
     let status = SecItemCopyMatching(type.readQuery as CFDictionary, &item)
     
+    print(type.typeKey)
+    print(type.readQuery)
+    
     guard status != errSecItemNotFound else {
       print("Keychain read - item not found")
       return .error(NSError(domain: "No Data in Keychain", code: -1))
@@ -52,6 +58,8 @@ public final class KeychainService: KeychainServiceProtocol {
       print("Keychain read - data error")
       return .error(NSError(domain: "No Data in Keychain", code: -1))
     }
+    
+    print("키체인에서 꺼냈음!! \(token)")
     
     return .just(token)
   }

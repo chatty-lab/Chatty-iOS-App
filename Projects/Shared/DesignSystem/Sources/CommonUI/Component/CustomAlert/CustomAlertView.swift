@@ -26,6 +26,13 @@ public final class CustomAlertView: BaseControl, Touchable, Fadeable, Zoomable, 
     $0.lineBreakMode = .byCharWrapping
   }
   
+  private let buttonStackView: UIStackView = UIStackView().then {
+    $0.axis = .vertical
+    $0.alignment = .fill
+    $0.spacing = 4
+    $0.distribution = .fillEqually
+  }
+  
   private let positiveButton: CustomAlertButton = CustomAlertButton().then {
     typealias Configuration = CustomAlertButton.Configuration
     let positiveConfig = Configuration(backgroundColor: SystemColor.primaryNormal.uiColor, textColor:  SystemColor.basicWhite.uiColor)
@@ -67,13 +74,12 @@ public final class CustomAlertView: BaseControl, Touchable, Fadeable, Zoomable, 
     addSubview(titleContainerView)
     titleContainerView.addSubview(titleLabel)
     titleContainerView.addSubview(subTitleLabel)
-    titleContainerView.addSubview(positiveButton)
-    titleContainerView.addSubview(negativeButton)
+    titleContainerView.addSubview(buttonStackView)
     
     titleContainerView.snp.makeConstraints {
       $0.top.equalToSuperview().offset(28)
       $0.horizontalEdges.equalToSuperview().inset(20)
-      $0.bottom.equalToSuperview().offset(-16)
+      $0.bottom.equalToSuperview().offset(-20)
     }
     
     titleLabel.snp.makeConstraints {
@@ -86,35 +92,29 @@ public final class CustomAlertView: BaseControl, Touchable, Fadeable, Zoomable, 
       $0.leading.trailing.equalToSuperview().inset(6)
     }
     
-    positiveButton.snp.makeConstraints {
+    buttonStackView.snp.makeConstraints {
       $0.top.equalTo(subTitleLabel.snp.bottom).offset(32)
-      $0.leading.trailing.equalToSuperview().inset(6)
+      $0.bottom.equalToSuperview()
+      $0.horizontalEdges.equalToSuperview().inset(6)
+    }
+    
+    positiveButton.snp.makeConstraints {
       $0.height.equalTo(46)
     }
     
     negativeButton.snp.makeConstraints {
-      $0.top.equalTo(positiveButton.snp.bottom).offset(4)
-      $0.leading.trailing.equalToSuperview().inset(6)
-      $0.bottom.equalToSuperview()
       $0.height.equalTo(46)
     }
-    
   }
   
-  private func setupTitleLabel(_ title: String?) {
-    
-  }
-  
-  private func setupSubTitleLabel(_ title: String?) {
-    
-  }
-  
-  private func addButton(_ title: String, for action: Action) {
+  public func addButton(_ title: String, for action: Action) {
     switch action {
     case .positive:
       positiveButton.title = title
+      buttonStackView.addArrangedSubview(positiveButton)
     case .negative:
       negativeButton.title = title
+      buttonStackView.addArrangedSubview(negativeButton)
     }
   }
   
@@ -137,7 +137,7 @@ extension CustomAlertView {
     case negative
   }
   
-  enum Action {
+  public enum Action {
     case positive
     case negative
   }

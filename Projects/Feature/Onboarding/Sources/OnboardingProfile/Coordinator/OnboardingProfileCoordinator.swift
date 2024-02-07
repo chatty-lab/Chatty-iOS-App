@@ -10,25 +10,17 @@ import PhotosUI
 import Shared
 import SharedDesignSystem
 
-public final class OnboardingProfileCoordinator: Coordinator, BaseNavigationDelegate {
-  public weak var finishDelegate: CoordinatorFinishDelegate?
-  public var navigationController: CustomNavigationController
-  public var childCoordinators: [Coordinator] = []
-  public var childViewControllers: ChildViewController = .init()
-  public var type: CoordinatorType = .onboarding(.profileUpdate(.profiles))
-  
-  public init(_ navigationController: CustomNavigationController) {
-    self.navigationController = navigationController
-    navigationController.baseDelegate = self
+public final class OnboardingProfileCoordinator: BaseCoordinator {
+  public override var type: CoordinatorType {
+    .onboarding(.profileUpdate(.profiles))
   }
   
-  public func start() {
+  public override func start() {
     let profileState = OnboardingProfileReactor.State(state: .gender)
     let onboardingProfileReactor = OnboardingProfileReactor(profileState)
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReactor)
     onboardingProfileController.delegate = self
     navigationController.pushViewController(onboardingProfileController, animated: true)
-    childViewControllers.increase()
   }
   
   deinit {
@@ -47,7 +39,6 @@ extension OnboardingProfileCoordinator: OnboardingProfileDelegate {
     onboardingProfileController.delegate = self
     
     navigationController.pushViewController(onboardingProfileController, animated: true)
-    childViewControllers.increase()
   }
   
   public func presentImageGuideModal() {

@@ -11,7 +11,7 @@ import SharedDesignSystem
 import FeatureLive
 
 final class MainTabBarCoordinator: Coordinator {
-  var childViewControllers: ChildViewController = .init()
+  var childViewControllers: ReferenceCounter = .init()
   
   weak var finishDelegate: CoordinatorFinishDelegate?
   var navigationController: CustomNavigationController

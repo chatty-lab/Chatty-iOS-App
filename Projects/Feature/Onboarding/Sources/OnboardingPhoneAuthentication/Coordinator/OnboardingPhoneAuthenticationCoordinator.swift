@@ -6,37 +6,43 @@
 //
 
 import UIKit
+import FeatureOnboardingInterface
 import Shared
 import SharedDesignSystem
 
-public final class OnboardingPhoneAuthenticationCoordinator: OnboardingPhoneAuthenticationCoordinatorProtocol, CoordinatorFinishDelegate, BaseNavigationDelegate {
-  public weak var finishDelegate: CoordinatorFinishDelegate?
-  public var navigationController: CustomNavigationController
-  public var childCoordinators: [Coordinator] = []
-  public var childViewControllers: ChildViewController = .init()
-  public var type: CoordinatorType = .onboarding(.auth)
-
-  public init(_ navigationController: CustomNavigationController) {
-    self.navigationController = navigationController
-    navigationController.baseDelegate = self
+public final class OnboardingPhoneAuthenticationCoordinator: BaseCoordinator {
+  public override var type: CoordinatorType {
+    return .onboarding(.auth(.signUp))
+  }
+  
+  private let dependencyProvider: FeatureOnboardingDependencyProvider
+  
+  public init(navigationController: CustomNavigationController, dependencyProvider: FeatureOnboardingDependencyProvider) {
+    self.dependencyProvider = dependencyProvider
+    super.init(navigationController: navigationController)
   }
   
   deinit {
     print("해제됨: OnboardingPhoneAuthenticationCoordinator")
   }
    
-  public func start() {
-    let onboardingPhoneAuthenticationReactor = OnboardingPhoneAuthenticationReactor()
+  public func start(type: OnboardingAuthType) {
+    let onboardingPhoneAuthenticationReactor = OnboardingPhoneAuthenticationReactor(
+      type: type,
+      sendVerificationCodeUseCase: dependencyProvider.makeSendVerificationCodeUseCase(),
+      getDeviceIdUseCase: dependencyProvider.makeGetDeviceIdUseCase(),
+      signUseCase: dependencyProvider.makeSignUseCase()
+    )
     let onboardingPhoneNumberEntryController = OnboardingPhoneNumberEntryController(reactor: onboardingPhoneAuthenticationReactor)
     onboardingPhoneNumberEntryController.delegate = self
     navigationController.pushViewController(onboardingPhoneNumberEntryController, animated: true)
-    childViewControllers.increase()
   }
-  
+}
+
+extension OnboardingPhoneAuthenticationCoordinator: OnboardingPhoneAuthenticationDelegate {
   public func pushToVerificationCodeEntryView(_ reactor: OnboardingPhoneAuthenticationReactor?) {
     guard let reactor else { return }
     let onboardingVerificationCodeEntryController = OnboardingVerificationCodeEntryController(reactor: reactor)
     navigationController.pushViewController(onboardingVerificationCodeEntryController, animated: true)
-    childViewControllers.increase()
   }
 }

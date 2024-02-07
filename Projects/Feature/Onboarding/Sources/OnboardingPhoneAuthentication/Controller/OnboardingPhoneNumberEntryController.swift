@@ -10,6 +10,7 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 import SharedDesignSystem
+import DataNetworkInterface
 
 public final class OnboardingPhoneNumberEntryController: BaseController {
   // MARK: - View Property
@@ -19,7 +20,7 @@ public final class OnboardingPhoneNumberEntryController: BaseController {
   public typealias Reactor = OnboardingPhoneAuthenticationReactor
   
   // MARK: - Delegate
-  weak var delegate: OnboardingPhoneAuthenticationCoordinatorProtocol?
+  weak var delegate: OnboardingPhoneAuthenticationDelegate?
   
   // MARK: - Life Method
   public override func viewDidLoad() {
@@ -64,9 +65,10 @@ public final class OnboardingPhoneNumberEntryController: BaseController {
       $0.title = title
       $0.subTitle = message
     }
-    let alertController = CustomAlertController(alertView: alertView)
-    alertController.modalPresentationStyle = .overCurrentContext
-    alertController.delegate = self
+    alertView.addButton("전송", for: .positive)
+    alertView.addButton("취소", for: .negative)
+    
+    let alertController = CustomAlertController(alertView: alertView, delegate: self)
     navigationController?.present(alertController, animated: false)
   }
 }
@@ -96,12 +98,30 @@ extension OnboardingPhoneNumberEntryController: ReactorKit.View {
         owner.mainView.setRequestSMSButtonIsEnabled(for: state)
       }
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.sendSMSState)
+      .subscribe(with: self) { [weak self] owner, state in
+        guard let self else { return }
+        self.hideLoadingIndicator()
+        switch state {
+        case .idle:
+          return
+        case .loading:
+          print("로딩")
+          self.showLoadingIndicactor()
+        case .success:
+          print("성공")
+          self.delegate?.pushToVerificationCodeEntryView(self.reactor)
+        }
+      }
+      .disposed(by: disposeBag)
   }
 }
 
 extension OnboardingPhoneNumberEntryController: CustomAlertDelegate {
   public func destructiveAction() {
-    delegate?.pushToVerificationCodeEntryView(self.reactor)
+    reactor?.action.onNext(.sendSMS)
   }
   
   public func cancelAction() {

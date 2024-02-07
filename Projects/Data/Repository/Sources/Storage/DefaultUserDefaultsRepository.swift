@@ -1,14 +1,14 @@
 //
 //  DefaultUserDefaultsRepository.swift
-//  CoreRepository
+//  DataRepository
 //
 //  Created by 윤지호 on 1/28/24.
 //
 
 import Foundation
+import RxSwift
 import DataStorageInterface
 import DataRepositoryInterface
-import RxSwift
 
 public final class DefaultUserDefaultsRepository: UserDefaultsRepository {
   private let userDefaultService: any UserDefaultsServiceProtocol
@@ -17,7 +17,7 @@ public final class DefaultUserDefaultsRepository: UserDefaultsRepository {
     self.userDefaultService = userDefaultService
   }
   
-  public func requestCreat(type: String) {
+  public func requestCreate(type: String) {
     userDefaultService.creat(type: .exampleString(""))
   }
   

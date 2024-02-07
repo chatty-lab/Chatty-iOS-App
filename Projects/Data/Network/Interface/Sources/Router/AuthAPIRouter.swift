@@ -1,6 +1,6 @@
 //
 //  AuthAPIRouter.swift
-//  CoreNetwork
+//  DataNetworkInterface
 //
 //  Created by walkerhilla on 1/15/24.
 //

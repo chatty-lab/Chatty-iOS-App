@@ -9,28 +9,20 @@ import UIKit
 import Shared
 import SharedDesignSystem
 
-public final class OnboardingNickNameCoordinator: OnboardingNickNameCoordinatorProtocol, CoordinatorFinishDelegate, BaseNavigationDelegate {
-  public weak var finishDelegate: CoordinatorFinishDelegate?
-  public var navigationController: CustomNavigationController
-  public var childCoordinators: [Coordinator] = []
-  public var childViewControllers: ChildViewController = .init()
-  public var type: CoordinatorType = .onboarding(.profileUpdate(.nickName))
-  
-  public init(_ navigationController: CustomNavigationController) {
-    self.navigationController = navigationController
-    navigationController.baseDelegate = self
+public final class OnboardingNickNameCoordinator: BaseCoordinator, OnboardingNickNameCoordinatorProtocol {
+  public override var type: CoordinatorType {
+    .onboarding(.profileUpdate(.nickName))
   }
   
-  public func start() {
+  public override func start() {
     let onboardingNickNameReactor = OnboardingNickNameReactor()
     let onboardingNickNameController = OnboardingNickNameController(reactor: onboardingNickNameReactor)
     onboardingNickNameController.delegate = self
     navigationController.pushViewController(onboardingNickNameController, animated: true)
-    childViewControllers.increase()
   }
   
   public func pushToProfiles() {
-    let onboardingProfileCoordinator = OnboardingProfileCoordinator(self.navigationController)
+    let onboardingProfileCoordinator = OnboardingProfileCoordinator(navigationController: self.navigationController)
     
     childCoordinators.append(onboardingProfileCoordinator)
     

@@ -1,4 +1,7 @@
 import UIKit
+import DataNetwork
+import DataRepository
+import DomainUser
 import SharedDesignSystem
 import SharedFirebase
 import FirebaseMessaging
@@ -9,23 +12,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     // Override point for customization after application launch.
     
+    // 앱 커스텀 폰트 등록
     SharedDesignSystemFontFamily.registerAllCustomFonts()
 
+    // Firebase info.plist 설정
     if let filePath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist") {
       AppFirebase.Firebase.configure(with: filePath)
     }
 
+    // 푸쉬 알림 설정
     UNUserNotificationCenter.current().delegate = self
-    
     let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound] // 필요한 알림 권한을 설정
     UNUserNotificationCenter.current().requestAuthorization(
       options: authOptions,
       completionHandler: { _, _ in }
     )
-    
     application.registerForRemoteNotifications()
-    
     AppMessagingService.Firebase.setDelegate(self)
+    
+    // 기기 식별 번호 생성 ( 앱 최초 설치 시 )
+    let getDeviceIdUseCase = FeatureDIContainer.shared.makeDefaultGetDeviceIdUseCase()
+    getDeviceIdUseCase.execute()
+      .subscribe(onFailure: { _ in
+        let saveDeviceIdUseCase = FeatureDIContainer.shared.makeDefaultSaveDeviceIdUseCase()
+        let _ = saveDeviceIdUseCase.execute()
+      })
+      .dispose()
+
     
     return true
   }
@@ -50,7 +63,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 extension AppDelegate: UNUserNotificationCenterDelegate {
   func application(_ application: UIApplication,
                    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-    print("APNS token: \(deviceToken)")
     Messaging.messaging().apnsToken = deviceToken
   }
   
@@ -63,12 +75,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 extension AppDelegate: MessagingDelegate {
   func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
     print("Firebase registration token: \(String(describing: fcmToken))")
-    
-    let dataDict: [String: String] = ["token": fcmToken ?? ""]
-    NotificationCenter.default.post(
-      name: Notification.Name("FCMToken"),
-      object: nil,
-      userInfo: dataDict
-    )
+    guard let fcmToken else { return }
+    let saveDeviceTokenUseCase = FeatureDIContainer.shared.makeDefaultSaveDeviceTokenUseCase()
+    let _ = saveDeviceTokenUseCase.execute(deviceToken: fcmToken)
   }
 }

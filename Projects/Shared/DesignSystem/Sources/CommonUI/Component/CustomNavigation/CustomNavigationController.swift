@@ -43,8 +43,8 @@ public final class CustomNavigationController: UINavigationController, Bindable 
   private let disposeBag = DisposeBag()
   private let navigationBarRightButtonsRelay: PublishRelay<Int> = .init()
   
-  // MARK: - BaseNavigation Delegate
-  public weak var baseDelegate: BaseNavigationDelegate?
+  // MARK: - CustomNavigation Delegate
+  public weak var customDelegate: CustomNavigationDelegate?
   
   // MARK: - Initialize Method
   public init() {
@@ -77,6 +77,7 @@ public final class CustomNavigationController: UINavigationController, Bindable 
   public override func pushViewController(_ viewController: UIViewController, animated: Bool) {
     super.pushViewController(viewController, animated: animated)
     setBackButton(viewControllers)
+    customDelegate?.pushViewController()
   }
 }
 
@@ -87,7 +88,7 @@ extension CustomNavigationController {
         switch touch {
         case .back:
           let _ = owner.popViewController(animated: true)
-          owner.baseDelegate?.popViewController()
+          owner.customDelegate?.popViewController()
         case .rightButtons(let button):
           owner.navigationBarRightButtonsRelay.accept(button.rawValue)
         }
@@ -161,6 +162,7 @@ extension CustomNavigationController {
   }
 }
 
-public protocol BaseNavigationDelegate: AnyObject {
+public protocol CustomNavigationDelegate: AnyObject {
   func popViewController()
+  func pushViewController()
 }

@@ -8,35 +8,24 @@
 import UIKit
 import Shared
 import SharedDesignSystem
+import FeatureOnboardingInterface
 
-public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol {
+public final class OnboardingRootCoordinator: BaseCoordinator {
+  public override var type: CoordinatorType {
+    .onboarding(.root)
+  }
   
-  public var childViewControllers: ChildViewController = .init()
+  private let dependencyProvider: FeatureOnboardingDependencyProvider
   
-  public weak var finishDelegate: CoordinatorFinishDelegate?
-  public var navigationController: CustomNavigationController
-  public var childCoordinators: [Coordinator] = []
-  public var type: CoordinatorType = .onboarding(.root)
-  
-  public init(_ navigationController: CustomNavigationController) {
-    self.navigationController = navigationController
+  public init(navigationController: CustomNavigationController, dependencyProvider: FeatureOnboardingDependencyProvider) {
+    self.dependencyProvider = dependencyProvider
+    super.init(navigationController: navigationController)
   }
    
-  public func start() {
+  public override func start() {
     let onboardingRootController = OnboardingRootController()
     onboardingRootController.delegate = self
     navigationController.pushViewController(onboardingRootController, animated: false)
-  }
-  
-  public func presentToTerms() {
-    let onboardingTermsController = OnboardingTermsController(reactor: OnboardingTermsReactor())
-    onboardingTermsController.modalPresentationStyle = .pageSheet
-    onboardingTermsController.delegate = self
-    navigationController.present(onboardingTermsController, animated: true)
-  }
-  
-  public func pushToLogin() {
-    print("root - 로그인")
   }
   
   deinit {
@@ -44,19 +33,35 @@ public final class OnboardingRootCoordinator: OnboardingRootCoordinatorProtocol 
   }
 }
 
-extension OnboardingRootCoordinator: OnboardingTermsDelegate {
-  public func signUp() {
-    let onboardingPhoneAuthenticationCoordinator = OnboardingPhoneAuthenticationCoordinator(self.navigationController)
+extension OnboardingRootCoordinator: OnboardingRootDelegate {
+  public func presentToTerms() {
+    let onboardingTermsController = OnboardingTermsController(reactor: OnboardingTermsReactor())
+    onboardingTermsController.modalPresentationStyle = .pageSheet
+    onboardingTermsController.delegate = self
+    navigationController.present(onboardingTermsController, animated: true)
+  }
+  
+  public func pushToSignIn() {
+    let onboardingPhoneAuthenticationCoordinator = OnboardingPhoneAuthenticationCoordinator(
+      navigationController: navigationController,
+      dependencyProvider: dependencyProvider
+    )
     
     childCoordinators.append(onboardingPhoneAuthenticationCoordinator)
     
     onboardingPhoneAuthenticationCoordinator.finishDelegate = self
-    onboardingPhoneAuthenticationCoordinator.start()
+    onboardingPhoneAuthenticationCoordinator.start(type: .signIn)
   }
-}
-
-extension OnboardingRootCoordinator: CoordinatorFinishDelegate {
-  public func coordinatorDidFinish(childCoordinator: Coordinator) {
-    removeChildCoordinator(childCoordinator)
+  
+  public func pushToSignUp() {
+    let onboardingPhoneAuthenticationCoordinator = OnboardingPhoneAuthenticationCoordinator(
+      navigationController: navigationController,
+      dependencyProvider: dependencyProvider
+    )
+    
+    childCoordinators.append(onboardingPhoneAuthenticationCoordinator)
+    
+    onboardingPhoneAuthenticationCoordinator.finishDelegate = self
+    onboardingPhoneAuthenticationCoordinator.start(type: .signUp)
   }
 }

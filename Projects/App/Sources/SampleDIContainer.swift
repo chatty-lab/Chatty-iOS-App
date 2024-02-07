@@ -8,7 +8,6 @@
 import Foundation
 import DomainAuth
 import DomainUser
-import DomainCommonInterface
 
 import DataNetwork
 import DataNetworkInterface
@@ -22,7 +21,7 @@ public final class SampleDIContainer {
   // SaveProfileUseCase
   func getSaveProfileUseCase() -> DefaultSaveProfileUseCase {
     return DefaultSaveProfileUseCase(
-      userApiRepository: getUserAPIRepository(),
+      userAPIRepository: getUserAPIRepository(),
       userDataRepository: getUserDataRepository()
     )
   }
@@ -30,9 +29,8 @@ public final class SampleDIContainer {
   // SignUseCase
   func getSignUserCase() -> DefaultSignUseCase {
     return DefaultSignUseCase(
-      userApiRepository: getUserAPIRepository(),
-      keychainReposotory: getKeychainReposotory(),
-      tokenUseCase: getTokenUseCase()
+      userAPIRepository: getUserAPIRepository(),
+      keychainReposotory: getKeychainReposotory()
     )
   }
   
@@ -40,14 +38,19 @@ public final class SampleDIContainer {
   func getTokenUserCase() -> DefaultTokenUseCase {
     return DefaultTokenUseCase(
       keychainRepository: getKeychainReposotory(),
-      authAPIRepository: getAuthApiRepository())
+      authAPIRepository: getAuthAPIRepository())
   }
   
-  
+  func getSendVerificationCodeUseCase() -> DefaultSendVerificationCodeUseCase {
+    return DefaultSendVerificationCodeUseCase(
+      authAPIRepository: getAuthAPIRepository(), 
+      keychainRepository: getKeychainReposotory()
+    )
+  }
+
   // Repository
-  
-  func getUserAPIRepository() -> DefaultUserAPIRepository<UserAPIRouter> {
-    return DefaultUserAPIRepository<UserAPIRouter>(userAPIService: UserAPIServiceImpl())
+  func getUserAPIRepository() -> DefaultUserAPIRepository {
+    return DefaultUserAPIRepository(userAPIService: UserAPIServiceImpl())
   }
   
   func getUserDataRepository() -> DefaultUserDataRepository {
@@ -62,7 +65,7 @@ public final class SampleDIContainer {
     )
   }
   
-  func getAuthApiRepository() -> DefaultAuthAPIRepository<AuthAPIRouter> {
+  func getAuthAPIRepository() -> DefaultAuthAPIRepository {
     return DefaultAuthAPIRepository(
       authAPIService: AuthAPIServiceImpl()
     )
@@ -71,7 +74,7 @@ public final class SampleDIContainer {
   func getTokenUseCase() -> DefaultTokenUseCase {
     return DefaultTokenUseCase(
       keychainRepository: getKeychainReposotory(),
-      authAPIRepository: getAuthApiRepository()
+      authAPIRepository: getAuthAPIRepository()
     )
   }
 }

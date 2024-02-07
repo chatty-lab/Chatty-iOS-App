@@ -10,7 +10,7 @@ import Shared
 import SharedDesignSystem
 
 public final class LiveCoordinator: Coordinator {
-  public var childViewControllers: Shared.ChildViewController = .init()
+  public var childViewControllers: Shared.ReferenceCounter = .init()
   
   public var navigationController: CustomNavigationController
   

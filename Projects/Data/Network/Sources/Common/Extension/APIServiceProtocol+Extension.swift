@@ -1,6 +1,6 @@
 //
 //  APIServiceProtocol+Extension.swift
-//  CoreNetwork
+//  DataNetwork
 //
 //  Created by HUNHIE LEE on 2/1/24.
 //

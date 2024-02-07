@@ -17,7 +17,7 @@ let project = Project.makeModule(
       factory: .init(
         dependencies: [
           .shared,
-          .domain(interface: .Common)
+          .domain(implements: .Common)
         ]
       )
     ),

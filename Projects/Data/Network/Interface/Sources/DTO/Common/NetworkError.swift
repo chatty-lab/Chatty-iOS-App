@@ -1,6 +1,6 @@
 //
 //  NetworkError.swift
-//  CoreNetwork
+//  DataNetworkInterface
 //
 //  Created by 윤지호 on 1/21/24.
 //
@@ -8,8 +8,8 @@
 import Foundation
 
 public struct NetworkError: Error {
-  let errorCase: ErrorCase
-  let massage: String
+  public let errorCase: ErrorCase
+  public let massage: String
 }
 
 public enum ErrorCase: Error {
@@ -21,7 +21,7 @@ public enum ErrorCase: Error {
   case E004DisabledUser
 
   // Custom Error
-  case E005NaverSnsFailed
+  case E005NaverSMSFailed
   case E006AlreadyExistNickname
   case E007SNSAuthenticationFailed
   case E008AlreadyExistUser
@@ -29,7 +29,6 @@ public enum ErrorCase: Error {
   case E011NonExistentChatRoom
   case E012AlreadyExistChatRoom
   case E013NonExistentChatContent
-  case E014SendSNSFailed
   case E015NoUserInChatRoom
   case E016InvalidExtension
   case E017NonExistentMatch
@@ -57,7 +56,7 @@ public enum ErrorCase: Error {
       return "이용 정지된 사용자"
       
     // Custom Error
-    case .E005NaverSnsFailed:
+    case .E005NaverSMSFailed:
       return "naver에서 sms 전송을 실패했습니다. "
     case .E006AlreadyExistNickname:
       return "이미 존재 하는 닉네임입니다."
@@ -73,8 +72,6 @@ public enum ErrorCase: Error {
       return "채팅방이 이미 존재합니다."
     case .E013NonExistentChatContent:
       return "채팅 내용이 존재하지 않습니다."
-    case .E014SendSNSFailed:
-      return "sms전송을 실패했습니다."
     case .E015NoUserInChatRoom:
       return "유저가 채팅방에 존재하지 않습니다."
     case .E016InvalidExtension:
@@ -115,7 +112,6 @@ public enum ErrorCode: String {
   case E011
   case E012
   case E013
-  case E014
   case E015
   case E016
   case E017
@@ -143,7 +139,7 @@ public enum ErrorCode: String {
 
     // Custom Error
     case .E005:
-      return .E005NaverSnsFailed
+      return .E005NaverSMSFailed
     case .E006:
       return .E006AlreadyExistNickname
     case .E007:
@@ -158,8 +154,6 @@ public enum ErrorCode: String {
       return .E012AlreadyExistChatRoom
     case .E013:
       return .E013NonExistentChatContent
-    case .E014:
-      return .E014SendSNSFailed
     case .E015:
       return .E015NoUserInChatRoom
     case .E016:

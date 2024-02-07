@@ -1,6 +1,6 @@
 //
 //  ErrorResponse.swift
-//  CoreNetwork
+//  DataNetworkInterface
 //
 //  Created by 윤지호 on 1/14/24.
 //

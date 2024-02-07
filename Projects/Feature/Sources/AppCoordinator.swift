@@ -20,10 +20,13 @@ public final class AppCoordinator: BaseCoordinator, AppCoordinatorProtocol {
     return .app
   }
   
-  var window: UIWindow
+  public var window: UIWindow
   
-  public init(window: UIWindow, _ navigationController: CustomNavigationController) {
+  private let featureDependencyProvider: FeatureDependencyProvider
+  
+  public init(window: UIWindow, navigationController: CustomNavigationController, featureDependencyProvider: FeatureDependencyProvider) {
     self.window = window
+    self.featureDependencyProvider = featureDependencyProvider
     super.init(navigationController: navigationController)
   }
   
@@ -32,7 +35,10 @@ public final class AppCoordinator: BaseCoordinator, AppCoordinatorProtocol {
   }
   
   func showOnboardingFlow() {
-    let onboardingCoordinator = OnboardingRootCoordinator(navigationController)
+    let onboardingCoordinator = OnboardingRootCoordinator(
+      navigationController: navigationController,
+      dependencyProvider: featureDependencyProvider.makeFeatureOnboardingDependencyProvider()
+    )
     childCoordinators.append(onboardingCoordinator)
     onboardingCoordinator.start()
     

@@ -1,12 +1,12 @@
 //
 //  KeychainRouter.swift
-//  CoreStorageInterface
+//  DataStorageInterface
 //
 //  Created by HUNHIE LEE on 2/1/24.
 //
 
 import Foundation
-import DomainCommonInterface
+import DomainCommon
 
 public enum KeychainRouter {
   case accessToken(_ token: String = "")
