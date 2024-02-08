@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import DomainCommon
+import DomainAuthInterface
 
 public struct DefaultSaveDeviceIdUseCase: SaveDeviceIdUseCase {
   private let keychainRepository: KeychainReposotoryProtocol
