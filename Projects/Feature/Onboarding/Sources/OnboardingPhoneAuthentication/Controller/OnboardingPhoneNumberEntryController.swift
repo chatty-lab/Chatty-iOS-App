@@ -108,7 +108,6 @@ extension OnboardingPhoneNumberEntryController: ReactorKit.View {
         case .idle:
           return
         case .loading:
-          print("로딩")
           self.showLoadingIndicactor()
         case .success:
           print("성공")

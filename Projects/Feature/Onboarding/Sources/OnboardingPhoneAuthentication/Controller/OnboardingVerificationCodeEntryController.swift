@@ -18,6 +18,9 @@ public final class OnboardingVerificationCodeEntryController: BaseController {
   // MARK: - Reactor Property
   public typealias Reactor = OnboardingPhoneAuthenticationReactor
   
+  // MARK: - Delegate
+  weak var delegate: OnboardingPhoneAuthenticationDelegate?
+  
   // MARK: - Initialize Method
   public required init(reactor: Reactor) {
     defer {
@@ -72,7 +75,7 @@ extension OnboardingVerificationCodeEntryController: ReactorKit.View {
         case .idle: break
         case .loading: break
         case .success:
-          print("아 성공~~")
+          owner.delegate?.pushToNickNameView()
         }
       }
       .disposed(by: disposeBag)

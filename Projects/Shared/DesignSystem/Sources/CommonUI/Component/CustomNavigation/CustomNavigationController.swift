@@ -79,6 +79,11 @@ public final class CustomNavigationController: UINavigationController, Bindable 
     setBackButton(viewControllers)
     customDelegate?.pushViewController()
   }
+  
+  public override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
+    super.setViewControllers(viewControllers, animated: animated)
+    setBackButton(viewControllers)
+  }
 }
 
 extension CustomNavigationController {

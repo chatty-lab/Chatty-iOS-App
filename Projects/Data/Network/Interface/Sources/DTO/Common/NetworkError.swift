@@ -23,7 +23,7 @@ public enum ErrorCase: Error {
   // Custom Error
   case E005NaverSMSFailed
   case E006AlreadyExistNickname
-  case E007SNSAuthenticationFailed
+  case E007SMSAuthenticationFailed
   case E008AlreadyExistUser
   case E009RefreshTokenExpired
   case E011NonExistentChatRoom
@@ -60,7 +60,7 @@ public enum ErrorCase: Error {
       return "naver에서 sms 전송을 실패했습니다. "
     case .E006AlreadyExistNickname:
       return "이미 존재 하는 닉네임입니다."
-    case .E007SNSAuthenticationFailed:
+    case .E007SMSAuthenticationFailed:
       return "유효하지 않은 인증 번호입니다."
     case .E008AlreadyExistUser:
       return "이미 존재 하는 유저입니다."
@@ -143,7 +143,7 @@ public enum ErrorCode: String {
     case .E006:
       return .E006AlreadyExistNickname
     case .E007:
-      return .E007SNSAuthenticationFailed
+      return .E007SMSAuthenticationFailed
     case .E008:
       return .E008AlreadyExistUser
     case .E009:

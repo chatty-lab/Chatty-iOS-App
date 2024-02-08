@@ -10,4 +10,5 @@ import Shared
 
 public protocol OnboardingPhoneAuthenticationDelegate: AnyObject {
   func pushToVerificationCodeEntryView(_ reactor: OnboardingPhoneAuthenticationReactor?)
+  func pushToNickNameView()
 }

@@ -63,7 +63,11 @@ extension OnboardingPhoneAuthenticationReactor {
         .just(.setSendSMSState(.loading)),
         self.sendVerificationCodeUseCase.execute(mobileNumber: self.currentState.phoneNumber)
           .asObservable()
-          .map { .setSendSMSState(.success) },
+          .map { .setSendSMSState(.success) }
+          .catch { error -> Observable<Mutation> in
+            guard let error = error as? NetworkError else { return .just(.setError(.unknownError))}
+            return .just(error.toMutation())
+          },
         .just(.setSendSMSState(.idle))
       ])
     case .sendVerificationCode(let code):
@@ -72,14 +76,22 @@ extension OnboardingPhoneAuthenticationReactor {
         return Observable.concat([
           signUseCase.requestLogin(mobileNumber: self.currentState.phoneNumber, authenticationNumber: code)
             .asObservable()
-            .map { _ in .setSendVerificationCodeState(.success) },
+            .map { _ in .setSendVerificationCodeState(.success) }
+            .catch { error -> Observable<Mutation> in
+              guard let error = error as? NetworkError else { return .just(.setError(.unknownError))}
+              return .just(error.toMutation())
+            },
           .just(.setSendVerificationCodeState(.idle))
         ])
       case .signUp:
         return Observable.concat([
           signUseCase.requestJoin(mobileNumber: self.currentState.phoneNumber, authenticationNumber: code)
             .asObservable()
-            .map { _ in .setSendVerificationCodeState(.success) },
+            .map { _ in .setSendVerificationCodeState(.success) }
+            .catch { error -> Observable<Mutation> in
+              guard let error = error as? NetworkError else { return .just(.setError(.unknownError))}
+              return .just(error.toMutation())
+            },
           .just(.setSendVerificationCodeState(.idle))
         ])
       }
@@ -134,7 +146,7 @@ extension NetworkError {
     switch self.errorCase {
     case .E005NaverSMSFailed:
       return .setError(.smsFailed)
-    case .E007SNSAuthenticationFailed:
+    case .E007SMSAuthenticationFailed:
       return .setError(.invalidVerificationCode)
     default:
       return .setError(.unknownError)

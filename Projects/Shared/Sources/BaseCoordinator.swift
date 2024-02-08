@@ -21,13 +21,26 @@ open class BaseCoordinator: Coordinator {
     self.navigationController = navigationController
     self.navigationController.customDelegate = self
   }
-
+  
   open func start() {
     
   }
 }
 
 extension BaseCoordinator {
+  public func setRootViewController(to coordinator: Coordinator, animated: Bool = true) {
+    childCoordinators.removeAll()
+    if let newRootViewController = coordinator.navigationController.viewControllers.first {
+      navigationController.setViewControllers([newRootViewController], animated: animated)
+    }
+    addChildCoordinator(coordinator)
+  }
+  
+  public func addChildCoordinator(_ childCoordinator: Coordinator) {
+    childCoordinators.append(childCoordinator)
+    childCoordinator.finishDelegate = self
+  }
+  
   public func removeChildCoordinator(_ childCoordinator: Coordinator) {
     for (index, coordinator) in childCoordinators.enumerated() {
       if coordinator === childCoordinator {

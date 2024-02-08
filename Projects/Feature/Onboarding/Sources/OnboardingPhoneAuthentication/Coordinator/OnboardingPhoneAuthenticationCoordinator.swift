@@ -43,6 +43,14 @@ extension OnboardingPhoneAuthenticationCoordinator: OnboardingPhoneAuthenticatio
   public func pushToVerificationCodeEntryView(_ reactor: OnboardingPhoneAuthenticationReactor?) {
     guard let reactor else { return }
     let onboardingVerificationCodeEntryController = OnboardingVerificationCodeEntryController(reactor: reactor)
+    onboardingVerificationCodeEntryController.delegate = self
     navigationController.pushViewController(onboardingVerificationCodeEntryController, animated: true)
+  }
+  
+  public func pushToNickNameView() {
+    let onboardingNickNameCoordinator = OnboardingNickNameCoordinator(navigationController: CustomNavigationController())
+    onboardingNickNameCoordinator.start()
+    
+    setRootViewController(to: onboardingNickNameCoordinator)
   }
 }

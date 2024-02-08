@@ -46,6 +46,26 @@ public final class DefaultSignUseCase: SignUseCase {
   }
   
   public func requestJoin(mobileNumber: String, authenticationNumber: String) -> Single<Bool> {
-    return .just(true)
+    let deviceTokenObservable = keychainRepository.requestRead(type: .deviceToken())
+    let deviceIdObservable = keychainRepository.requestRead(type: .deviceId())
+    
+    return Single.zip(deviceIdObservable, deviceTokenObservable)
+      .flatMap { deviceId, deviceToken in
+        return self.userAPIRepository.join(
+          mobileNumber: mobileNumber,
+          authenticationNumber: authenticationNumber,
+          deviceId: deviceId,
+          deviceToken: deviceToken
+        )
+        .flatMap { tokens -> Single<Bool> in
+          let saveAccessToken = self.keychainRepository.requestCreate(type: .accessToken(tokens.accessToken))
+          let saveRefreshToken = self.keychainRepository.requestCreate(type: .refreshToken(tokens.refreshToken))
+          
+          return Single.zip(saveAccessToken, saveRefreshToken)
+            .map { accessToken, refreshToken  in
+              return accessToken && refreshToken
+            }
+        }
+      }
   }
 }
