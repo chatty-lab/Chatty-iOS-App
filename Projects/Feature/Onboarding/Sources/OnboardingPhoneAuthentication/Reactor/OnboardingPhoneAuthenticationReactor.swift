@@ -31,7 +31,7 @@ public final class OnboardingPhoneAuthenticationReactor: Reactor {
     case setSendSMSButton(PhoneNumberValidationResult)
     case setPhoneNumber(String)
     case setSendVerificationCodeState(AsyncState<Void>)
-    case setError(ErrorType)
+    case setError(ErrorType?)
   }
   
   public struct State {
@@ -65,8 +65,7 @@ extension OnboardingPhoneAuthenticationReactor {
           .asObservable()
           .map { .setSendSMSState(.success) }
           .catch { error -> Observable<Mutation> in
-            guard let error = error as? NetworkError else { return .just(.setError(.unknownError))}
-            return .just(error.toMutation())
+            return error.toMutation()
           },
         .just(.setSendSMSState(.idle))
       ])
@@ -78,8 +77,7 @@ extension OnboardingPhoneAuthenticationReactor {
             .asObservable()
             .map { _ in .setSendVerificationCodeState(.success) }
             .catch { error -> Observable<Mutation> in
-              guard let error = error as? NetworkError else { return .just(.setError(.unknownError))}
-              return .just(error.toMutation())
+              return error.toMutation()
             },
           .just(.setSendVerificationCodeState(.idle))
         ])
@@ -89,8 +87,7 @@ extension OnboardingPhoneAuthenticationReactor {
             .asObservable()
             .map { _ in .setSendVerificationCodeState(.success) }
             .catch { error -> Observable<Mutation> in
-              guard let error = error as? NetworkError else { return .just(.setError(.unknownError))}
-              return .just(error.toMutation())
+              return error.toMutation()
             },
           .just(.setSendVerificationCodeState(.idle))
         ])
@@ -136,20 +133,31 @@ extension OnboardingPhoneAuthenticationReactor {
   public enum ErrorType: Error {
     case invalidPhoneNumber
     case invalidVerificationCode
+    case mismatchedDeviceId
     case smsFailed
     case unknownError
   }
 }
 
-extension NetworkError {
-  func toMutation() -> OnboardingPhoneAuthenticationReactor.Mutation {
-    switch self.errorCase {
-    case .E005NaverSMSFailed:
-      return .setError(.smsFailed)
-    case .E007SMSAuthenticationFailed:
-      return .setError(.invalidVerificationCode)
-    default:
-      return .setError(.unknownError)
-    }
+extension Error {
+  func toMutation() -> Observable<OnboardingPhoneAuthenticationReactor.Mutation> {
+    let errorMutation: Observable<OnboardingPhoneAuthenticationReactor.Mutation> = {
+      guard let error = self as? NetworkError else { return .just(.setError(.unknownError))}
+      switch error.errorCase {
+      case .E005NaverSMSFailed:
+        return .just(.setError(.smsFailed))
+      case .E007SMSAuthenticationFailed:
+        return .just(.setError(.invalidVerificationCode))
+      case .E023MismatchedAccountAndDeviceId:
+        return .just(.setError(.mismatchedDeviceId))
+      default:
+        return .just(.setError(.unknownError))
+      }
+    }()
+    
+    return Observable.concat([
+      errorMutation,
+      .just(.setError(nil))
+    ])
   }
 }
