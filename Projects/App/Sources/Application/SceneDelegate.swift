@@ -2,12 +2,11 @@
 //  SceneDelegate.swift
 //  Chatty
 //
-//  Created by walkerhilla on 12/12/23.
+//  Created by HUNHIE LEE on 12/12/23.
 //
 
 import UIKit
 import Feature
-import FeatureOnboarding
 import SharedDesignSystem
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -24,7 +23,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     guard let windowScene = (scene as? UIWindowScene) else { return }
     let window = UIWindow(windowScene: windowScene)
     let navigationController = CustomNavigationController()
-    appCoordinator = AppCoordinator(window: window, navigationController)
+    appCoordinator = AppCoordinator(
+      window: window,
+      navigationController: navigationController, 
+      featureDependencyProvider: FeatureDIContainer.shared
+    )
     appCoordinator?.start()
   }
 

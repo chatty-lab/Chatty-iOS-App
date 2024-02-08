@@ -1,15 +1,15 @@
 //
 //  DefaultUserDataRepository.swift
-//  CoreRepository
+//  DataRepository
 //
 //  Created by 윤지호 on 1/29/24.
 //
 
 import Foundation
+import RxSwift
 import DataStorageInterface
 import DataRepositoryInterface
-import DomainCommonInterface
-import RxSwift
+import DomainUserInterface
 
 public final class DefaultUserDataRepository: UserDataRepository {
    
@@ -19,11 +19,11 @@ public final class DefaultUserDataRepository: UserDataRepository {
     self.userDataService = userDataService
   }
   
-  public func saveUserData(userData: UserData) {
+  public func saveUserData(userData: UserDataProtocol) {
     userDataService.setData(userData: userData)
   }
   
-  public func getUserData() -> Single<UserData> {
+  public func getUserData() -> Single<UserDataProtocol> {
     let data = userDataService.getData()
     return .just(data)
   }

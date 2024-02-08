@@ -1,12 +1,12 @@
 //
 //  TokenResponseDTO.swift
-//  CoreNetwork
+//  DataNetworkInterface
 //
 //  Created by walkerhilla on 1/16/24.
 //
 
 import Foundation
-import DomainCommonInterface
+import DomainAuth
 
 public struct TokenResponseDTO: Decodable {
   public let accessToken: String

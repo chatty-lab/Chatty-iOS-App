@@ -1,6 +1,6 @@
 //
 //  MoyaLogging.swift
-//  CoreNetwork
+//  DataNetwork
 //
 //  Created by 윤지호 on 1/16/24.
 //

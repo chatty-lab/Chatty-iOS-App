@@ -1,20 +1,23 @@
 //
 //  MobileResponseDTO.swift
-//  CoreNetworkInterface
+//  DataNetworkInterface
 //
 //  Created by walkerhilla on 1/16/24.
 //
 
 import Foundation
-import DomainCommonInterface
 
 public struct MobileResponseDTO: CommonResponseDTO {
   public var code: Int
   public var status: String
   public var message: String
-  public var data: TokenResponseDTO
+  public var data: AuthNumber
   
-  public func toDomain() -> Token {
-    return data.toDomain()
+  public func toDomain() -> Void {
+    return ()
   }
+}
+
+public struct AuthNumber: Decodable {
+  public let authNumber: String
 }

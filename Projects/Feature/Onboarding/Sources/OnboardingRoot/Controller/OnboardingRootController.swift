@@ -28,7 +28,7 @@ public final class OnboardingRootController: BaseController {
   }
   
   // MARK: - Delegate
-  weak var delegate: OnboardingRootCoordinatorProtocol?
+  weak var delegate: OnboardingRootDelegate?
   
   deinit {
     print("해제됨: OnboardingRootController")
@@ -40,7 +40,7 @@ public final class OnboardingRootController: BaseController {
       .bind(with: self) { owner, touch in
         switch touch {
         case .signIn:
-          owner.delegate?.pushToLogin()
+          owner.delegate?.pushToSignIn()
         case .signUp:
           owner.delegate?.presentToTerms()
         }

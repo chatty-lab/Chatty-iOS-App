@@ -10,10 +10,6 @@ import ReactorKit
 import RxSwift
 import SharedDesignSystem
 
-public protocol OnboardingTermsDelegate: AnyObject {
-  func signUp()
-}
-
 public final class OnboardingTermsController: BaseController {
   // MARK: - View Property
   private lazy var mainView = OnboardingTermsView()
@@ -44,7 +40,7 @@ public final class OnboardingTermsController: BaseController {
   }
   
   // MARK: - Delegate
-  weak var delegate: OnboardingTermsDelegate?
+  weak var delegate: OnboardingRootDelegate?
   
   // MARK: - UIConfigurable
   public override func configureUI() {
@@ -68,7 +64,7 @@ extension OnboardingTermsController: ReactorKit.View {
           print("약관 상세 페이지: \(terms.type.rawValue)")
         case .signUp:
           owner.dismiss(animated: true)
-          owner.delegate?.signUp()
+          owner.delegate?.pushToSignUp()
         }
       }
       .disposed(by: disposeBag)

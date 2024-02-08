@@ -1,6 +1,6 @@
 //
 //  UserAuthRequestDTO.swift
-//  CoreNetwork
+//  DataNetworkInterface
 //
 //  Created by walkerhilla on 1/16/24.
 //

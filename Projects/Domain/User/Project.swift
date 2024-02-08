@@ -10,7 +10,7 @@ let project = Project.makeModule(
       factory: .init(
         dependencies: [
           .shared,
-          .domain(interface: .Common)
+          .domain(implements: .Common)
         ]
       )
     ),
@@ -18,7 +18,8 @@ let project = Project.makeModule(
       implements: .User,
       factory: .init(
         dependencies: [
-          .domain(interface: .User)
+          .domain(interface: .User),
+          .domain(interface: .Auth)
         ]
       )
     ),

@@ -1,17 +1,18 @@
 //
 //  UserDataService.swift
-//  CoreStorageInterface
+//  DataStorage
 //
 //  Created by 윤지호 on 1/28/24.
 //
 
 import Foundation
-import DomainCommonInterface
 import DataStorageInterface
+import DomainUser
+import DomainUserInterface
 
 public final class UserDataService: UserDataServiceProtocol {
   public static let shared = UserDataService()
-  private init() { 
+  private init() {
     self.userData = UserData(
       nickname: "",
       mobileNumber: "",
@@ -23,13 +24,13 @@ public final class UserDataService: UserDataServiceProtocol {
     )
   }
   
-  private var userData: UserData
+  private var userData: UserDataProtocol
   
-  public func getData() -> UserData {
+  public func getData() -> UserDataProtocol {
     return userData
   }
   
-  public func setData(userData: UserData) {
-      self.userData = userData
-    }
+  public func setData(userData: UserDataProtocol) {
+    self.userData = userData
+  }
 }

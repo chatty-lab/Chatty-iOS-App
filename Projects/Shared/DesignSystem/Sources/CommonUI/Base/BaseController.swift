@@ -21,6 +21,8 @@ import RxGesture
 ///   `BaseController`의 서브 클래스는 `bind` 메서드를 재정의하여 구체적인 바인딩 로직을 구현할 수 있어요.
 ///
 open class BaseController: UIViewController, UIConfigurable, Bindable {
+  private lazy var indicatorView = IndicatorView()
+  
   public var disposeBag = DisposeBag()
   
   public weak var customNavigationController: CustomNavigationController? {
@@ -67,5 +69,28 @@ open class BaseController: UIViewController, UIConfigurable, Bindable {
   
   open override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     self.view.endEditing(true)
+  }
+  
+  // MARK: - Error
+  open func showErrorAlert(title: String? = nil, subTitle: String? = nil) {
+    let alertView = CustomAlertView().then {
+      $0.title = title
+      $0.subTitle = subTitle
+    }
+    alertView.addButton("확인", for: .positive)
+    let alertController = CustomAlertController(alertView: alertView)
+    customNavigationController?.present(alertController, animated: false)
+  }
+  
+  open func showLoadingIndicactor() {
+    view.addSubview(indicatorView)
+    indicatorView.snp.makeConstraints {
+      $0.edges.equalToSuperview()
+    }
+    indicatorView.startAnimating()
+  }
+  
+  open func hideLoadingIndicator() {
+    indicatorView.removeFromSuperview()
   }
 }

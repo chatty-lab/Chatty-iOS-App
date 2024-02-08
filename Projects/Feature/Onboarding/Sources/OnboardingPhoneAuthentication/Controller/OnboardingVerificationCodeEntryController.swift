@@ -18,6 +18,9 @@ public final class OnboardingVerificationCodeEntryController: BaseController {
   // MARK: - Reactor Property
   public typealias Reactor = OnboardingPhoneAuthenticationReactor
   
+  // MARK: - Delegate
+  weak var delegate: OnboardingPhoneAuthenticationDelegate?
+  
   // MARK: - Initialize Method
   public required init(reactor: Reactor) {
     defer {
@@ -52,12 +55,45 @@ public final class OnboardingVerificationCodeEntryController: BaseController {
 
 extension OnboardingVerificationCodeEntryController: ReactorKit.View {
   public func bind(reactor: OnboardingPhoneAuthenticationReactor) {
-    print(reactor.currentState.isSendSMSButtonEnabled)
+    mainView.inputEventRelay
+      .filter { $0.count == 6 }
+      .map { .sendVerificationCode($0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
     
     reactor.state
       .map(\.phoneNumber)
       .bind(with: self) { owner, phoneNumber in
         owner.mainView.phoneNumber = phoneNumber
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.sendVerificationCodeState)
+      .subscribe(with: self) { owner, state in
+        switch state {
+        case .idle: break
+        case .loading: break
+        case .success:
+          owner.delegate?.pushToNickNameView()
+        }
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.errorState)
+      .compactMap { $0 }
+      .subscribe(with: self) { owner, error in
+        switch error {
+        case .invalidPhoneNumber:
+          print("잘못된 번호 형식입니다.")
+        case .invalidVerificationCode:
+          print("유효하지 않은 인증번호입니다.")
+        case .smsFailed:
+          print("인증번호 발송에 실패하였습니다.")
+        case .unknownError:
+          print("알 수 없는 에러입니다.")
+        }
       }
       .disposed(by: disposeBag)
   }

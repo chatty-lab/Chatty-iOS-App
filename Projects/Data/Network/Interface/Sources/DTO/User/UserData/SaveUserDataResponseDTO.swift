@@ -1,12 +1,12 @@
 //
 //  SaveUserDataResponseDTO.swift
-//  CoreNetworkInterface
+//  DataNetworkInterface
 //
 //  Created by 윤지호 on 1/25/24.
 //
 
 import Foundation
-import DomainCommonInterface
+import DomainUser
 
 public struct SaveUserDataResponseDTO: CommonResponseDTO {
   public let code: Int

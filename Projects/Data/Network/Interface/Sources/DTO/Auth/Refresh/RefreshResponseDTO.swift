@@ -1,12 +1,12 @@
 //
 //  RefreshResponseDTO.swift
-//  CoreNetworkInterface
+//  DataNetworkInterface
 //
 //  Created by walkerhilla on 1/16/24.
 //
 
 import Foundation
-import DomainCommonInterface
+import DomainAuth
 
 public struct RefreshResponseDTO: CommonResponseDTO {
   public var code: Int

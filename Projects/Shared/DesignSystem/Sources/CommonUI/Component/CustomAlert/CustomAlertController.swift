@@ -21,12 +21,14 @@ public final class CustomAlertController: BaseController {
   private let dimmedView: DimmedView = DimmedView()
   
   // MARK: - Delegate
-  public weak var delegate: CustomAlertDelegate?
+  private weak var delegate: CustomAlertDelegate?
   
   // MARK: - Initialize Method
-  public init(alertView: CustomAlertView) {
+  public init(alertView: CustomAlertView, delegate: CustomAlertDelegate? = nil) {
     self.alertView = alertView
+    self.delegate = delegate
     super.init()
+    modalPresentationStyle = .overCurrentContext
   }
   
   deinit {
