@@ -83,6 +83,7 @@ extension OnboardingVerificationCodeEntryController: ReactorKit.View {
     reactor.state
       .map(\.errorState)
       .compactMap { $0 }
+      .distinctUntilChanged()
       .subscribe(with: self) { owner, error in
         switch error {
         case .invalidPhoneNumber:
@@ -91,6 +92,8 @@ extension OnboardingVerificationCodeEntryController: ReactorKit.View {
           print("유효하지 않은 인증번호입니다.")
         case .smsFailed:
           print("인증번호 발송에 실패하였습니다.")
+        case .mismatchedDeviceId:
+          print("기기 번호가 다릅니다. 계정 확인 화면으로~")
         case .unknownError:
           print("알 수 없는 에러입니다.")
         }
