@@ -33,6 +33,12 @@ public enum ErrorCase: Error {
   case E016InvalidExtension
   case E017NonExistentMatch
   case E018DailyMatchingLimitOver
+  case E019FailedAccountVerification
+  case E020NonExistentAccountVerificationHistory
+  case E021CompleteAllAccountVerificationQuestions
+  case E022ForbiddenWordDetected
+  case E023MismatchedAccountAndDeviceId
+  
   
   // Common Error
   case E097WrongEndpointRequest
@@ -80,6 +86,16 @@ public enum ErrorCase: Error {
       return "존재하지 않는 매치입니다."
     case .E018DailyMatchingLimitOver:
       return "일일 매칭 횟수 제한을 초과했습니다."
+    case .E019FailedAccountVerification:
+      return "계정 확인에 실패했습니다."
+    case .E020NonExistentAccountVerificationHistory:
+      return "계정 확인 이력이 존재하지 않습니다."
+    case .E021CompleteAllAccountVerificationQuestions:
+      return "계정 확인 질문을 전부 완료해야 합니다."
+    case .E022ForbiddenWordDetected:
+      return "금칙어가 존재합니다."
+    case .E023MismatchedAccountAndDeviceId:
+      return "기존 계정과 기기 번호가 일치하지 않습니다."
     
     // Common Error
     case .E097WrongEndpointRequest:
@@ -89,7 +105,7 @@ public enum ErrorCase: Error {
     case .E099ServerError:
       return "내부 서버 오류"
     case .UnknownError:
-      return ""
+      return "알 수 없는 오류"
     }
     
   }
@@ -116,6 +132,11 @@ public enum ErrorCode: String {
   case E016
   case E017
   case E018
+  case E019
+  case E020
+  case E021
+  case E022
+  case E023
   
   // Common Error
   case E097
@@ -162,6 +183,16 @@ public enum ErrorCode: String {
       return .E017NonExistentMatch
     case .E018:
       return .E018DailyMatchingLimitOver
+    case .E019:
+      return .E019FailedAccountVerification
+    case .E020:
+      return .E020NonExistentAccountVerificationHistory
+    case .E021:
+      return .E021CompleteAllAccountVerificationQuestions
+    case .E022:
+      return .E022ForbiddenWordDetected
+    case .E023:
+      return .E023MismatchedAccountAndDeviceId
       
     // Common Error
     case .E097:
