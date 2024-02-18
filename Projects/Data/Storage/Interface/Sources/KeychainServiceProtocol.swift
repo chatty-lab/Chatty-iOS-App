@@ -9,8 +9,13 @@ import Foundation
 import RxSwift
 
 public protocol KeychainServiceProtocol {
-  func create(type: KeychainRouter, isForce: Bool) -> Single<Bool>
-  func read(type: KeychainRouter) -> Single<String>
-  func update(type: KeychainRouter) -> Single<Bool>
-  func delete(type: KeychainRouter) -> Single<Bool>
+  func createSingle(type: KeychainRouter, isForce: Bool) -> Single<Bool>
+  func readSingle(type: KeychainRouter) -> Single<String>
+  func updateSingle(type: KeychainRouter) -> Single<Bool>
+  func deleteSingle(type: KeychainRouter) -> Single<Bool>
+  
+  func create(type: KeychainRouter, isForce: Bool) -> Bool
+  func read(type: KeychainRouter) -> String?
+  func update(type: KeychainRouter) -> Bool
+  func delete(type: KeychainRouter) -> Bool
 }
