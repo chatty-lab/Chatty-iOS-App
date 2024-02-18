@@ -50,7 +50,13 @@ public final class SampleDIContainer {
 
   // Repository
   func getUserAPIRepository() -> DefaultUserAPIRepository {
-    return DefaultUserAPIRepository(userAPIService: UserAPIServiceImpl())
+    return DefaultUserAPIRepository(
+      userAPIService: UserAPIServiceImpl(
+        authAPIService: AuthAPIServiceImpl(
+          keychainService: KeychainService.shared),
+        keychainService: KeychainService.shared
+      )
+    )
   }
   
   func getUserDataRepository() -> DefaultUserDataRepository {
@@ -67,7 +73,9 @@ public final class SampleDIContainer {
   
   func getAuthAPIRepository() -> DefaultAuthAPIRepository {
     return DefaultAuthAPIRepository(
-      authAPIService: AuthAPIServiceImpl()
+      authAPIService: AuthAPIServiceImpl(
+        keychainService: KeychainService.shared
+      )
     )
   }
   
