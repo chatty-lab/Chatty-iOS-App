@@ -21,7 +21,7 @@ public final class UserAPIServiceImpl: UserAPIService {
   public init(authAPIService: any AuthAPIService, keychainService: KeychainServiceProtocol) {
     self.authAPIService = authAPIService
     self.provider = .init(plugins: [
-      CustomMoyaPlugin(keychainService: keychainService)
+      MoyaPlugin(keychainService: keychainService)
     ])
   }
 }
