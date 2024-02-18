@@ -28,4 +28,5 @@ public protocol APIServiceProtocol: AnyObject {
   associatedtype Router: TargetType
   var provider: MoyaProvider<Router> { get }
   func request<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Single<Model>
+  func refreshToken() -> Single<Void>
 }

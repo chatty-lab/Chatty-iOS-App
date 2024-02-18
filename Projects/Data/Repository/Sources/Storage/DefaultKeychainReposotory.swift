@@ -21,17 +21,17 @@ public final class DefaultKeychainReposotory: KeychainReposotory {
   
   public func requestCreate(type: KeychainCase) -> Single<Bool> {
     let request = KeychainRouter.toRouterCase(type: type)
-    return keychainService.create(type: request, isForce: true)
+    return keychainService.createSingle(type: request, isForce: true)
   }
   
   public func requestRead(type: KeychainCase) -> Single<String> {
     let request = KeychainRouter.toRouterCase(type: type)
-    return keychainService.read(type: request)
+    return keychainService.readSingle(type: request)
   }
   
   public func requestDelete(type: KeychainCase) -> Single<Bool> {
     let request = KeychainRouter.toRouterCase(type: type)
-    return keychainService.delete(type: request)
+    return keychainService.deleteSingle(type: request)
   }
   
 }

@@ -37,12 +37,20 @@ final class FeatureOnboardingDIContainer: FeatureOnboardingDependencyProvider {
 
 // Repository Builder
 extension FeatureOnboardingDIContainer {
-  private func makeUserAPIRepository() -> DefaultUserAPIRepository {
-    return DefaultUserAPIRepository(userAPIService: UserAPIServiceImpl())
+  public func makeUserAPIRepository() -> DefaultUserAPIRepository {
+    return DefaultUserAPIRepository(
+      userAPIService: UserAPIServiceImpl(
+        authAPIService: AuthAPIServiceImpl(
+          keychainService: KeychainService.shared),
+        keychainService: KeychainService.shared
+      )
+    )
   }
   
   private func makeAuthAPIRepository() -> DefaultAuthAPIRepository {
-    return DefaultAuthAPIRepository(authAPIService: AuthAPIServiceImpl())
+    return DefaultAuthAPIRepository(authAPIService: AuthAPIServiceImpl(
+      keychainService: KeychainService.shared)
+    )
   }
   
   private func makeKeychainRepository() -> DefaultKeychainReposotory {

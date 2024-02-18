@@ -12,4 +12,6 @@ import RxSwift
 public protocol AuthAPIService: APIServiceProtocol {
   var provider: MoyaProvider<AuthAPIRouter> { get }
   func request<Model: Decodable>(endPoint: AuthAPIRouter, responseDTO: Model.Type) -> Single<Model>
+  
+  func validateTokens()
 }
