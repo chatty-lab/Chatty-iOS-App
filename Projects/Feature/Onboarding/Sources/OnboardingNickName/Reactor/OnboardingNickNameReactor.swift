@@ -9,22 +9,28 @@ import Foundation
 import RxSwift
 import RxCocoa
 import ReactorKit
-import FeatureOnboardingInterface
+import DomainUserInterface
+import DataNetworkInterface
 
 public final class OnboardingNickNameReactor: Reactor {
+  
+  private let saveProfileNicknameUseCase: SaveProfileNicknameUseCase
+  
   /// 뷰에서 수행할 수 있는 사용자의 액션
   public enum Action {
     case inputText(String)
     case tabContinueButton
     case didPushed
   }
-  
+    
   /// 화면의 상태가 변화하는 요인
   public enum Mutation {
     case inputedText(String)
-    case checkDuplicate(String)
+    case nicknameValid(CheckedResultType)
+    case isSavedSuccess
     case isLoading(Bool)
     case didPushed
+    case setError(ErrorType?)
   }
   
   /// 화면의 상태를 나타내는 구조체
@@ -34,6 +40,7 @@ public final class OnboardingNickNameReactor: Reactor {
     var isButtonEnabled: Bool = false
     var successSave: Bool = false
     var isLoading: Bool = false
+    var errorState: ErrorType? = nil
     
     init() {
       nickNameText = ""
@@ -41,17 +48,30 @@ public final class OnboardingNickNameReactor: Reactor {
   }
   
   public var initialState: State = State()
+  
+  public init(saveProfileNicknameUseCase: SaveProfileNicknameUseCase) {
+    self.saveProfileNicknameUseCase = saveProfileNicknameUseCase
+  }
 }
 
 extension OnboardingNickNameReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .inputText(let string):
-      return .just(.inputedText(string))
+      let checkedResult = isNicknameValid(string)
+      return .concat([
+        .just(.inputedText(string)),
+        .just(.nicknameValid(checkedResult))
+      ])
     case .tabContinueButton:
       return .concat([
         .just(.isLoading(true)),
-        .just(.checkDuplicate(currentState.nickNameText)),
+        self.saveProfileNicknameUseCase.excute(nickname: self.currentState.nickNameText)
+          .asObservable()
+          .map { _ in .isSavedSuccess }
+          .catch { error -> Observable<Mutation> in
+            return error.toMutation()
+          },
         .just(.isLoading(false))
       ])
     case .didPushed:
@@ -64,34 +84,54 @@ extension OnboardingNickNameReactor {
     switch mutation {
     case .inputedText(let string):
       newState.nickNameText = string
-      if string.count > 10 {
-        newState.isButtonEnabled = false
-        newState.checkedResult = .outOfRange
-      } else if string.isEmpty {
-        newState.isButtonEnabled = false
-      } else {
-        newState.checkedResult = .none
-        newState.isButtonEnabled = true
-      }
-    case .checkDuplicate(let text):
-      // Core.saveNinkName()
-      let saveResult = saveNickName(text)
-      if saveResult {
-        newState.successSave = true
-      } else {
-        newState.checkedResult = .duplication
-        newState.isButtonEnabled = false
-      }
+    case .nicknameValid(let result):
+      newState.checkedResult = result
+      newState.isButtonEnabled = result == .none ? true : false
+    case .isSavedSuccess:
+      newState.successSave = true
     case .isLoading(let bool):
       newState.isLoading = bool
     case .didPushed:
       newState.successSave = false
+    case .setError(let error):
+      newState.errorState = error
     }
     return newState
   }
   
-  private func saveNickName(_ nickNameText: String) -> Bool {
-    SampleUserService.setNickNameDate(currentState.nickNameText)
-    return nickNameText == "1" ? false : true
+  private func isNicknameValid(_ nicknameStr: String) -> CheckedResultType {
+    if nicknameStr.count > 10 {
+      return .outOfRange
+    } else if nicknameStr.isEmpty {
+      return .empty
+    } else {
+      return .none
+    }
+  }
+  
+  public enum ErrorType: Error {
+    case duplicatedNickname
+    case unknownError
+  }
+}
+
+extension Error {
+  func toMutation() -> Observable<OnboardingNickNameReactor.Mutation> {
+    let errorMutation: Observable<OnboardingNickNameReactor.Mutation> = {
+      guard let error = self as? NetworkError else {
+        return .just(.setError(.unknownError))
+      }
+      switch error.errorCase {
+      case .E006AlreadyExistNickname:
+        return .just(.setError(.duplicatedNickname))
+      default:
+        return .just(.setError(.unknownError))
+      }
+    }()
+    
+    return Observable.concat([
+      errorMutation,
+      .just(.setError(nil))
+    ])
   }
 }
