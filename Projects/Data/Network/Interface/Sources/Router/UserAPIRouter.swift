@@ -16,8 +16,17 @@ public enum UserAPIRouter: RouterProtocol, AccessTokenAuthorizable {
   case gender(gender: String)
   case deviceToken(deviceToken: String)
   case birth(birth: String)
+  
+  case school(school: String)
+  case job(job: String)
+  case introduce(introduce: String)
+  case interests(interest: [String])
+  case address(address: String)
+  
   case login(request: UserSignRequestDTO)
   case join(request: UserSignRequestDTO)
+  
+  case profile
 }
 
 public extension UserAPIRouter  {
@@ -43,19 +52,36 @@ public extension UserAPIRouter  {
       return "/deviceToken"
     case .birth:
       return "/birth"
+      
+    case .school:
+      return "/school"
+    case .job:
+      return "/job"
+    case .introduce:
+      return "/introduce"
+    case .interests:
+      return "/interests"
+    case .address:
+      return "/address"
+      
     case .login:
       return "/login"
     case .join:
       return "/join"
+    
+    case .profile:
+      return "/my/profile"
     }
   }
   
   var method: Moya.Method {
     switch self {
-    case .nickname, .mbti, .image, .gender, .deviceToken, .birth:
+    case .nickname, .mbti, .image, .gender, .deviceToken, .birth, .school, .job, .introduce, .interests, .address:
       return .put
     case .login, .join:
       return .post
+    case .profile:
+      return .get
     }
   }
   
@@ -79,27 +105,49 @@ public extension UserAPIRouter  {
     case .birth(let birth):
       let param = ["birth": birth]
       return .requestParameters(parameters: param, encoding: JSONEncoding.default)
+    
+    case .school(let school):
+      let param = ["school": school]
+      return .requestParameters(parameters: param, encoding: JSONEncoding.default)
+    case .job(job: let job):
+      let param = ["job": job]
+      return .requestParameters(parameters: param, encoding: JSONEncoding.default)
+    case .introduce(let introduce):
+      let param = ["introduce": introduce]
+      return .requestParameters(parameters: param, encoding: JSONEncoding.default)
+    case .interests(let interest):
+      let param = ["interest": interest]
+      return .requestParameters(parameters: param, encoding: JSONEncoding.default)
+    case .address(let address):
+      let param = ["address": address]
+      return .requestParameters(parameters: param, encoding: JSONEncoding.default)
+      
     case .login(let request):
       return .requestJSONEncodable(request)
     case .join(let request):
       return .requestJSONEncodable(request)
+      
+    case .profile:
+      return .requestPlain
     }
   }
   
   var headers: [String : String]? {
     switch self {
-    case .nickname, .mbti, .gender, .deviceToken, .birth:
+    case .nickname, .mbti, .gender, .deviceToken, .birth, .school, .job, .introduce, .interests, .address:
       return RequestHeader.getHeader([.json])
     case .image:
       return RequestHeader.getHeader([.binary])
     case .login, .join:
       return RequestHeader.getHeader([.json])
+    case .profile:
+      return .none
     }
   }
   
   var authorizationType: Moya.AuthorizationType? {
     switch self {
-    case .nickname, .mbti, .image, .gender, .deviceToken, .birth:
+    case .nickname, .mbti, .image, .gender, .deviceToken, .birth, .school, .job, .introduce, .interests, .address:
       return .bearer
     default:
       return .none

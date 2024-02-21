@@ -13,4 +13,8 @@ public protocol FeatureOnboardingDependencyProvider {
   func makeSendVerificationCodeUseCase() -> DefaultSendVerificationCodeUseCase
   func makeGetDeviceIdUseCase() -> DefaultGetDeviceIdUseCase
   func makeSignUseCase() -> DefaultSignUseCase
+  
+  func makeSaveProfileNicknameUseCase() -> DefaultSaveProfileNicknameUseCase
+  func makeSaveProfileDataUseCase() -> DefaultSaveProfileDataUseCase
+  func makeGetProfileDataUseCase() -> DefaultGetUserDataUseCase
 }
