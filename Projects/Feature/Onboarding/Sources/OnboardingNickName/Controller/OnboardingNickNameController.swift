@@ -103,8 +103,12 @@ extension OnboardingNickNameController: ReactorKit.View {
       .map(\.isLoading)
       .distinctUntilChanged()
       .observe(on: MainScheduler.asyncInstance)
-      .bind(with: self) { owner, result in
-        // 로딩뷰
+      .bind(with: self) { owner, isLoading in
+        if isLoading {
+          owner.showLoadingIndicactor()
+        } else {
+          owner.hideLoadingIndicator()
+        }
       }
       .disposed(by: disposeBag)
   }

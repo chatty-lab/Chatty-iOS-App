@@ -8,13 +8,10 @@
 import Foundation
 import DomainAuth
 import DomainUser
-import DataNetwork
-import DataRepository
-import DataStorage
 import FeatureOnboardingInterface
 
-final class FeatureOnboardingDIContainer: FeatureOnboardingDependencyProvider {
-  func makeSignUseCase() -> DomainUser.DefaultSignUseCase {
+final class FeatureOnboardingDIContainer: RepositoryDIcontainer, FeatureOnboardingDependencyProvider {
+  func makeSignUseCase() -> DefaultSignUseCase {
     return DefaultSignUseCase(
       userAPIRepository: makeUserAPIRepository(),
       keychainReposotory: makeKeychainRepository()
@@ -33,27 +30,25 @@ final class FeatureOnboardingDIContainer: FeatureOnboardingDependencyProvider {
       keychainRepository: makeKeychainRepository()
     )
   }
-}
-
-// Repository Builder
-extension FeatureOnboardingDIContainer {
-  public func makeUserAPIRepository() -> DefaultUserAPIRepository {
-    return DefaultUserAPIRepository(
-      userAPIService: UserAPIServiceImpl(
-        authAPIService: AuthAPIServiceImpl(
-          keychainService: KeychainService.shared),
-        keychainService: KeychainService.shared
-      )
+  
+  func makeSaveProfileNicknameUseCase() -> DefaultSaveProfileNicknameUseCase {
+    return DefaultSaveProfileNicknameUseCase(
+      userAPIRepository: makeUserAPIRepository(),
+      userDataRepository: makeUserDataRepository()
     )
   }
   
-  private func makeAuthAPIRepository() -> DefaultAuthAPIRepository {
-    return DefaultAuthAPIRepository(authAPIService: AuthAPIServiceImpl(
-      keychainService: KeychainService.shared)
+  func makeSaveProfileDataUseCase() -> DefaultSaveProfileDataUseCase {
+    return DefaultSaveProfileDataUseCase(
+      userAPIRepository: makeUserAPIRepository(),
+      userDataRepository: makeUserDataRepository()
     )
   }
   
-  private func makeKeychainRepository() -> DefaultKeychainReposotory {
-    return DefaultKeychainReposotory(keychainService: KeychainService.shared)
+  func makeGetProfileDataUseCase() -> DefaultGetUserDataUseCase {
+    return DefaultGetUserDataUseCase(
+      userAPIRepository: makeUserAPIRepository(),
+      userDataRepository: makeUserDataRepository()
+    )
   }
 }

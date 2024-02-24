@@ -15,7 +15,7 @@ import DataRepository
 import DataNetwork
 import DataStorage
 
-final class FeatureDIContainer: FeatureDependencyProvider {
+final class FeatureDIContainer: RepositoryDIcontainer, FeatureDependencyProvider {
   static let shared: FeatureDIContainer = FeatureDIContainer()
   
   private init() { }
@@ -25,20 +25,14 @@ final class FeatureDIContainer: FeatureDependencyProvider {
   }
   
   func makeDefaultSaveDeviceTokenUseCase() -> DefaultSaveDeviceTokenUseCase {
-    return DefaultSaveDeviceTokenUseCase(keychainRepository: makeDefaultKeychainRepository())
+    return DefaultSaveDeviceTokenUseCase(keychainRepository: makeKeychainRepository())
   }
   
   func makeDefaultSaveDeviceIdUseCase() -> DefaultSaveDeviceIdUseCase {
-    return DefaultSaveDeviceIdUseCase(keychainRepository: makeDefaultKeychainRepository())
+    return DefaultSaveDeviceIdUseCase(keychainRepository: makeKeychainRepository())
   }
   
   func makeDefaultGetDeviceIdUseCase() -> DefaultGetDeviceIdUseCase {
-    return DefaultGetDeviceIdUseCase(keychainRepository: makeDefaultKeychainRepository())
-  }
-}
-
-extension FeatureDIContainer {
-  private func makeDefaultKeychainRepository() -> DefaultKeychainReposotory {
-    return DefaultKeychainReposotory(keychainService: KeychainService.shared)
+    return DefaultGetDeviceIdUseCase(keychainRepository: makeKeychainRepository())
   }
 }

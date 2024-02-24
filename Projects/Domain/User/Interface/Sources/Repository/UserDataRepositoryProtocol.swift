@@ -10,5 +10,5 @@ import RxSwift
 
 public protocol UserDataRepositoryProtocol {
   func saveUserData(userData: UserDataProtocol)
-  func getUserData() -> Single<UserDataProtocol>
+  func getUserData() -> UserDataProtocol
 }

@@ -8,17 +8,23 @@
 import UIKit
 import RxSwift
 import ReactorKit
+import DataNetworkInterface
+import DomainUserInterface
+
 
 public final class OnboardingProfileReactor: Reactor {
+  private let saveProfileDataUseCase: SaveProfileDataUseCase
+  private let getUserDataUseCase: GetUserDataUseCase
+  
   /// 뷰에서 수행할 수 있는 사용자의 액션
   public enum Action {
     case toggleGender(Gender)
     case selectBirth(Date)
     case toggleMBTI(MBTISeletedState, Bool)
     case selectImage(UIImage)
-    case tabContinueButton
     case tabImagePicker
     case tabTag(String)
+    case tabContinueButton
     case didPushed
   }
   
@@ -28,11 +34,12 @@ public final class OnboardingProfileReactor: Reactor {
     case inputedBirth(Date)
     case toggleMBTI(MBTISeletedState, Bool)
     case inputedImage(UIImage)
-    case tabContinueButton
     case tabImagePicker
     case tabTag(String)
+    case isSaveSuccess
     case didPushed
     case isLoading(Bool)
+    case setError(ErrorType?)
   }
   
   /// 화면의 상태를 나타내는 구조체
@@ -44,30 +51,35 @@ public final class OnboardingProfileReactor: Reactor {
     var isSuccessSave: Bool = false
     var interestTags: [String] = []
     var isLoading: Bool = false
-    
-    init(state: ProfileType) {
-      self.viewState = state
-      self.profileData = SampleUserService.fetchDate()
-      switch viewState {
-      case .gender:
-        self.isContinueEnabled = profileData.gender != .none
-      case .birth:
-        self.isContinueEnabled = true
-      case .profileImage:
-        self.isContinueEnabled = profileData.porfileImage != nil
-      case .interest:
-        interestTags = ["여행", "드라마/영화", "운동/스포츠", "독서", "맛집/카페", "제테크", "게임", "뷰티", "패션", "웹툰/애니", "직무/커리어", "문화/공연", "음악", "요리", "반려동물", "자기개발" ,"연애/사랑"]
-        self.isContinueEnabled = profileData.interest.count > 2
-      case .mbti:
-        self.isContinueEnabled = profileData.mbti.didSeletedAll
-      case .none:
-        print("none")
-      }
-    }
+    var errorState: ErrorType? = nil
   }
   public var initialState: State
   
-  public init(_ state: State) {
+  init(saveProfileDataUseCase: SaveProfileDataUseCase, getUserDataUseCase: GetUserDataUseCase, profileType: ProfileType) {
+    self.saveProfileDataUseCase = saveProfileDataUseCase
+    self.getUserDataUseCase = getUserDataUseCase
+    let state: State = {
+      var state = State(
+        viewState: profileType,
+        profileData: ProfileState(userData: getUserDataUseCase.execute())
+      )
+      switch state.viewState {
+      case .gender:
+        state.isContinueEnabled = state.profileData.gender != .none
+      case .birth:
+        state.isContinueEnabled = true
+      case .profileImage:
+        state.isContinueEnabled = state.profileData.porfileImage != nil
+      case .interest:
+        state.interestTags = ["여행", "드라마/영화", "운동/스포츠", "독서", "맛집/카페", "제테크", "게임", "뷰티", "패션", "웹툰/애니", "직무/커리어", "문화/공연", "음악", "요리", "반려동물", "자기개발" ,"연애/사랑"]
+        state.isContinueEnabled = state.profileData.interest.count > 2
+      case .mbti:
+        state.isContinueEnabled = state.profileData.mbti.didSeletedAll
+      case .none:
+        print("none")
+      }
+      return state
+    }()
     self.initialState = state
   }
 }
@@ -81,8 +93,6 @@ extension OnboardingProfileReactor {
       return .just(.inputedBirth(date))
     case .selectImage(let image):
       return .just(.inputedImage(image))
-    case .tabContinueButton:
-      return .just(.tabContinueButton)
     case .tabImagePicker:
       return .just(.tabImagePicker)
     case .tabTag(let tag):
@@ -90,11 +100,29 @@ extension OnboardingProfileReactor {
     case .didPushed:
       return .just(.didPushed)
     case .toggleMBTI(let mbti, let state):
-      return .concat([
-        .just(.isLoading(true)),
-        .just(.toggleMBTI(mbti, state)),
-        .just(.isLoading(false))
-      ])
+      return .just(.toggleMBTI(mbti, state))
+    case .tabContinueButton:
+      switch currentState.viewState {
+      case .gender, .birth, .profileImage, .interest, .none:
+        return .just(.isSaveSuccess)
+      case .mbti:
+        let profileData = self.currentState.profileData
+        return .concat([
+          .just(.isLoading(true)),
+          saveProfileDataUseCase.excute(
+            gender: profileData.gender.requestString,
+            birth: profileData.birth.toStringYearMonthDay(),
+            imageData: profileData.porfileImage?.toProfileRequestData() ?? nil,
+            mbti: profileData.mbti.requestString
+          )
+          .asObservable()
+          .map { _ in .isSaveSuccess }
+            .catch { error -> Observable<Mutation> in
+              return error.toMutation()
+            },
+          .just(.isLoading(false))
+        ])
+      }
     }
   }
   
@@ -131,25 +159,43 @@ extension OnboardingProfileReactor {
       newState.isLoading = bool
       
       /// 저장 api 통신 혹은 다음뷰로 가는 코드
-    case .tabContinueButton:
-      switch currentState.viewState {
-      case .gender, .birth, .profileImage, .interest, .none:
-        SampleUserService.setDate(currentState.profileData)
-        newState.isSuccessSave = true
-      case .mbti:
-        // Core.saveProfiles
-        SampleUserService.setDate(currentState.profileData)
-        newState.isSuccessSave = true
-      }
+    case .isSaveSuccess:
+      newState.isSuccessSave = true
+    case .setError(let error):
+      newState.errorState = error
     }
     return newState
   }
   
-  private func saveProfiles() -> Bool {
-    return true
-  }
-  
   private func getInterestTags() -> [String] {
     return ["여행", "드라마/영화", "운동/스포츠", "독서", "맛집/카페", "제테크", "게임", "뷰티", "패션", "웹툰/애니", "직무/커리어", "문화/공연", "음악", "요리", "반려동물", "자기개발" ,"연애/사랑"]
+  }
+  
+  public enum ErrorType: Error {
+    case duplicatedNickname
+    case unknownError
+  }
+}
+
+extension Error {
+  func toMutation() -> Observable<OnboardingProfileReactor.Mutation> {
+    let errorMutation: Observable<OnboardingProfileReactor.Mutation> = {
+      guard let error = self as? NetworkError else {
+        return .just(.setError(.unknownError))
+      }
+      switch error.errorCase {
+      case .E006AlreadyExistNickname:
+        return .concat([
+          .just(.setError(.duplicatedNickname))
+        ])
+      default:
+        return .just(.setError(.unknownError))
+      }
+    }()
+    
+    return Observable.concat([
+      errorMutation,
+      .just(.setError(nil))
+    ])
   }
 }

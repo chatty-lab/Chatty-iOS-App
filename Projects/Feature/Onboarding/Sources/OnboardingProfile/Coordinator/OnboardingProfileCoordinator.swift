@@ -9,15 +9,26 @@ import UIKit
 import PhotosUI
 import Shared
 import SharedDesignSystem
+import FeatureOnboardingInterface
 
 public final class OnboardingProfileCoordinator: BaseCoordinator {
   public override var type: CoordinatorType {
     .onboarding(.profileUpdate(.profiles))
   }
   
+  private let dependencyProvider: FeatureOnboardingDependencyProvider
+  
+  init(navigationController: CustomNavigationController, dependencyProvider: FeatureOnboardingDependencyProvider) {
+    self.dependencyProvider = dependencyProvider
+    super.init(navigationController: navigationController)
+  }
+  
   public override func start() {
-    let profileState = OnboardingProfileReactor.State(state: .gender)
-    let onboardingProfileReactor = OnboardingProfileReactor(profileState)
+    let onboardingProfileReactor = OnboardingProfileReactor(
+      saveProfileDataUseCase: dependencyProvider.makeSaveProfileDataUseCase(),
+      getUserDataUseCase: dependencyProvider.makeGetProfileDataUseCase(),
+      profileType: .gender
+    )
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReactor)
     onboardingProfileController.delegate = self
     navigationController.pushViewController(onboardingProfileController, animated: true)
@@ -30,10 +41,13 @@ public final class OnboardingProfileCoordinator: BaseCoordinator {
 
 extension OnboardingProfileCoordinator: OnboardingProfileDelegate {
   public func pushToNextView(_ state: ProfileType) {
-    let state: ProfileType = state.nextViewType
+    let profileType: ProfileType = state.nextViewType
     
-    let profileState = OnboardingProfileReactor.State(state: state)
-    let onboardingProfileReator = OnboardingProfileReactor(profileState)
+    let onboardingProfileReator = OnboardingProfileReactor(
+      saveProfileDataUseCase: dependencyProvider.makeSaveProfileDataUseCase(),
+      getUserDataUseCase: dependencyProvider.makeGetProfileDataUseCase(),
+      profileType: profileType
+    )
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReator)
     
     onboardingProfileController.delegate = self
@@ -51,7 +65,7 @@ extension OnboardingProfileCoordinator: OnboardingProfileDelegate {
   }
   
   public func switchToMainTab() {
-    print("profile - nil")
+    appFlowControl.delegete?.showMainFlow()
   }
 }
 

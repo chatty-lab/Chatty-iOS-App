@@ -14,7 +14,6 @@ import DomainUserInterface
 import DomainCommon
 
 public final class DefaultUserAPIRepository: UserAPIRepository {
-  
   private let userAPIService: any UserAPIService
   
   public init(userAPIService: any UserAPIService) {
@@ -56,6 +55,44 @@ public final class DefaultUserAPIRepository: UserAPIRepository {
     return userAPIService.request(endPoint: endPoint, responseDTO: EmptyResponseDTO.self)
       .map { $0.toDomain() }
   }
+  
+  
+  public func saveSchool(school: String) -> Single<UserDataProtocol> {
+    let endPoint = UserAPIRouter.school(school: school)
+    return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
+      .map { $0.toDomain() }
+  }
+  
+  public func saveJob(job: String) -> Single<UserDataProtocol> {
+    let endPoint = UserAPIRouter.job(job: job)
+    return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
+      .map { $0.toDomain() }
+  }
+  
+  public func saveIntroduce(introduce: String) -> Single<UserDataProtocol> {
+    let endPoint = UserAPIRouter.introduce(introduce: introduce)
+    return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
+      .map { $0.toDomain() }
+  }
+  
+  public func saveInterests(interest: [String]) -> Single<UserDataProtocol> {
+    let endPoint = UserAPIRouter.interests(interest: interest)
+    return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
+      .map { $0.toDomain() }
+  }
+  
+  public func saveAddress(address: String) -> Single<UserDataProtocol> {
+    let endPoint = UserAPIRouter.address(address: address)
+    return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
+      .map { $0.toDomain() }
+  }
+  
+  public func getProfile() -> Single<UserDataProtocol> {
+    let endPoint = UserAPIRouter.profile
+    return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
+      .map { $0.toDomain() }
+  }
+  
   
   public func login(mobileNumber: String, authenticationNumber: String, deviceId: String, deviceToken: String) -> Single<TokenProtocol> {
     let request = UserSignRequestDTO(

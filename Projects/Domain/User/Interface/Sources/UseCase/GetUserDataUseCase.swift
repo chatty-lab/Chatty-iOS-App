@@ -9,5 +9,6 @@ import Foundation
 import RxSwift
 
 public protocol GetUserDataUseCase {
-  func execute() -> Single<UserDataProtocol>
+  func execute(hasFetched: Bool) -> Single<UserDataProtocol>
+  func execute() -> UserDataProtocol
 }

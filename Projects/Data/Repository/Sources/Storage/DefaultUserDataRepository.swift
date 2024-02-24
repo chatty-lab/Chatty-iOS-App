@@ -23,8 +23,7 @@ public final class DefaultUserDataRepository: UserDataRepository {
     userDataService.setData(userData: userData)
   }
   
-  public func getUserData() -> Single<UserDataProtocol> {
-    let data = userDataService.getData()
-    return .just(data)
+  public func getUserData() -> UserDataProtocol {
+    return userDataService.getData()
   }
 }

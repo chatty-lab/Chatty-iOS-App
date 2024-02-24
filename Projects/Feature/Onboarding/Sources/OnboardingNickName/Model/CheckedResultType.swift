@@ -10,6 +10,7 @@ import Foundation
 public enum CheckedResultType {
   case outOfRange
   case duplication
+  case empty
   case none
 
   public var description: String {
@@ -18,7 +19,7 @@ public enum CheckedResultType {
       "닉네임은 10자 이내로 만들어주세요."
     case .duplication:
       "누군가 이미 쓰고 있어요. 다른 닉네임을 입력해주세요."
-    case .none:
+    case .none, .empty:
       ""
     }
   }

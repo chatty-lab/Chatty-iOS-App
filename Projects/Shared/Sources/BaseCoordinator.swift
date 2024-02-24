@@ -9,10 +9,11 @@ import Foundation
 import SharedDesignSystem
 
 open class BaseCoordinator: Coordinator {
-  public var finishDelegate: CoordinatorFinishDelegate?
+  public weak var finishDelegate: CoordinatorFinishDelegate?
   public var navigationController: CustomNavigationController
   public var childCoordinators: [Coordinator] = []
   public var childViewControllers: ReferenceCounter = .init()
+  public var appFlowControl: AppFlowControl = AppFlowControl.shared
   open var type: CoordinatorType {
     return .app
   }

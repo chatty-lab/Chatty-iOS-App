@@ -13,6 +13,29 @@ public struct MBTI {
   var third: Bool? = nil
   var fourth: Bool? = nil
   
+  init(mbti: String) {
+    let splitArray = mbti.split(separator: "")
+    if splitArray.isEmpty {
+      self.first = nil
+      self.second = nil
+      self.third = nil
+      self.fourth = nil
+
+    } else {
+      self.first = splitArray[0] == "E" ? true : false
+      self.second = splitArray[1] == "S" ? true : false
+      self.third = splitArray[2] == "T" ? true : false
+      self.fourth = splitArray[3] == "J" ? true : false
+    }
+  }
+  
+  init(first: Bool? = nil, second: Bool? = nil, third: Bool? = nil, fourth: Bool? = nil) {
+    self.first = first
+    self.second = second
+    self.third = third
+    self.fourth = fourth
+  }
+  
   mutating func setMBTI(mbti: MBTISeletedState, state: Bool) {
     switch mbti {
     case .first:
@@ -26,7 +49,7 @@ public struct MBTI {
     }
   }
   
-  var result: String {
+  var requestString: String {
     let firstStr = self.first ?? true ? "E" : "I"
     let secondStr = self.second ?? true ? "S" : "N"
     let thirdStr = self.third ?? true ? "T" : "F"
