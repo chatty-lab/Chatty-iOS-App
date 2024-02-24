@@ -22,4 +22,15 @@ public enum Gender {
       return ""
     }
   }
+  
+  var requestString: String {
+    switch self {
+    case .male:
+      return "MALE"
+    case .female:
+      return "FEMALE"
+    case .none:
+      return ""
+    }
+  }
 }

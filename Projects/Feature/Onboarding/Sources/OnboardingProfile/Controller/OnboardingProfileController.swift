@@ -52,6 +52,27 @@ public final class OnboardingProfileController: BaseController {
     self.delegate = nil
     print("해제됨: ProfileController - delegate \(delegate == nil) ")
   }
+  
+  public override func setNavigationBar() {
+    super.setNavigationBar()
+    if reactor?.currentState.viewState == .profileImage {
+      customNavigationController?.customNavigationBarConfig = CustomNavigationBarConfiguration(
+        rightButtons: [.init(title: "건너뛰기")]
+      )
+      customNavigationController?.navigationBarEvents(of: BarTouchEvent.self)
+        .bind(with: self) { owner, event in
+          switch event {
+          case .skipImage:
+            owner.delegate?.pushToNextView(.profileImage)
+          }
+        }
+        .disposed(by: disposeBag)
+    }
+  }
+  
+  enum BarTouchEvent: Int, IntCaseIterable {
+    case skipImage
+  }
 }
 
 extension OnboardingProfileController: ReactorKit.View {
@@ -72,10 +93,11 @@ extension OnboardingProfileController: ReactorKit.View {
           owner.reactor?.action.onNext(.tabTag(tag))
         case .toggleMBTI(let mbti, let state):
           owner.reactor?.action.onNext(.toggleMBTI(mbti, state))
-        
         }
       }
       .disposed(by: disposeBag)
+    
+    
     
     reactor.state
       .map(\.isSuccessSave)
@@ -169,6 +191,19 @@ extension OnboardingProfileController: ReactorKit.View {
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, mbti in
         owner.profileView.updateMBTIView(mbti)
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.isLoading)
+      .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
+      .bind(with: self) { owner, isLoading in
+        if isLoading {
+          owner.showLoadingIndicactor()
+        } else {
+          owner.hideLoadingIndicator()
+        }
       }
       .disposed(by: disposeBag)
   }

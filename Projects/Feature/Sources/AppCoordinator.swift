@@ -10,12 +10,7 @@ import Shared
 import SharedDesignSystem
 import FeatureOnboarding
 
-protocol AppCoordinatorProtocol {
-  func showOnboardingFlow()
-  func showMainFlow()
-}
-
-public final class AppCoordinator: BaseCoordinator, AppCoordinatorProtocol, AppFlowDelegate {
+public final class AppCoordinator: BaseCoordinator, AppFlowDelegate {
   public override var type: CoordinatorType {
     return .app
   }
@@ -48,6 +43,13 @@ public final class AppCoordinator: BaseCoordinator, AppCoordinatorProtocol, AppF
   }
   
   public func showMainFlow() {
+    navigationController.setViewControllers([], animated: false)
+    let mainCoordinator = MainTabBarCoordinator(navigationController)
+
+    childCoordinators.removeAll()
+    childCoordinators.append(mainCoordinator)
+    mainCoordinator.start()
+
     print("MainTab -->")
   }
   
