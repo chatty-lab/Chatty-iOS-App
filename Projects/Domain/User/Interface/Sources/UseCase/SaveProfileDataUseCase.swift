@@ -12,7 +12,7 @@ public protocol SaveProfileDataUseCase {
   func excute(
     gender: String,
     birth: String,
-    imageData: Data,
+    imageData: Data?,
     mbti: String
   ) -> Single<Bool>
 }

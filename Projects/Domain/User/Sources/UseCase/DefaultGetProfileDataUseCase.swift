@@ -10,7 +10,7 @@ import DomainUserInterface
 import RxSwift
 
 public final class DefaultGetUserDataUseCase: GetUserDataUseCase {
- 
+  
   private let userAPIRepository: any UserAPIRepositoryProtocol
   private let userDataRepository: any UserDataRepositoryProtocol
 
@@ -26,10 +26,14 @@ public final class DefaultGetUserDataUseCase: GetUserDataUseCase {
       return userAPIRepository.getProfile()
         .flatMap { userData in
           self.userDataRepository.saveUserData(userData: userData)
-          return self.userDataRepository.getUserData()
+          return .just(self.userDataRepository.getUserData())
         }
     } else {
-      return userDataRepository.getUserData()
+      return .just(userDataRepository.getUserData())
     }
+  }
+  
+  public func execute() -> UserDataProtocol {
+    return userDataRepository.getUserData()
   }
 }

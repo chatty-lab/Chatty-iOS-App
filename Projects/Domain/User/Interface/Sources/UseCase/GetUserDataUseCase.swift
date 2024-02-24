@@ -10,4 +10,5 @@ import RxSwift
 
 public protocol GetUserDataUseCase {
   func execute(hasFetched: Bool) -> Single<UserDataProtocol>
+  func execute() -> UserDataProtocol
 }
