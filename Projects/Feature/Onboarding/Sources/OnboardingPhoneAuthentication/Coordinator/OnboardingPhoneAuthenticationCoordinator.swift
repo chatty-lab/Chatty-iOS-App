@@ -48,7 +48,7 @@ extension OnboardingPhoneAuthenticationCoordinator: OnboardingPhoneAuthenticatio
   }
   
   public func pushToNickNameView() {
-    let onboardingNickNameCoordinator = OnboardingNickNameCoordinator(navigationController: CustomNavigationController())
+    let onboardingNickNameCoordinator = OnboardingNickNameCoordinator(navigationController: navigationController, dependencyProvider: dependencyProvider)
     onboardingNickNameCoordinator.start()
     
     setRootViewController(to: onboardingNickNameCoordinator)

@@ -15,7 +15,7 @@ protocol AppCoordinatorProtocol {
   func showMainFlow()
 }
 
-public final class AppCoordinator: BaseCoordinator, AppCoordinatorProtocol {
+public final class AppCoordinator: BaseCoordinator, AppCoordinatorProtocol, AppFlowDelegate {
   public override var type: CoordinatorType {
     return .app
   }
@@ -28,13 +28,14 @@ public final class AppCoordinator: BaseCoordinator, AppCoordinatorProtocol {
     self.window = window
     self.featureDependencyProvider = featureDependencyProvider
     super.init(navigationController: navigationController)
+    self.appFlowControl.delegete = self
   }
   
   public override func start() {
     showOnboardingFlow()
   }
   
-  func showOnboardingFlow() {
+  public func showOnboardingFlow() {
     let onboardingCoordinator = OnboardingRootCoordinator(
       navigationController: navigationController,
       dependencyProvider: featureDependencyProvider.makeFeatureOnboardingDependencyProvider()
@@ -46,8 +47,8 @@ public final class AppCoordinator: BaseCoordinator, AppCoordinatorProtocol {
     window.makeKeyAndVisible()
   }
   
-  func showMainFlow() {
-    
+  public func showMainFlow() {
+    print("MainTab -->")
   }
   
   deinit {

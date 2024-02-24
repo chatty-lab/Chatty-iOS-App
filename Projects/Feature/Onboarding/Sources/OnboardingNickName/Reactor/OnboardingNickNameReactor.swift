@@ -123,7 +123,10 @@ extension Error {
       }
       switch error.errorCase {
       case .E006AlreadyExistNickname:
-        return .just(.setError(.duplicatedNickname))
+        return .concat([
+          .just(.setError(.duplicatedNickname)),
+          .just(.nicknameValid(.duplication))
+        ])
       default:
         return .just(.setError(.unknownError))
       }

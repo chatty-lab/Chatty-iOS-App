@@ -8,9 +8,6 @@
 import Foundation
 import DomainAuth
 import DomainUser
-import DataNetwork
-import DataRepository
-import DataStorage
 import FeatureOnboardingInterface
 
 final class FeatureOnboardingDIContainer: RepositoryDIcontainer, FeatureOnboardingDependencyProvider {
