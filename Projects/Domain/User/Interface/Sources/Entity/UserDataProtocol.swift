@@ -15,5 +15,10 @@ public protocol UserDataProtocol {
   var mbti: String { get }
   var address: String? { get }
   var authority: String { get }
-  var imageUrl: String { get }
+  var imageUrl: String? { get }
+  var interests: [String]? { get }
+  var job: String? { get }
+  var introduce: String? { get }
+  var school: String? { get }
+  var blueCheck: Bool { get }
 }

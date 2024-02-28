@@ -14,7 +14,7 @@ import DataStorage
 import FeatureOnboardingInterface
 
 final class FeatureOnboardingDIContainer: FeatureOnboardingDependencyProvider {
-  func makeSignUseCase() -> DomainUser.DefaultSignUseCase {
+  func makeSignUseCase() -> DefaultSignUseCase {
     return DefaultSignUseCase(
       userAPIRepository: makeUserAPIRepository(),
       keychainReposotory: makeKeychainRepository()
@@ -38,7 +38,7 @@ final class FeatureOnboardingDIContainer: FeatureOnboardingDependencyProvider {
 // Repository Builder
 extension FeatureOnboardingDIContainer {
   private func makeUserAPIRepository() -> DefaultUserAPIRepository {
-    return DefaultUserAPIRepository(userAPIService: UserAPIServiceImpl())
+    return DefaultUserAPIRepository(userAPIService: UserAPIServiceImpl(), profileAPIService: ProfileAPIServiceImpl())
   }
   
   private func makeAuthAPIRepository() -> DefaultAuthAPIRepository {

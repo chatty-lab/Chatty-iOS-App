@@ -50,7 +50,7 @@ public final class SampleDIContainer {
 
   // Repository
   func getUserAPIRepository() -> DefaultUserAPIRepository {
-    return DefaultUserAPIRepository(userAPIService: UserAPIServiceImpl())
+    return DefaultUserAPIRepository(userAPIService: UserAPIServiceImpl(), profileAPIService: ProfileAPIServiceImpl())
   }
   
   func getUserDataRepository() -> DefaultUserDataRepository {

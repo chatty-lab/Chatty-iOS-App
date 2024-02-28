@@ -11,7 +11,7 @@ import RxCocoa
 import SnapKit
 import Then
 
-public class CustomNavigationBar: BaseView, Touchable, Fadeable, CustomNavigationBarConfigurable {
+public class CustomNavigationBar: BaseView, Touchable, Fadeable {
   public lazy var identifier: UUID = UUID()
   
   // MARK: - View Property
@@ -96,7 +96,7 @@ public class CustomNavigationBar: BaseView, Touchable, Fadeable, CustomNavigatio
     rightButton.enumerated().forEach { [weak self] index, item in
       guard let self else { return }
       self.rightButtonStackView.addArrangedSubview(item)
-      self.touchEventRelay
+      item.touchEventRelay
         .withUnretained(self)
         .map { _ in .rightButtons(.allCases[index]) }
         .bind(to: self.touchEventRelay)
@@ -145,8 +145,10 @@ extension CustomNavigationBar {
   }
   
   func setNavigationBar(with config: any CustomNavigationBarConfigurable) {
-    self.titleView = config.titleView
     self.titleAlignment = config.titleAlignment
+    self.titleView = config.titleView
     self.rightButtons = config.rightButtons
+    self.backgroundColor = config.backgroundColor
+    self.alpha = config.backgroundAlpha
   }
 }

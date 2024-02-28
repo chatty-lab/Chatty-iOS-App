@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainCommon
 
 public struct ErrorResponseDTO: Decodable, Error {
   let errorCode: String

@@ -7,7 +7,6 @@
 
 import Foundation
 import Moya
-import UIKit
 
 public enum UserAPIRouter: RouterProtocol, AccessTokenAuthorizable {
   case nickname(nickname: String)
@@ -18,6 +17,7 @@ public enum UserAPIRouter: RouterProtocol, AccessTokenAuthorizable {
   case birth(birth: String)
   case login(request: UserSignRequestDTO)
   case join(request: UserSignRequestDTO)
+  case myProfile
 }
 
 public extension UserAPIRouter  {
@@ -47,6 +47,8 @@ public extension UserAPIRouter  {
       return "/login"
     case .join:
       return "/join"
+    case .myProfile:
+      return "/my/profile"
     }
   }
   
@@ -56,6 +58,8 @@ public extension UserAPIRouter  {
       return .put
     case .login, .join:
       return .post
+    case .myProfile:
+      return .get
     }
   }
   
@@ -83,12 +87,14 @@ public extension UserAPIRouter  {
       return .requestJSONEncodable(request)
     case .join(let request):
       return .requestJSONEncodable(request)
+    case .myProfile:
+      return .requestPlain
     }
   }
   
   var headers: [String : String]? {
     switch self {
-    case .nickname, .mbti, .gender, .deviceToken, .birth:
+    case .nickname, .mbti, .gender, .deviceToken, .birth, .myProfile:
       return RequestHeader.getHeader([.json])
     case .image:
       return RequestHeader.getHeader([.binary])
@@ -99,7 +105,7 @@ public extension UserAPIRouter  {
   
   var authorizationType: Moya.AuthorizationType? {
     switch self {
-    case .nickname, .mbti, .image, .gender, .deviceToken, .birth:
+    case .nickname, .mbti, .image, .gender, .deviceToken, .birth, .myProfile:
       return .bearer
     default:
       return .none
