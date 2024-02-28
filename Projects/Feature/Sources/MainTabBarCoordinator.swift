@@ -26,7 +26,7 @@ final class MainTabBarCoordinator: Coordinator {
   }
   
   func start() {
-    let liveTabCoordinator = LiveCoordinator(CustomNavigationController())
+    let liveTabCoordinator = LiveMainCoordinator(navigationController: CustomNavigationController())
     liveTabCoordinator.start()
     
     let tabBarController = MainTabBarController(tabNavigationControllers: [
