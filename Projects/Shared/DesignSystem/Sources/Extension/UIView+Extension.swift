@@ -16,4 +16,40 @@ public extension UIView {
   func makeCircle(with: CGFloat) {
     self.layer.cornerRadius = with / 2
   }
+  
+  /// 각 꼭지점 CornerRound 지정
+  func setRoundCorners(corners: CACornerMask.ArrayLiteralElement, radius: CGFloat) {
+    self.layer.cornerRadius = radius
+    self.layer.maskedCorners = CACornerMask(arrayLiteral: corners)
+  }
+  
+  enum VerticalLocation {
+    case bottom
+    case top
+    case left
+    case right
+  }
+  
+  
+  func addShadow(location: VerticalLocation, color: UIColor = .black, opacity: Float = 0.06, radius: CGFloat = 5.0, length: CGFloat = 4.0) {
+    switch location {
+    case .bottom:
+      addShadow(offset: CGSize(width: 0, height: length), color: color, opacity: opacity, radius: radius)
+    case .top:
+      addShadow(offset: CGSize(width: 0, height: -length), color: color, opacity: opacity, radius: radius)
+    case .left:
+      addShadow(offset: CGSize(width: -length, height: 0), color: color, opacity: opacity, radius: radius)
+    case .right:
+      addShadow(offset: CGSize(width: length, height: 0), color: color, opacity: opacity, radius: radius)
+    }
+  }
+  
+  func addShadow(offset: CGSize, color: UIColor = .black, opacity: Float = 0.1, radius: CGFloat = 3.0) {
+    self.layer.masksToBounds = false
+    self.layer.shadowColor = color.cgColor
+    self.layer.shadowOffset = offset
+    self.layer.shadowOpacity = opacity
+    self.layer.shadowRadius = radius
+  }
+  
 }
