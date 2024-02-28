@@ -91,12 +91,14 @@ extension ChangeableImageButton: StateConfigurable {
     let tintColor: UIColor
     let size: Double
     let isEnabled: Bool
+    let backgroundColor: UIColor
     
-    public init(image: UIImage, tintColor: UIColor = .clear, size: Double = 0, isEnabled: Bool) {
+    public init(image: UIImage, tintColor: UIColor = .clear, backgroundColor: UIColor = .clear, size: Double = 0, isEnabled: Bool) {
       self.image = image
       self.tintColor = tintColor
       self.size = size
       self.isEnabled = isEnabled
+      self.backgroundColor = backgroundColor
     }
   }
   
@@ -104,6 +106,7 @@ extension ChangeableImageButton: StateConfigurable {
     guard let currentState,
           let config = configurations[currentState] else { return }
     
+    backgroundColor = config.backgroundColor
     imageView.tintColor = SystemColor.gray300.uiColor
     imageView.image = config.image
     
@@ -119,8 +122,10 @@ extension ChangeableImageButton: StateConfigurable {
       let systemImage = config.image.withConfiguration(symbolConfig)
       image = systemImage
     }
+    
     imageView.tintColor = config.tintColor
     imageView.image = image
+    
     isEnabled = config.isEnabled
   }
   

@@ -9,6 +9,7 @@ import Foundation
 import RxSwift
 import Moya
 import DataNetworkInterface
+import Starscream
 
 /// PrimitiveSequence에 extension으로 API Reqeust를 정의한 코드입니다.
 /// https://gist.github.com/hsleedevelop/edf8fa03ca5c3a1ec2e2878d361ffd7b 을 참고했습니다.

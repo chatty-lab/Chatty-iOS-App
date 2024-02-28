@@ -18,7 +18,6 @@ import UIKit
 ///   `BaseView`의 서브 클래스는 `bind` 메서드를 재정의하여 구체적인 바인딩 로직을 구현할 수 있어요.
 ///
 open class BaseView: UIView, UIConfigurable, Bindable {
-  
   public override init(frame: CGRect) {
     super.init(frame: frame)
     configureUI()

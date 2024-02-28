@@ -15,9 +15,11 @@ import DomainCommon
 
 public final class DefaultUserAPIRepository: UserAPIRepository {
   private let userAPIService: any UserAPIService
+  private let profileAPIService: any ProfileAPIService
   
-  public init(userAPIService: any UserAPIService) {
+  public init(userAPIService: any UserAPIService, profileAPIService: any ProfileAPIService) {
     self.userAPIService = userAPIService
+    self.profileAPIService = profileAPIService
   }
   
   public func saveNickname(nickname: String) -> Single<UserDataProtocol> {
@@ -115,6 +117,16 @@ public final class DefaultUserAPIRepository: UserAPIRepository {
     )
     let endPoint = UserAPIRouter.join(request: request)
     return userAPIService.request(endPoint: endPoint, responseDTO: UserSignResponseDTO.self)
+      .map { $0.toDomain() }
+  }
+  
+  public func myProfile() -> Single<UserDataProtocol> {
+    return userAPIService.request(endPoint: .myProfile, responseDTO: UserDataReponseDTO.self)
+      .map { $0.toDomain() }
+  }
+  
+  public func someoneProfile(userId: Int) -> Single<UserProfileProtocol> {
+    return profileAPIService.request(endPoint: .profile(userId: userId), responseDTO: UserProfileResponseDTO.self)
       .map { $0.toDomain() }
   }
 }

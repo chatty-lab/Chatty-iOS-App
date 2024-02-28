@@ -22,7 +22,9 @@ let project = Project.makeModule(
           .external(name: "RxMoya"),
           .external(name: "Moya"),
           .external(name: "SnapKit"),
-          .external(name: "Then")
+          .external(name: "Then"),
+          .external(name: "Realm"),
+          .external(name: "Starscream")
         ]
       )
     ),

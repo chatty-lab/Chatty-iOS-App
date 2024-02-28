@@ -1,6 +1,6 @@
 //
 //  NetworkError.swift
-//  DataNetworkInterface
+//  DomainCommon
 //
 //  Created by 윤지호 on 1/21/24.
 //
@@ -10,6 +10,11 @@ import Foundation
 public struct NetworkError: Error {
   public let errorCase: ErrorCase
   public let massage: String
+  
+  public init(errorCase: ErrorCase, massage: String) {
+    self.errorCase = errorCase
+    self.massage = massage
+  }
 }
 
 public enum ErrorCase: Error {

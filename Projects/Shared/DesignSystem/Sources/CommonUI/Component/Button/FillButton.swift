@@ -15,7 +15,6 @@ open class FillButton: BaseControl, Touchable, Highlightable, Transformable {
   // MARK: - View Property
   private let titleLabel: UILabel = UILabel().then {
     $0.textColor = SystemColor.basicWhite.uiColor
-    $0.font = SystemFont.title03.font
     $0.textAlignment = .center
   }
   
@@ -33,6 +32,8 @@ open class FillButton: BaseControl, Touchable, Highlightable, Transformable {
     }
   }
   
+  public var horizontalInset: CGFloat
+  
   // MARK: - Rx Property
   public let touchEventRelay: RxRelay.PublishRelay<Void> = .init()
   
@@ -45,8 +46,9 @@ open class FillButton: BaseControl, Touchable, Highlightable, Transformable {
   }
   
   // MARK: - Initialize Method
-  public override init(frame: CGRect) {
-    super.init(frame: frame)
+  public init(horizontalInset: CGFloat = 20) {
+    self.horizontalInset = horizontalInset
+    super.init(frame: .zero)
   }
   
   // MARK: - UIBindable
@@ -89,7 +91,7 @@ open class FillButton: BaseControl, Touchable, Highlightable, Transformable {
   private func setupTitleLabel() {
     addSubview(titleLabel)
     titleLabel.snp.makeConstraints {
-      $0.horizontalEdges.equalToSuperview().inset(20)
+      $0.horizontalEdges.equalToSuperview().inset(horizontalInset)
       $0.centerY.equalToSuperview()
     }
   }
@@ -105,11 +107,13 @@ extension FillButton: StateConfigurable {
     let backgroundColor: UIColor
     let textColor: UIColor
     let isEnabled: Bool
+    let font: UIFont
     
-    public init(backgroundColor: UIColor, textColor: UIColor = SystemColor.basicWhite.uiColor, isEnabled: Bool) {
+    public init(backgroundColor: UIColor, textColor: UIColor = SystemColor.basicWhite.uiColor, isEnabled: Bool, font: UIFont = SystemFont.title03.font) {
       self.backgroundColor = backgroundColor
       self.textColor = textColor
       self.isEnabled = isEnabled
+      self.font = font
     }
   }
   
@@ -119,5 +123,6 @@ extension FillButton: StateConfigurable {
     backgroundColor = config.backgroundColor
     titleLabel.textColor = config.textColor
     isEnabled = config.isEnabled
+    titleLabel.font = config.font
   }
 }

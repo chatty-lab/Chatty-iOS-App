@@ -19,7 +19,20 @@ public final class CustomNavigationController: UINavigationController, Bindable 
   // MARK: - View Property
   private var customNavigationBarConfigStack: [any CustomNavigationBarConfigurable] = []
   
+  private let customNavigationBarBackgroundView: UIView = UIView()
+  
   private var customNavigationBar: CustomNavigationBar = CustomNavigationBar()
+  
+  public var customNavigationBarGuide: UILayoutGuide {
+    let guide = UILayoutGuide()
+    NSLayoutConstraint.activate([
+      guide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+      guide.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+      guide.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+      guide.heightAnchor.constraint(equalToConstant: 52)
+    ])
+    return guide
+  }
   
   public var customNavigationBarConfig: (any CustomNavigationBarConfigurable)? = nil {
     willSet {
@@ -130,9 +143,17 @@ extension CustomNavigationController {
   }
   
   private func setupCustomNavigationBar() {
+    view.addSubview(customNavigationBarBackgroundView)
     view.addSubview(customNavigationBar)
+    
+    customNavigationBarBackgroundView.snp.makeConstraints {
+      $0.top.equalToSuperview()
+      $0.horizontalEdges.equalToSuperview()
+      $0.height.equalTo(50)
+    }
+    
     customNavigationBar.snp.makeConstraints {
-      $0.top.equalTo(view.safeAreaLayoutGuide)
+      $0.top.equalTo(customNavigationBarBackgroundView.snp.bottom)
       $0.leading.trailing.equalToSuperview()
       $0.height.equalTo(52)
     }
@@ -140,6 +161,8 @@ extension CustomNavigationController {
   
   private func setCustomNavigationBar(_ config: any CustomNavigationBarConfigurable) {
     customNavigationBar.setNavigationBar(with: config)
+    customNavigationBarBackgroundView.backgroundColor = config.backgroundColor
+    customNavigationBarBackgroundView.alpha = config.backgroundAlpha
   }
   
   private func setBackButton(_ viewControllers: [UIViewController]) {
