@@ -96,3 +96,9 @@ extension LiveMainView {
     }
   }
 }
+
+extension LiveMainView {
+  func setGender(_ gender: MatchGender) {
+    matchBoxView.setGenderCondition(gender)
+  }
+}

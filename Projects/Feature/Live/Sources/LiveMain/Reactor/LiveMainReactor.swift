@@ -10,15 +10,15 @@ import ReactorKit
 final class LiveMainReactor: Reactor {
   
   enum Action {
-    
+    case selectGender(MatchGender)
   }
   
   enum Mutation {
-    
+    case setGender(MatchGender)
   }
   
   struct State {
-    
+    var gender: MatchGender = .all
   }
   
   var initialState: State = State()
@@ -26,12 +26,19 @@ final class LiveMainReactor: Reactor {
 }
 
 extension LiveMainReactor {
-//  func mutate(action: Action) -> Observable<Mutation> {
-//    return .just(Mutation)
-//  }
+  func mutate(action: Action) -> Observable<Mutation> {
+    switch action {
+    case .selectGender(let matchGender):
+      return .just(.setGender(matchGender))
+    }
+  }
   
   func reduce(state: State, mutation: Mutation) -> State {
-//    var newState = state
-    return state
+    var newState = state
+    switch mutation {
+    case .setGender(let matchGender):
+      newState.gender = matchGender
+    }
+    return newState
   }
 }

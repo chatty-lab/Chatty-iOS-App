@@ -8,7 +8,7 @@
 import UIKit
 import SharedDesignSystem
 
-enum MatchGender {
+public enum MatchGender {
   case male
   case female
   case all

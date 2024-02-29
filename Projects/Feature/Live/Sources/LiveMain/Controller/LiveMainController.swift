@@ -27,7 +27,11 @@ final class LiveMainController: BaseController {
   typealias Reactor = LiveMainReactor
   
   // MARK: - Delegate
-  weak var delegate: LiveMainControllerDelegate?
+  weak var delegate: LiveMainControllerDelegate? {
+    didSet {
+      print("LiveMainControllerDelegate")
+    }
+  }
   
   // MARK: - Life Method
   override func viewDidLoad() {
@@ -86,12 +90,20 @@ extension LiveMainController: ReactorKit.View {
         case .cashItem:
           owner.delegate?.pushToCandyStore()
         case .genderCondition:
-          owner.delegate?.presentEditGenderConditionModal()
+          owner.delegate?.presentEditGenderConditionModal(reactor.currentState.gender)
         case .ageCondition:
           owner.delegate?.presentEditAgeConditionModal()
         case .talkButton:
           owner.delegate?.pushToMatchingView()
         }
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.gender)
+      .distinctUntilChanged()
+      .bind(with: self) { owner, gender in
+        owner.mainView.setGender(gender)
       }
       .disposed(by: disposeBag)
   }

@@ -28,6 +28,7 @@ public final class LiveMainCoordinator: BaseCoordinator {
     let reactor = LiveMainReactor()
     let liveController = LiveMainController(reactor: reactor)
     liveController.delegate = self
+    childViewControllers.increase()
     navigationController.pushViewController(liveController, animated: false)
   }
 }
@@ -45,11 +46,33 @@ extension LiveMainCoordinator: LiveMainControllerDelegate {
     print("push - MembershipView")
   }
   
-  func presentEditGenderConditionModal() {
-    print("present - GenderConditionModal")
+  func presentEditGenderConditionModal(_ gender: MatchGender) {
+    let editGenderConditionModal = LiveEditGenderConditionModal(reactor: .init(gender: gender))
+    editGenderConditionModal.modalPresentationStyle = .pageSheet
+    editGenderConditionModal.delegate = self
+    navigationController.present(editGenderConditionModal, animated: true)
   }
   
   func presentEditAgeConditionModal() {
     print("present - AgeConditionModal")
   }
+}
+
+extension LiveMainCoordinator: LiveEditGenderConditionModalDelegate {
+  public func dismiss() {
+    DispatchQueue.main.async {
+      self.navigationController.dismiss(animated: true)
+    }
+  }
+  
+  public func editFinished(_ selectedGender: MatchGender) {
+    DispatchQueue.main.async {
+      if let vc = self.navigationController.viewControllers.last as? LiveMainController {
+        vc.reactor?.action.onNext(.selectGender(selectedGender))
+      }
+      self.navigationController.dismiss(animated: true)
+    }
+  }
+  
+  
 }
