@@ -27,6 +27,12 @@ final class LiveMatchingController: BaseController {
   // MARK: - Delegate
   weak var delegate: LiveMatchingDelegate?
   
+  // MARK: - Life Method
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    reactor?.action.onNext(.matchingStart)
+  }
+  
   // MARK: - Initialize Method
   required init(reactor: Reactor) {
     defer {

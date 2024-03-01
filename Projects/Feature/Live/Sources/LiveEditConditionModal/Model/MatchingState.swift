@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MatchingState {
+public enum MatchingState {
   case stop
   case ready
   case matching

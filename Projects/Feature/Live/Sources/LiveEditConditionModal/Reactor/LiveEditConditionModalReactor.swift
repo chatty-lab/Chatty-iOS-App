@@ -12,13 +12,21 @@ import ReactorKit
 
 public final class LiveEditConditionModalReactor: Reactor {
   public enum Action {
+    // LiveEditGenderConditionModal
     case selectGender(MatchGender)
+    
+    // LiveEditAgeConditionModal
     case selectAge(Int)
+    
+    // LiveMatchingController
+    case matchingStart
   }
   
   public enum Mutation {
     case setGenderCondition(MatchGender)
     case setAgeCondition(Int)
+    
+    case setMathcingState(MatchingState)
   }
   
   public struct State {
@@ -40,6 +48,8 @@ extension LiveEditConditionModalReactor {
       return .just(.setGenderCondition(matchGender))
     case .selectAge(let int):
       return .just(.setAgeCondition(int))
+    case .matchingStart:
+      return .just(.setMathcingState(.matching))
     }
   }
   
@@ -50,6 +60,8 @@ extension LiveEditConditionModalReactor {
       newState.matchConditionState.gender = matchGender
     case .setAgeCondition(let int):
       newState.matchConditionState.ageRange.startAge = int
+    case .setMathcingState(let matchingState):
+      newState.matchingState = matchingState
     }
     return newState
   }

@@ -97,6 +97,7 @@ extension LiveMainCoordinator: LiveMatchModeModalDelegate {
   public func startMatching(_ matchState: MatchConditionState) {
     DispatchQueue.main.async {
       self.navigationController.dismiss(animated: true)
+      
       let liveMatchingController = LiveMatchingController(reactor: .init(matchState: matchState))
       liveMatchingController.modalPresentationStyle = .overFullScreen
       liveMatchingController.delegate = self
