@@ -46,15 +46,25 @@ extension LiveMainCoordinator: LiveMainControllerDelegate {
     print("push - MembershipView")
   }
   
-  func presentEditGenderConditionModal(_ gender: MatchGender) {
-    let editGenderConditionModal = LiveEditGenderConditionModal(reactor: .init(gender: gender))
+  func presentEditGenderConditionModal(_ matchState: MatchConditionState) {
+    let editGenderConditionModal = LiveEditGenderConditionModal(reactor: .init(matchState: matchState))
     editGenderConditionModal.modalPresentationStyle = .pageSheet
     editGenderConditionModal.delegate = self
     navigationController.present(editGenderConditionModal, animated: true)
   }
   
-  func presentEditAgeConditionModal() {
-    print("present - AgeConditionModal")
+  func presentEditAgeConditionModal(_ matchState: MatchConditionState) {
+    let editAgeConditionModal = LiveEditAgeConditionModal(reactor: .init(matchState: matchState))
+    editAgeConditionModal.modalPresentationStyle = .pageSheet
+    editAgeConditionModal.delegate = self
+    navigationController.present(editAgeConditionModal, animated: true)
+  }
+  
+  func presentMatchModeModal(_ matchState: MatchConditionState) {
+    let matchModeModal = LiveMatchModeModal(reactor: .init(matchState: matchState))
+    matchModeModal.modalPresentationStyle = .pageSheet
+    matchModeModal.delegate = self
+    navigationController.present(matchModeModal, animated: true)
   }
 }
 
@@ -73,6 +83,33 @@ extension LiveMainCoordinator: LiveEditGenderConditionModalDelegate {
       self.navigationController.dismiss(animated: true)
     }
   }
-  
-  
+}
+
+extension LiveMainCoordinator: LiveEditAgeConditionModalDelegate {
+  public func editFinished(_ ageRange: MatchAgeRange) {
+    DispatchQueue.main.async {
+      self.navigationController.dismiss(animated: true)
+    }
+  }
+}
+
+extension LiveMainCoordinator: LiveMatchModeModalDelegate {
+  public func startMatching(_ matchState: MatchConditionState) {
+    DispatchQueue.main.async {
+      self.navigationController.dismiss(animated: true)
+      let liveMatchingController = LiveMatchingController(reactor: .init(matchState: matchState))
+      liveMatchingController.modalPresentationStyle = .overFullScreen
+      liveMatchingController.delegate = self
+      self.navigationController.present(liveMatchingController, animated: true)
+    }
+  }
+}
+
+extension LiveMainCoordinator: LiveMatchingDelegate {
+  func successMatching() {
+    print("successMatching - Matching")
+    DispatchQueue.main.async {
+      self.navigationController.dismiss(animated: true)
+    }
+  }
 }

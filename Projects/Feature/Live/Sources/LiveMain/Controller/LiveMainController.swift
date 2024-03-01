@@ -90,17 +90,17 @@ extension LiveMainController: ReactorKit.View {
         case .cashItem:
           owner.delegate?.pushToCandyStore()
         case .genderCondition:
-          owner.delegate?.presentEditGenderConditionModal(reactor.currentState.gender)
+          owner.delegate?.presentEditGenderConditionModal(reactor.currentState.matchState)
         case .ageCondition:
-          owner.delegate?.presentEditAgeConditionModal()
+          owner.delegate?.presentEditAgeConditionModal(reactor.currentState.matchState)
         case .talkButton:
-          owner.delegate?.pushToMatchingView()
+          owner.delegate?.presentMatchModeModal(reactor.currentState.matchState)
         }
       }
       .disposed(by: disposeBag)
     
     reactor.state
-      .map(\.gender)
+      .map(\.matchState.gender)
       .distinctUntilChanged()
       .bind(with: self) { owner, gender in
         owner.mainView.setGender(gender)

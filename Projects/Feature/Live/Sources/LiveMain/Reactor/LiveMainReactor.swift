@@ -18,7 +18,7 @@ final class LiveMainReactor: Reactor {
   }
   
   struct State {
-    var gender: MatchGender = .all
+    var matchState: MatchConditionState = MatchConditionState()
   }
   
   var initialState: State = State()
@@ -37,7 +37,7 @@ extension LiveMainReactor {
     var newState = state
     switch mutation {
     case .setGender(let matchGender):
-      newState.gender = matchGender
+      newState.matchState.gender = matchGender
     }
     return newState
   }

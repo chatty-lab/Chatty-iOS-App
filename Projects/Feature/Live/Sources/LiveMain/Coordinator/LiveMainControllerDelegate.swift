@@ -11,6 +11,7 @@ protocol LiveMainControllerDelegate: AnyObject {
   func pushToMatchingView()
   func pushToCandyStore()
   func pushToMembershipView()
-  func presentEditGenderConditionModal(_ gender: MatchGender)
-  func presentEditAgeConditionModal()
+  func presentEditGenderConditionModal(_ matchState: MatchConditionState)
+  func presentEditAgeConditionModal(_ matchState: MatchConditionState)
+  func presentMatchModeModal(_ matchState: MatchConditionState)
 }
