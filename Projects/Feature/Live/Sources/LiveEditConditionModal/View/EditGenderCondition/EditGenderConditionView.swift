@@ -18,9 +18,7 @@ final class EditGenderConditionView: BaseView {
     $0.textColor = SystemColor.basicBlack.uiColor
   }
     
-  private let cancelButton: CancelButton = CancelButton().then {
-    $0.size = 24
-  }
+  private let cancelButton: CancelButton = CancelButton()
   
   private let allButton: EditGenderView = EditGenderView().then {
     $0.gender = .all

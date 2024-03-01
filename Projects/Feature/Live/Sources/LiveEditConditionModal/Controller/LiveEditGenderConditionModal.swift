@@ -66,7 +66,7 @@ extension LiveEditGenderConditionModal: ReactorKit.View {
         case .cancel:
           owner.delegate?.dismiss()
         case .checkButton:
-          owner.delegate?.editFinished(reactor.currentState.gender)
+          owner.delegate?.editFinished(reactor.currentState.matchConditionState.gender)
         case .selectGender(let matchGender):
           owner.reactor?.action.onNext(.selectGender(matchGender))
         }
@@ -74,7 +74,7 @@ extension LiveEditGenderConditionModal: ReactorKit.View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map(\.gender)
+      .map(\.matchConditionState.gender)
       .distinctUntilChanged()
       .bind(with: self) { owner, gender in
         owner.mainView.setGenderState(gender)

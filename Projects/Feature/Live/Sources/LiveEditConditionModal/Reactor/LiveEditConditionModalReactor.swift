@@ -22,14 +22,14 @@ public final class LiveEditConditionModalReactor: Reactor {
   }
   
   public struct State {
-    var gender: MatchGender = .all
-    var age: Int = 20
+    var matchConditionState: MatchConditionState
+    var matchingState: MatchingState = .ready
   }
   
   public var initialState: State
   
-  init(gender: MatchGender = .all, age: Int = 20) {
-    self.initialState = State(gender: gender, age: age)
+  init(matchState: MatchConditionState) {
+    self.initialState = State(matchConditionState: matchState)
   }
 }
 
@@ -47,9 +47,9 @@ extension LiveEditConditionModalReactor {
     var newState = state
     switch mutation {
     case .setGenderCondition(let matchGender):
-      newState.gender = matchGender
+      newState.matchConditionState.gender = matchGender
     case .setAgeCondition(let int):
-      newState.age = int
+      newState.matchConditionState.ageRange.startAge = int
     }
     return newState
   }
