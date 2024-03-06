@@ -15,33 +15,27 @@ import DataNetwork
 import DataStorage
 import DataRepository
 
-public protocol RepositoryDIcontainer {
+public protocol RepositoryDIcontainer: ServiceDIContainer {
   func makeUserAPIRepository() -> DefaultUserAPIRepository
   func makeAuthAPIRepository() -> DefaultAuthAPIRepository
   func makeKeychainRepository() -> DefaultKeychainReposotory
   func makeUserDataRepository() -> DefaultUserDataRepository
   func makeLiveAPIRepository() -> DefaultLiveAPIRepository
   func makeLiveSocketRepository() -> DefaultLiveSocketRepository
-
 }
 
 extension RepositoryDIcontainer {
   func makeUserAPIRepository() -> DefaultUserAPIRepository {
     return DefaultUserAPIRepository(
-      userAPIService: UserAPIServiceImpl(
-        authAPIService: AuthAPIServiceImpl(
-          keychainService: KeychainService.shared),
-        keychainService: KeychainService.shared
-      ), profileAPIService: ProfileAPIServiceImpl(
-        authAPIService: AuthAPIServiceImpl(keychainService: KeychainService.shared), keychainService: KeychainService.shared)
+      userAPIService: makeUserAPIService(),
+      profileAPIService: makeProfileAPIService(),
+      interestAPIService: makeInterestAPIService()
     )
   }
   
   func makeAuthAPIRepository() -> DefaultAuthAPIRepository {
     return DefaultAuthAPIRepository(
-      authAPIService: AuthAPIServiceImpl(
-        keychainService: KeychainService.shared
-      )
+      authAPIService: makeAuthAPIService()
     )
   }
   
@@ -59,23 +53,13 @@ extension RepositoryDIcontainer {
   
   func makeLiveAPIRepository() -> DefaultLiveAPIRepository {
     return DefaultLiveAPIRepository(
-      liveAPIService: LiveAPIServiceImpl(
-        authAPIService: AuthAPIServiceImpl(
-          keychainService: KeychainService.shared
-        ),
-        keychainService: KeychainService.shared
-      )
+      liveAPIService: makeLiveAPIService()
     )
   }
   
   func makeLiveSocketRepository() -> DefaultLiveSocketRepository {
     return DefaultLiveSocketRepository(
-      liveWebSocketService: LiveSocketServiceImpl(
-        keychainService: KeychainService.shared, 
-        authAPIService: AuthAPIServiceImpl(
-          keychainService: KeychainService.shared
-        )
-      )
+      liveWebSocketService: makeLiveSocketService()
     )
   }
 }
