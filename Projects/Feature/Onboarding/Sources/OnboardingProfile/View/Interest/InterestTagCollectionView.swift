@@ -11,11 +11,12 @@ import RxCocoa
 import SharedDesignSystem
 import Then
 import SnapKit
+import DomainUserInterface
 
 final class InterestTagCollectionView: BaseView, Touchable {
   
   private var tagsCell: [InterestTagCollectionViewCell] = []
-  private var tags: [String] = [] {
+  private var tags: [Interest] = [] {
     didSet {
       configeCell()
     }
@@ -28,7 +29,7 @@ final class InterestTagCollectionView: BaseView, Touchable {
   private let disposeBag = DisposeBag()
   
   // MARK: - Touchable Property
-  public var touchEventRelay: PublishRelay<String> = .init()
+  public var touchEventRelay: PublishRelay<Interest> = .init()
   
   // MARK: - UIConfigurable
   override func configureUI() {
@@ -37,14 +38,13 @@ final class InterestTagCollectionView: BaseView, Touchable {
 }
 
 extension InterestTagCollectionView {
-  public func updateCollectionView(_ tags: [String]) {
+  public func updateCollectionView(_ tags: [Interest]) {
     self.tags = tags
   }
   
-  public func updateCell(_ tags: [String]) {
-    let tagIndexs = tags.map { tag in
+  public func updateCell(_ selectedTags: [Interest]) {
+    let tagIndexs = selectedTags.map { tag in
       let index = self.tags.firstIndex(where: { $0 == tag }) ?? 0
-      print(index)
       return index
     }
     

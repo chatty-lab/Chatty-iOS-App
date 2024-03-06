@@ -25,7 +25,7 @@ public final class OnboardingProfileReactor: Reactor {
     case toggleMBTI(MBTISeletedState, Bool)
     case selectImage(UIImage)
     case tabImagePicker
-    case tabTag(String)
+    case tabTag(Interest)
     case tabContinueButton
     case didPushed
   }
@@ -37,7 +37,8 @@ public final class OnboardingProfileReactor: Reactor {
     case toggleMBTI(MBTISeletedState, Bool)
     case inputedImage(UIImage)
     case tabImagePicker
-    case tabTag(String)
+    case setInterestsTags([Interest])
+    case tabTag(Interest)
     case isSaveSuccess
     case didPushed
     case isLoading(Bool)
@@ -51,7 +52,7 @@ public final class OnboardingProfileReactor: Reactor {
     var isContinueEnabled: Bool = false
     var isPickingImage: Bool = false
     var isSuccessSave: Bool = false
-    var interestTags: [String] = []
+    var interestTags: [Interest] = []
     var isLoading: Bool = false
     var errorState: ErrorType? = nil
   }
@@ -74,13 +75,13 @@ public final class OnboardingProfileReactor: Reactor {
       case .profileImage:
         state.isContinueEnabled = state.profileData.porfileImage != nil
       case .interest:
-        state.interestTags = ["여행", "드라마/영화", "운동/스포츠", "독서", "맛집/카페", "제테크", "게임", "뷰티", "패션", "웹툰/애니", "직무/커리어", "문화/공연", "음악", "요리", "반려동물", "자기개발" ,"연애/사랑"]
         state.isContinueEnabled = state.profileData.interest.count > 2
       case .mbti:
         state.isContinueEnabled = state.profileData.mbti.didSeletedAll
       case .none:
         print("none")
       }
+      print("state - \(state.profileData.interest)")
       return state
     }()
     self.initialState = state
@@ -134,6 +135,7 @@ extension OnboardingProfileReactor {
             gender: profileData.gender.requestString,
             birth: profileData.birth.toStringYearMonthDay(),
             imageData: profileData.porfileImage?.toProfileRequestData() ?? nil,
+            interests: profileData.interest,
             mbti: profileData.mbti.requestString
           )
           .asObservable()
@@ -164,6 +166,8 @@ extension OnboardingProfileReactor {
     case .toggleMBTI(let mbti, let state):
       newState.profileData.mbti.setMBTI(mbti: mbti, state: state)
       newState.isContinueEnabled = newState.profileData.mbti.didSeletedAll
+    case .setInterestsTags(let tags):
+      newState.interestTags = tags
     case .tabTag(let tag):
       if let duplicatedIndex = newState.profileData.interest.firstIndex(where: { $0 == tag }) {
         newState.profileData.interest.remove(at: duplicatedIndex)
@@ -178,8 +182,6 @@ extension OnboardingProfileReactor {
       newState.isPickingImage = false
     case .isLoading(let bool):
       newState.isLoading = bool
-      
-      /// 저장 api 통신 혹은 다음뷰로 가는 코드
     case .isSaveSuccess:
       newState.isSuccessSave = true
     case .setError(let error):

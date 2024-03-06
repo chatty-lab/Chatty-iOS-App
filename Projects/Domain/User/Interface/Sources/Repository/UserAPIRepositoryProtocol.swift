@@ -20,11 +20,13 @@ public protocol UserAPIRepositoryProtocol: AnyObject {
   func saveSchool(school: String) -> Single<UserDataProtocol>
   func saveJob(job: String) -> Single<UserDataProtocol>
   func saveIntroduce(introduce: String) -> Single<UserDataProtocol>
-  func saveInterests(interest: [String]) -> Single<UserDataProtocol>
+  func saveInterests(interest: [Interest]) -> Single<UserDataProtocol>
   func saveAddress(address: String) -> Single<UserDataProtocol>
   
   func login(mobileNumber: String, authenticationNumber: String, deviceId: String, deviceToken: String) -> Single<TokenProtocol>
   func join(mobileNumber: String, authenticationNumber: String, deviceId: String, deviceToken: String) -> Single<TokenProtocol>
   
   func getProfile() -> Single<UserDataProtocol>
+  
+  func getInterests() -> Single<Interests>
 }

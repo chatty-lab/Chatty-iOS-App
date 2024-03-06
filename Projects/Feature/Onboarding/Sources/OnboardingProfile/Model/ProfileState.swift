@@ -15,7 +15,7 @@ public struct ProfileState {
   var gender: Gender
   var porfileImage: UIImage? = nil
   var birth: Date
-  var interest: [String]
+  var interest: [Interest]
   var mbti: MBTI
   
   init(userData: UserDataProtocol) {
@@ -34,7 +34,7 @@ public struct ProfileState {
     self.mbti = MBTI(mbti: userData.mbti)
   }
   
-  init(nickName: String, gender: Gender, porfileImage: UIImage? = nil, birth: Date, interest: [String], mbti: MBTI) {
+  init(nickName: String, gender: Gender, porfileImage: UIImage? = nil, birth: Date, interest: [Interest], mbti: MBTI) {
     self.nickName = nickName
     self.gender = gender
     self.porfileImage = porfileImage

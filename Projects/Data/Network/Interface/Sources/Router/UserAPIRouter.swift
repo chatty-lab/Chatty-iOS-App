@@ -19,7 +19,7 @@ public enum UserAPIRouter: RouterProtocol, AccessTokenAuthorizable {
   case school(school: String)
   case job(job: String)
   case introduce(introduce: String)
-  case interests(interest: [String])
+  case interests(interest: [Int])
   case address(address: String)
   
   case login(request: UserSignRequestDTO)
