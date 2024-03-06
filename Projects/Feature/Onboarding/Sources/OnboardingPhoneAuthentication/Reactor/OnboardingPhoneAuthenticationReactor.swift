@@ -10,7 +10,7 @@ import RxSwift
 import ReactorKit
 import DomainAuthInterface
 import DomainUserInterface
-import DataNetworkInterface
+import DomainCommon
 import Shared
 
 public final class OnboardingPhoneAuthenticationReactor: Reactor {

@@ -7,7 +7,6 @@
 
 import Foundation
 import Moya
-import UIKit
 
 public enum UserAPIRouter: RouterProtocol, AccessTokenAuthorizable {
   case nickname(nickname: String)

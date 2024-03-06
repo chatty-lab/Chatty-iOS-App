@@ -10,7 +10,6 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 import SharedDesignSystem
-import DataNetworkInterface
 
 public final class OnboardingPhoneNumberEntryController: BaseController {
   // MARK: - View Property
@@ -110,7 +109,6 @@ extension OnboardingPhoneNumberEntryController: ReactorKit.View {
         case .loading:
           self.showLoadingIndicactor()
         case .success:
-          print("성공")
           self.delegate?.pushToVerificationCodeEntryView(self.reactor)
         }
       }

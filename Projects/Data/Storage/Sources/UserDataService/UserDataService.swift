@@ -20,7 +20,13 @@ public final class UserDataService: UserDataServiceProtocol {
       gender: "",
       mbti: "",
       authority: "",
-      imageUrl: ""
+      address: "",
+      imageUrl: "",
+      interests: [],
+      job: "",
+      introduce: "",
+      school: "",
+      blueCheck: false
     )
   }
   

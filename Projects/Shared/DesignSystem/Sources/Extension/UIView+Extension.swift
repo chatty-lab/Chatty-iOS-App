@@ -13,6 +13,7 @@ public extension UIView {
     subviews.forEach { $0.removeFromSuperview() }
   }
   
+  /// 뷰를 둥글게 만들어요.
   func makeCircle(with: CGFloat) {
     self.layer.cornerRadius = with / 2
   }
@@ -30,7 +31,7 @@ public extension UIView {
     case right
   }
   
-  
+  /// 뷰의 특정 변에 그림자을 설정해요.
   func addShadow(location: VerticalLocation, color: UIColor = .black, opacity: Float = 0.06, radius: CGFloat = 5.0, length: CGFloat = 4.0) {
     switch location {
     case .bottom:
@@ -44,6 +45,7 @@ public extension UIView {
     }
   }
   
+  /// 뷰의 모든방향에 그림자를 설정해요.
   func addShadow(offset: CGSize, color: UIColor = .black, opacity: Float = 0.1, radius: CGFloat = 3.0) {
     self.layer.masksToBounds = false
     self.layer.shadowColor = color.cgColor
@@ -52,4 +54,10 @@ public extension UIView {
     self.layer.shadowRadius = radius
   }
   
+  /// 뷰의 특정 모서리에 곡률을 설정해요.
+  func roundCorners(cornerRadius: CGFloat, maskedCorners: CACornerMask) {
+    clipsToBounds = true
+    layer.cornerRadius = cornerRadius
+    layer.maskedCorners = CACornerMask(arrayLiteral: maskedCorners)
+  }
 }

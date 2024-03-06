@@ -8,7 +8,7 @@
 import Foundation
 
 public enum Environment {
-  static var baseURL: String {
+  public static var baseURL: String {
     return Bundle.main.object(forInfoDictionaryKey: "baseURL") as? String ?? ""
   }
   

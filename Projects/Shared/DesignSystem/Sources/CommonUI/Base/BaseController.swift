@@ -53,6 +53,11 @@ open class BaseController: UIViewController, UIConfigurable, Bindable {
     }
   }
   
+  private func addNavigationBarGuide() {
+    guard let customNavigationController else { return }
+    view.addLayoutGuide(customNavigationController.customNavigationBarGuide)
+  }
+  
   // MARK: - UIConfigurable
   open func configureUI() {
     
