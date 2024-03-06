@@ -20,13 +20,19 @@ final class MainTabBarCoordinator: Coordinator {
   
   var tabBarController: UITabBarController
   
-  init(_ navigationController: CustomNavigationController) {
+  private let featureDependencyProvider: FeatureDependencyProvider
+  
+  init(_ navigationController: CustomNavigationController, featureDependencyProvider: FeatureDependencyProvider) {
     self.navigationController = navigationController
+    self.featureDependencyProvider = featureDependencyProvider
     self.tabBarController = UITabBarController()
   }
   
   func start() {
-    let liveTabCoordinator = LiveMainCoordinator(navigationController: CustomNavigationController())
+    let liveTabCoordinator = LiveMainCoordinator(
+      navigationController: CustomNavigationController(),
+      featureLiveDependencyProvider: featureDependencyProvider.makeFeatureLiveDependencyProvider()
+    )
     liveTabCoordinator.start()
     
     let tabBarController = MainTabBarController(tabNavigationControllers: [

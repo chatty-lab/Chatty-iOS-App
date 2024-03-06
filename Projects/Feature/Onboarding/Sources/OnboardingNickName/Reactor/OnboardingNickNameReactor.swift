@@ -10,7 +10,7 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 import DomainUserInterface
-import DataNetworkInterface
+import DomainCommon
 
 public final class OnboardingNickNameReactor: Reactor {
   
