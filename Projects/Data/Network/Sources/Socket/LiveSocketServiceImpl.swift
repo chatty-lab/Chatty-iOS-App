@@ -10,59 +10,48 @@ import DataNetworkInterface
 import DataStorageInterface
 import DomainLiveInterface
 
+import SharedUtil
+
 import Starscream
 import RxSwift
-
-public enum LiveSocketError: Error {
-  case connected
-  case disconnected
-  case jsonEncodeError
-  case jsonDecodeError
-  case error(Error?)
-}
 
 public final class LiveSocketServiceImpl: LiveSocketService {
   
   private let keychainService: KeychainServiceProtocol
+  private let authAPIService: any AuthAPIService
   
-  public init(keychainService: KeychainServiceProtocol) {
+  private let disposeBag = DisposeBag()
+  
+  public init(keychainService: KeychainServiceProtocol, authAPIService: any AuthAPIService) {
     self.keychainService = keychainService
+    self.authAPIService = authAPIService
   }
-  
   
   private var socket: WebSocket?
-  private var webSocketEventSubject: PublishSubject<MatchSocketResult>?
+  private var socketStateSubject: PublishSubject<Void>?
+  private var resultSubject: PublishSubject<MatchSocketResult>?
   
+  /// accessToken 만료 코드와 refresh 코드 둘다 401로 오기 때문에
+  /// 한번만 refresh를 호출하고 무한루프를 방지하기 위해 bool값을 이용했습니다.
+  private var refreshed: Bool = false
   
+  public func openSocket() -> PublishSubject<Void> {
+    let webSocketOpenedSubject = PublishSubject<Void>()
+    self.socketStateSubject = webSocketOpenedSubject
+    if setupWebSocket() == false {
+      webSocketOpenedSubject.onError(LiveSocketError.setupError)
+    }
+    return webSocketOpenedSubject
+  }
   
   public func connectSocket() -> PublishSubject<MatchSocketResult> {
-    let webSocketEventSubject = PublishSubject<MatchSocketResult>()
-    self.webSocketEventSubject = webSocketEventSubject
-
-    if setupWebSocket() == false {
-      webSocketEventSubject.onError(LiveSocketError.error(nil))
-    }
-    return webSocketEventSubject
+    let resultSubject = PublishSubject<MatchSocketResult>()
+    self.resultSubject = resultSubject
+    return resultSubject
   }
-  
-  public func disconnectSocket() {
-    socket?.disconnect()
-    socket?.delegate = nil
-    webSocketEventSubject = nil
-  }
-  
-  public func sendRequest(reqeust: MatchSocketRequestDTO) {
-    do {
-      let encodedData = try JSONEncoder().encode(reqeust)
-      socket?.write(data: encodedData)
-    } catch {
-      webSocketEventSubject?.onError(LiveSocketError.jsonEncodeError)
-    }
-  }
-
   
   private func setupWebSocket() -> Bool {
-    guard let url = URL(string: "") else { return false }
+    guard let url = URL(string: "wss://dev.api.chattylab.org/ws/match") else { return false }
     var request = URLRequest(url: url)
 
     guard let accessToken: String = keychainService.read(type: .accessToken()) else { return false }
@@ -72,11 +61,25 @@ public final class LiveSocketServiceImpl: LiveSocketService {
     socket = WebSocket(request: request)
     socket?.delegate = self
     socket?.connect()
-    
     return true
   }
   
+  public func disconnectSocket() {
+    socket?.disconnect()
+    socket?.delegate = nil
+    resultSubject = nil
+  }
   
+  public func sendRequest(reqeust: MatchSocketRequestDTO) {
+    do {
+      let req = try JSONSerialization.data(withJSONObject: reqeust.toDictionary())
+      socket?.write(stringData: req, completion: {
+        print("socket send success")
+      })
+    } catch {
+      resultSubject?.onError(LiveSocketError.jsonEncodeError)
+    }
+  }
   
   deinit {
     socket?.disconnect()
@@ -88,33 +91,60 @@ public final class LiveSocketServiceImpl: LiveSocketService {
 extension LiveSocketServiceImpl: WebSocketDelegate {
   public func didReceive(event: Starscream.WebSocketEvent, client: Starscream.WebSocketClient) {
     switch event {
-    case .connected(let dictionary):
-      print("socket receive / connected - \(dictionary)")
-      webSocketEventSubject?.onError(LiveSocketError.connected)
-    case .disconnected(let string, let uInt16):
-      print("socket receive / disconnected - \(string)")
-      webSocketEventSubject?.onError(LiveSocketError.disconnected)
+    case .connected:
+      print("socket receive / connected")
+      socketStateSubject?.onNext(())
+    case .disconnected:
+      print("socket receive / disconnected")
+//      socketStateSubject?.onError(LiveSocketError.disconnected)
     case .text(let string):
-      print("socket receive / string - \(string)")
-    case .binary(let data):
-      let decodedData = try! JSONDecoder().decode(MatchSocketResponseDTO.self, from: data)
-      webSocketEventSubject?.onNext(decodedData.toDomain())
-    case .pong(let data):
-      break
-    case .ping(let data):
-      break
+      guard let jsonDict: [String: Any] = string.toJSON() as? [String: Any] else { return }
+      let matchResponseDTO = MatchSocketResponseDTO(jsonDict: jsonDict)
+      resultSubject?.onNext(matchResponseDTO.toDomain())
     case .error(let error):
-      webSocketEventSubject?.onError(LiveSocketError.error(error ?? nil))
-    case .viabilityChanged(let bool):
-      break
-    case .reconnectSuggested(let bool):
-      break
+      getError(error)
     case .cancelled:
       print("websocket is canclled")
-    case .peerClosed:
+    default:
       break
     }
   }
 }
 
-
+extension LiveSocketServiceImpl {
+  private func getError(_ error: Error?) {
+    if let error = error as? Starscream.HTTPUpgradeError {
+      switch error {
+      case .notAnUpgrade(let int, _):
+        switch int {
+        case 401:
+          handlrError(.refreshTokenExpiration401)
+        default:
+          handlrError(.error(error))
+        }
+      case .invalidData:
+        handlrError(.error(error))
+      }
+    } else {
+      handlrError(.error(error))
+    }
+  }
+  
+  private func handlrError(_ error: LiveSocketError) {
+    switch error {
+    case .refreshTokenExpiration401:
+      _ = authAPIService.refreshToken()
+        .subscribe(with: self, onSuccess: { owner, _ in
+          if owner.refreshed {
+            owner.socketStateSubject?.onError(LiveSocketError.accessTokenExpiration)
+          } else {
+            owner.refreshed = true
+            _ = owner.setupWebSocket()
+          }
+        })
+        .disposed(by: disposeBag)
+    default:
+      socketStateSubject?.onError(LiveSocketError.error(error))
+    }
+  }
+}

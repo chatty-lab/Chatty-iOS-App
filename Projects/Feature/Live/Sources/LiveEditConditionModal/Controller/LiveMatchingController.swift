@@ -72,8 +72,53 @@ extension LiveMatchingController: ReactorKit.View {
     reactor.state
       .map(\.matchingState)
       .bind(with: self) { owner, state in
+        switch state {
+        case .matching:
+          print("matchingState - success match api")
+        case .successMatching:
+          print("matchingState - successMatching")
+        default:
+          print("do")
+        }
         owner.mainView.setMatchingState(state)
       }
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.errorState)
+      .distinctUntilChanged()
+      .bind(with: self) { owner, error in
+        switch error {
+        /// 소켓 연결해제 시 매칭종료
+        case .socketDisconnected:
+          print("socketDisconnected")
+          
+        /// 소켓 연결오류 시 매칭종료
+        case .socketSetupError:
+          owner.showErrorAlert(
+            title: "매칭 오류",
+            subTitle: "연결에 문제가 생겼습니다. 다시 시도해주세요"
+          )
+          owner.delegate?.dismiss()
+          
+        /// refresh 토큰 만료 시 로그인 화면으로 전환
+        case .socketTokenExpiration:
+          print("socketTokenExpiration")
+//          owner.delegate?.dismiss()
+        
+        case .unknownError:
+          owner.showErrorAlert(
+            title: "매칭 오류",
+            subTitle: "연결에 문제가 생겼습니다. 다시 시도해주세요"
+          )
+//          owner.delegate?.dismiss()
+          
+        default:
+          print("error none - \(String(describing: error))")
+        }
+      }
+      .disposed(by: disposeBag)
+    
   }
 }
+ 

@@ -13,6 +13,17 @@ public enum MatchGender {
   case female
   case all
   
+  var requestString: String {
+    switch self {
+    case .male:
+      return "MALE"
+    case .female:
+      return "FEMALE"
+    case .all:
+      return "ALL"
+    }
+  }
+  
   var text: String {
     switch self {
     case .male:

@@ -8,6 +8,7 @@
 import Foundation
 import DomainUser
 import DomainAuth
+import DomainLive
 import DomainCommon
 
 import DataNetwork
@@ -19,6 +20,9 @@ public protocol RepositoryDIcontainer {
   func makeAuthAPIRepository() -> DefaultAuthAPIRepository
   func makeKeychainRepository() -> DefaultKeychainReposotory
   func makeUserDataRepository() -> DefaultUserDataRepository
+  func makeLiveAPIRepository() -> DefaultLiveAPIRepository
+  func makeLiveSocketRepository() -> DefaultLiveSocketRepository
+
 }
 
 extension RepositoryDIcontainer {
@@ -49,6 +53,28 @@ extension RepositoryDIcontainer {
   func makeUserDataRepository() -> DefaultUserDataRepository {
     return DefaultUserDataRepository(
       userDataService: UserDataService.shared
+    )
+  }
+  
+  func makeLiveAPIRepository() -> DefaultLiveAPIRepository {
+    return DefaultLiveAPIRepository(
+      liveAPIService: LiveAPIServiceImpl(
+        authAPIService: AuthAPIServiceImpl(
+          keychainService: KeychainService.shared
+        ),
+        keychainService: KeychainService.shared
+      )
+    )
+  }
+  
+  func makeLiveSocketRepository() -> DefaultLiveSocketRepository {
+    return DefaultLiveSocketRepository(
+      liveWebSocketService: LiveSocketServiceImpl(
+        keychainService: KeychainService.shared, 
+        authAPIService: AuthAPIServiceImpl(
+          keychainService: KeychainService.shared
+        )
+      )
     )
   }
 }

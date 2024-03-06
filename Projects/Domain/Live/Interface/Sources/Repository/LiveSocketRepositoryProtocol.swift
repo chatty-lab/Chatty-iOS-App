@@ -9,6 +9,7 @@ import Foundation
 import RxSwift
 
 public protocol LiveSocketRepositoryProtocol {
+  func openSocket() -> PublishSubject<Void>
   func connectSocket() -> PublishSubject<MatchSocketResult>
   func sendRequest(_ match: MatchResult)
   func disconnectSocket()

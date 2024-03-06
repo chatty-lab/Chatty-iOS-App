@@ -9,14 +9,18 @@ import UIKit
 import Shared
 import SharedDesignSystem
 
+import FeatureLiveInterface
+
 public final class LiveMainCoordinator: BaseCoordinator {
   public override var type: CoordinatorType {
     .live(.main)
   }
   
-//  private let dependencyProvider: FeatureOnboardingDependencyProvider
+  private let featureLiveDependencyProvider: FeatureLiveDependencyProvider
   
-  public override init(navigationController: CustomNavigationController) {
+  public init(navigationController: CustomNavigationController, featureLiveDependencyProvider: FeatureLiveDependencyProvider
+  ) {
+    self.featureLiveDependencyProvider = featureLiveDependencyProvider
     super.init(navigationController: navigationController)
   }
   
@@ -47,21 +51,33 @@ extension LiveMainCoordinator: LiveMainControllerDelegate {
   }
   
   func presentEditGenderConditionModal(_ matchState: MatchConditionState) {
-    let editGenderConditionModal = LiveEditGenderConditionModal(reactor: .init(matchState: matchState))
+    let liveMatchingReactor = LiveEditConditionModalReactor(
+      matchState: matchState,
+      connectMatchUserCase: self.featureLiveDependencyProvider.makeConnectMatchUseCase()
+    )
+    let editGenderConditionModal = LiveEditGenderConditionModal(reactor: liveMatchingReactor)
     editGenderConditionModal.modalPresentationStyle = .pageSheet
     editGenderConditionModal.delegate = self
     navigationController.present(editGenderConditionModal, animated: true)
   }
   
   func presentEditAgeConditionModal(_ matchState: MatchConditionState) {
-    let editAgeConditionModal = LiveEditAgeConditionModal(reactor: .init(matchState: matchState))
+    let liveMatchingReactor = LiveEditConditionModalReactor(
+      matchState: matchState,
+      connectMatchUserCase: self.featureLiveDependencyProvider.makeConnectMatchUseCase()
+    )
+    let editAgeConditionModal = LiveEditAgeConditionModal(reactor: liveMatchingReactor)
     editAgeConditionModal.modalPresentationStyle = .pageSheet
     editAgeConditionModal.delegate = self
     navigationController.present(editAgeConditionModal, animated: true)
   }
   
   func presentMatchModeModal(_ matchState: MatchConditionState) {
-    let matchModeModal = LiveMatchModeModal(reactor: .init(matchState: matchState))
+    let liveMatchingReactor = LiveEditConditionModalReactor(
+      matchState: matchState,
+      connectMatchUserCase: self.featureLiveDependencyProvider.makeConnectMatchUseCase()
+    )
+    let matchModeModal = LiveMatchModeModal(reactor: liveMatchingReactor)
     matchModeModal.modalPresentationStyle = .pageSheet
     matchModeModal.delegate = self
     navigationController.present(matchModeModal, animated: true)
@@ -98,7 +114,11 @@ extension LiveMainCoordinator: LiveMatchModeModalDelegate {
     DispatchQueue.main.async {
       self.navigationController.dismiss(animated: true)
       
-      let liveMatchingController = LiveMatchingController(reactor: .init(matchState: matchState))
+      let liveMatchingReactor = LiveEditConditionModalReactor(
+        matchState: matchState,
+        connectMatchUserCase: self.featureLiveDependencyProvider.makeConnectMatchUseCase()
+      )
+      let liveMatchingController = LiveMatchingController(reactor: liveMatchingReactor)
       liveMatchingController.modalPresentationStyle = .overFullScreen
       liveMatchingController.delegate = self
       self.navigationController.present(liveMatchingController, animated: true)

@@ -56,7 +56,6 @@ final class LiveMainController: BaseController {
   }
   
   override func setNavigationBar() {
-    super.setNavigationBar()
     let titleView = CustomNavigationBarItem(title: "실시간")
     let bellButton = CustomNavigationBarButton(image: Images.bell.image)
     

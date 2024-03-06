@@ -13,10 +13,15 @@ import DomainLiveInterface
 import RxSwift
 
 public final class DefaultLiveSocketRepository: LiveSocketRepository {
+  
   private let liveWebSocketService: any LiveSocketService
   
   public init(liveWebSocketService: any LiveSocketService) {
     self.liveWebSocketService = liveWebSocketService
+  }
+  
+  public func openSocket() -> PublishSubject<Void> {
+    return liveWebSocketService.openSocket()
   }
   
   public func connectSocket() -> PublishSubject<MatchSocketResult> {

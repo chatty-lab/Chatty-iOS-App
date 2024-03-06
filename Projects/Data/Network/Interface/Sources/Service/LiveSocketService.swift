@@ -10,6 +10,7 @@ import RxSwift
 import DomainLiveInterface
 
 public protocol LiveSocketService {
+  func openSocket() -> PublishSubject<Void>
   func connectSocket() -> PublishSubject<MatchSocketResult>
   func sendRequest(reqeust: MatchSocketRequestDTO)
   func disconnectSocket()

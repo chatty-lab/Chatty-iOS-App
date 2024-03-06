@@ -14,14 +14,14 @@ public struct MatchSocketRequestDTO: Codable {
   let nickname: String
   let gender: String
   let mbti: String
-  let address: String
+  let address: String?
   let imageUrl: String
   let age: Int
   let blueCheck: Bool
   let requestMinAge: Int
   let requestMaxAge: Int
   let requestCategory: String
-  let requestScope: Int
+  let requestScope: Int?
   let requestGender: String
   let requestBlueCheck: Bool
   let success: Bool
@@ -83,5 +83,26 @@ public struct MatchSocketRequestDTO: Codable {
       requestBlueCheck: self.requestBlueCheck,
       success: self.success
     )
+  }
+  
+  public func toDictionary() -> [String: Any?] {
+    return [
+      "id": self.id,
+      "userId": self.userId,
+      "nickname": self.nickname,
+      "gender": self.gender,
+      "mbti": self.mbti,
+      "address": self.address,
+      "imageUrl": self.imageUrl,
+      "age": self.age,
+      "blueCheck": self.blueCheck,
+      "requestMinAge": self.requestMinAge,
+      "requestMaxAge": self.requestMaxAge,
+      "requestCategory": self.requestCategory,
+      "requestScope": self.requestScope,
+      "requestGender": self.requestGender,
+      "requestBlueCheck": self.requestBlueCheck,
+      "success": self.success
+    ]
   }
 }
