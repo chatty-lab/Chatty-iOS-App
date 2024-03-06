@@ -27,6 +27,7 @@ public final class OnboardingProfileController: BaseController {
   public override func viewDidLoad() {
     super.viewDidLoad()
     configureUI()
+    reactor?.action.onNext(.viewDidLoad)
   }
   
   // MARK: - Initialize Method
@@ -191,6 +192,20 @@ extension OnboardingProfileController: ReactorKit.View {
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, mbti in
         owner.profileView.updateMBTIView(mbti)
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.errorState)
+      .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
+      .bind(with: self) { owner, error in
+        switch error {
+        case .refreshTokenExpired:
+          print("refreshTokenExpired")
+        default:
+          return
+        }
       }
       .disposed(by: disposeBag)
     

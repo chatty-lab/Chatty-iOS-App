@@ -27,6 +27,7 @@ public final class OnboardingProfileCoordinator: BaseCoordinator {
     let onboardingProfileReactor = OnboardingProfileReactor(
       saveProfileDataUseCase: dependencyProvider.makeSaveProfileDataUseCase(),
       getUserDataUseCase: dependencyProvider.makeGetProfileDataUseCase(),
+      getInterestsUseCase: dependencyProvider.makeGetInterestsUseCase(),
       profileType: .gender
     )
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReactor)
@@ -46,6 +47,7 @@ extension OnboardingProfileCoordinator: OnboardingProfileDelegate {
     let onboardingProfileReator = OnboardingProfileReactor(
       saveProfileDataUseCase: dependencyProvider.makeSaveProfileDataUseCase(),
       getUserDataUseCase: dependencyProvider.makeGetProfileDataUseCase(),
+      getInterestsUseCase: dependencyProvider.makeGetInterestsUseCase(),
       profileType: profileType
     )
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReator)

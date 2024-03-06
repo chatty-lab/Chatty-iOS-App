@@ -15,9 +15,11 @@ import DomainCommon
 public final class OnboardingProfileReactor: Reactor {
   private let saveProfileDataUseCase: SaveProfileDataUseCase
   private let getUserDataUseCase: GetUserDataUseCase
+  private let getInterestsUseCase: GetInterestsUseCase
   
   /// 뷰에서 수행할 수 있는 사용자의 액션
   public enum Action {
+    case viewDidLoad
     case toggleGender(Gender)
     case selectBirth(Date)
     case toggleMBTI(MBTISeletedState, Bool)
@@ -55,8 +57,9 @@ public final class OnboardingProfileReactor: Reactor {
   }
   public var initialState: State
   
-  init(saveProfileDataUseCase: SaveProfileDataUseCase, getUserDataUseCase: GetUserDataUseCase, profileType: ProfileType) {
+  init(saveProfileDataUseCase: SaveProfileDataUseCase, getUserDataUseCase: GetUserDataUseCase, getInterestsUseCase: GetInterestsUseCase, profileType: ProfileType) {
     self.saveProfileDataUseCase = saveProfileDataUseCase
+    self.getInterestsUseCase = getInterestsUseCase
     self.getUserDataUseCase = getUserDataUseCase
     let state: State = {
       var state = State(
@@ -87,6 +90,24 @@ public final class OnboardingProfileReactor: Reactor {
 extension OnboardingProfileReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
+    case .viewDidLoad:
+      if currentState.viewState == .interest {
+        return .concat([
+          .just(.isLoading(true)),
+          getInterestsUseCase.execute()
+            .asObservable()
+            .map { interest in
+              let interests = interest.interests.sorted(by: { $0.id < $1.id})
+              return .setInterestsTags(interests)
+            }
+            .catch { error -> Observable<Mutation> in
+              return error.toMutation()
+            },
+          .just(.isLoading(false))
+        ])
+      } else {
+        return .just(.isLoading(false))
+      }
     case .toggleGender(let gender):
       return .just(.inputedGender(gender))
     case .selectBirth(let date):
@@ -167,12 +188,8 @@ extension OnboardingProfileReactor {
     return newState
   }
   
-  private func getInterestTags() -> [String] {
-    return ["여행", "드라마/영화", "운동/스포츠", "독서", "맛집/카페", "제테크", "게임", "뷰티", "패션", "웹툰/애니", "직무/커리어", "문화/공연", "음악", "요리", "반려동물", "자기개발" ,"연애/사랑"]
-  }
-  
   public enum ErrorType: Error {
-    case duplicatedNickname
+    case refreshTokenExpired
     case unknownError
   }
 }
@@ -184,10 +201,8 @@ extension Error {
         return .just(.setError(.unknownError))
       }
       switch error.errorCase {
-      case .E006AlreadyExistNickname:
-        return .concat([
-          .just(.setError(.duplicatedNickname))
-        ])
+      case .E009RefreshTokenExpired:
+        return .just(.setError(.refreshTokenExpired))
       default:
         return .just(.setError(.unknownError))
       }

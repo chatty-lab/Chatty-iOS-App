@@ -51,4 +51,10 @@ final class FeatureOnboardingDIContainer: RepositoryDIcontainer, FeatureOnboardi
       userDataRepository: makeUserDataRepository()
     )
   }
+  
+  func makeGetInterestsUseCase() -> DefaultGetInterestsUseCase {
+    return DefaultGetInterestsUseCase(
+      userAPIRepository: makeUserAPIRepository()
+    )
+  }
 }

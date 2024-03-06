@@ -16,11 +16,15 @@ import DomainCommon
 public final class DefaultUserAPIRepository: UserAPIRepository {
   private let userAPIService: any UserAPIService
   private let profileAPIService: any ProfileAPIService
+  private let interestAPIService: any InterestAPIService
   
-  public init(userAPIService: any UserAPIService, profileAPIService: any ProfileAPIService) {
+  public init(userAPIService: any UserAPIService, profileAPIService: any ProfileAPIService, interestAPIService: any InterestAPIService) {
     self.userAPIService = userAPIService
     self.profileAPIService = profileAPIService
+    self.interestAPIService = interestAPIService
   }
+  
+  // user
   
   public func saveNickname(nickname: String) -> Single<UserDataProtocol> {
     let endPoint = UserAPIRouter.nickname(nickname: nickname)
@@ -77,8 +81,9 @@ public final class DefaultUserAPIRepository: UserAPIRepository {
       .map { $0.toDomain() }
   }
   
-  public func saveInterests(interest: [String]) -> Single<UserDataProtocol> {
-    let endPoint = UserAPIRouter.interests(interest: interest)
+  public func saveInterests(interest: [Interest]) -> Single<UserDataProtocol> {
+    let interestIds = interest.map { $0.id }
+    let endPoint = UserAPIRouter.interests(interest: interestIds)
     return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
       .map { $0.toDomain() }
   }
@@ -120,6 +125,8 @@ public final class DefaultUserAPIRepository: UserAPIRepository {
       .map { $0.toDomain() }
   }
   
+  
+  // prodile
   public func myProfile() -> Single<UserDataProtocol> {
     return userAPIService.request(endPoint: .profile, responseDTO: UserDataReponseDTO.self)
       .map { $0.toDomain() }
@@ -127,6 +134,12 @@ public final class DefaultUserAPIRepository: UserAPIRepository {
   
   public func someoneProfile(userId: Int) -> Single<UserProfileProtocol> {
     return profileAPIService.request(endPoint: .profile(userId: userId), responseDTO: UserProfileResponseDTO.self)
+      .map { $0.toDomain() }
+  }
+  
+  // interest
+  public func getInterests() -> Single<Interests> {
+    return interestAPIService.request(endPoint: .interests, responseDTO: InterestsResponseDTO.self)
       .map { $0.toDomain() }
   }
 }
