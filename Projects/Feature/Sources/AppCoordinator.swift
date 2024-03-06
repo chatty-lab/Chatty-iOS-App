@@ -44,7 +44,7 @@ public final class AppCoordinator: BaseCoordinator, AppFlowDelegate {
   
   public func showMainFlow() {
     navigationController.setViewControllers([], animated: false)
-    let mainCoordinator = MainTabBarCoordinator(navigationController)
+    let mainCoordinator = MainTabBarCoordinator(navigationController, featureDependencyProvider: featureDependencyProvider)
 
     childCoordinators.removeAll()
     childCoordinators.append(mainCoordinator)

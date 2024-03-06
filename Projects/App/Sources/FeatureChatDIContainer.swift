@@ -10,6 +10,7 @@ import FeatureChatInterface
 import DomainChat
 import DataRepository
 import DataNetwork
+import DataStorage
 
 final class FeatureChatDIContainer: FeatureChatDependecyProvider {
   func makeGetChatRoomListUseCase() -> DomainChat.DefaultGetChatRoomListUseCase {
@@ -27,6 +28,12 @@ extension FeatureChatDIContainer {
   }
   
   func makeChatAPIRepository() -> DefaultChatAPIRepository {
-    return DefaultChatAPIRepository(chatAPIService: ChatAPIServiceImpl())
+    return DefaultChatAPIRepository(
+      chatAPIService: ChatAPIServiceImpl(
+        authAPIService: AuthAPIServiceImpl(
+          keychainService: KeychainService.shared
+        ),
+        keychainService: KeychainService.shared)
+    )
   }
 }

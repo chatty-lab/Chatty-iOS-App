@@ -32,7 +32,8 @@ extension RepositoryDIcontainer {
         authAPIService: AuthAPIServiceImpl(
           keychainService: KeychainService.shared),
         keychainService: KeychainService.shared
-      )
+      ), profileAPIService: ProfileAPIServiceImpl(
+        authAPIService: AuthAPIServiceImpl(keychainService: KeychainService.shared), keychainService: KeychainService.shared)
     )
   }
   
