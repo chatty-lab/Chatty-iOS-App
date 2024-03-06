@@ -15,6 +15,7 @@ let targets: [Target] = [
       dependencies: [
         .domain(implements: .Auth),
         .domain(implements: .User),
+        .domain(implements: .Live),
         .domain(implements: .Chat)
       ]
     )

@@ -7,7 +7,10 @@
 
 import Foundation
 import FeatureOnboardingInterface
+import FeatureLiveInterface
 
 public protocol FeatureDependencyProvider {
   func makeFeatureOnboardingDependencyProvider() -> FeatureOnboardingDependencyProvider
+  func makeFeatureLiveDependencyProvider() -> FeatureLiveDependencyProvider
+
 }

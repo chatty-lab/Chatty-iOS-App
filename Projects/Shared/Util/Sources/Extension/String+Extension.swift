@@ -21,6 +21,11 @@ public extension String {
     return "\(areaCode)-\(middle)-\(last)"
   }
   
+  func toJSON() -> Any? {
+    guard let data = self.data(using: .utf8, allowLossyConversion: false) else { return nil }
+    return try? JSONSerialization.jsonObject(with: data, options: .mutableContainers)
+  }
+    
   func toDateFromISO8601() -> Date? {
     let formatter = ISO8601DateFormatter()
     formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]

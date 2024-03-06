@@ -11,4 +11,8 @@ public enum Environment {
   public static var baseURL: String {
     return Bundle.main.object(forInfoDictionaryKey: "baseURL") as? String ?? ""
   }
+  
+  static var socketBaseURL: String {
+    return Bundle.main.object(forInfoDictionaryKey: "socketBaseURL") as? String ?? ""
+  }
 }

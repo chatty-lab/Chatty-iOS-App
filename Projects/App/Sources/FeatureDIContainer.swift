@@ -8,6 +8,7 @@
 import Foundation
 import Feature
 import FeatureOnboardingInterface
+import FeatureLiveInterface
 import DomainCommon
 import DomainUser
 import DomainAuth
@@ -22,6 +23,10 @@ final class FeatureDIContainer: RepositoryDIcontainer, FeatureDependencyProvider
   
   func makeFeatureOnboardingDependencyProvider() -> FeatureOnboardingDependencyProvider {
     return FeatureOnboardingDIContainer()
+  }
+  
+  func makeFeatureLiveDependencyProvider() -> FeatureLiveDependencyProvider {
+    return FeatureLiveDIcontainer()
   }
   
   func makeDefaultSaveDeviceTokenUseCase() -> DefaultSaveDeviceTokenUseCase {

@@ -24,8 +24,6 @@ public final class OnboardingImageGuideController: BaseController {
   // MARK: - Reactor Property
   public typealias Reactor = OnboardingImageGuideReactor
   
-  // MARK: - Rx Property
-  
   // MARK: - LifeCycle Method
   public override func viewDidLoad() {
     super.viewDidLoad()
