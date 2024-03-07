@@ -16,24 +16,36 @@ public final class KeychainService: KeychainServiceProtocol {
   /// isForce 강제로 중복된 keychain 내의 값을 업데이트 할것인지에 대한 Bool값 입니다.
   public func createSingle(type: KeychainRouter, isForce: Bool) -> Single<Bool> {
     let request = self.create(type: type, isForce: true)
-    return .just(request)
+    if request {
+      return .just(request)
+    } else {
+      return .error(NSError(domain: "KeychainService - create error", code: -1))
+    }
   }
   
   public func readSingle(type: KeychainRouter) -> Single<String> {
     guard let result = self.read(type: type) else {
-      return .just("")
+      return .error(NSError(domain: "KeychainService - read error - \(type)", code: -1))
     }
     return .just(result)
   }
   
   public func updateSingle(type: KeychainRouter) -> Single<Bool> {
     let result = self.update(type: type)
-    return .just(result)
+    if result {
+      return .just(result)
+    } else {
+      return .error(NSError(domain: "KeychainService - update error", code: -1))
+    }
   }
 
   public func deleteSingle(type: KeychainRouter) -> Single<Bool> {
     let result = self.delete(type: type)
-    return .just(result)
+    if result {
+      return .just(result)
+    } else {
+      return .error(NSError(domain: "KeychainService - delete error", code: -1))
+    }
   }
 }
 
