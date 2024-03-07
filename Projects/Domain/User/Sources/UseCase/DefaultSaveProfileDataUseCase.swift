@@ -49,6 +49,6 @@ public final class DefaultSaveProfileDataUseCase: SaveProfileDataUseCase {
         }
     }
 
-    
+
   }
 }

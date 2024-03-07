@@ -11,7 +11,7 @@ import RxSwift
 import SharedDesignSystem
 
 public protocol OnboardingProfileDelegate: AnyObject {
-  func pushToNextView(_ state: ProfileType)
+  func pushToNextView(_ state: OnboardingProfileReactor.State)
   func presentImageGuideModal()
   func switchToMainTab()
 }
@@ -64,7 +64,7 @@ public final class OnboardingProfileController: BaseController {
         .bind(with: self) { owner, event in
           switch event {
           case .skipImage:
-            owner.delegate?.pushToNextView(.profileImage)
+            owner.delegate?.pushToNextView(owner.reactor!.currentState)
           }
         }
         .disposed(by: disposeBag)
@@ -108,7 +108,7 @@ extension OnboardingProfileController: ReactorKit.View {
         if result {
           let nextType = reactor.currentState.viewState.nextViewType
           if nextType != .none {
-            owner.delegate?.pushToNextView(reactor.currentState.viewState)
+            owner.delegate?.pushToNextView(reactor.currentState)
             owner.reactor?.action.onNext(.didPushed)
           } else {
             owner.delegate?.switchToMainTab()
@@ -169,7 +169,7 @@ extension OnboardingProfileController: ReactorKit.View {
     
     // Interest Tag
     reactor.state
-      .map(\.interestTags)
+      .map(\.Allinterests)
       .distinctUntilChanged()
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, tags in

@@ -83,7 +83,7 @@ public final class DefaultUserAPIRepository: UserAPIRepository {
   
   public func saveInterests(interest: [Interest]) -> Single<UserDataProtocol> {
     let interestIds = interest.map { $0.id }
-    let endPoint = UserAPIRouter.interests(interest: interestIds)
+    let endPoint = UserAPIRouter.interests(interests: interestIds)
     return userAPIService.request(endPoint: endPoint, responseDTO: SaveUserDataResponseDTO.self)
       .map { $0.toDomain() }
   }

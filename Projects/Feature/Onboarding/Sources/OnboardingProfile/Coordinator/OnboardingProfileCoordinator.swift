@@ -7,6 +7,7 @@
 
 import UIKit
 import PhotosUI
+import Mantis
 import Shared
 import SharedDesignSystem
 import FeatureOnboardingInterface
@@ -26,9 +27,9 @@ public final class OnboardingProfileCoordinator: BaseCoordinator {
   public override func start() {
     let onboardingProfileReactor = OnboardingProfileReactor(
       saveProfileDataUseCase: dependencyProvider.makeSaveProfileDataUseCase(),
-      getUserDataUseCase: dependencyProvider.makeGetProfileDataUseCase(),
-      getInterestsUseCase: dependencyProvider.makeGetInterestsUseCase(),
-      profileType: .gender
+      getInterestsUseCase: dependencyProvider.makeGetAllInterestsUseCase(),
+      profileType: .gender, 
+      profileData: .init(nickName: dependencyProvider.makeGetProfileDataUseCase().execute().nickname, gender: .none, birth: Date(), interest: [], mbti: .init())
     )
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReactor)
     onboardingProfileController.delegate = self
@@ -41,14 +42,15 @@ public final class OnboardingProfileCoordinator: BaseCoordinator {
 }
 
 extension OnboardingProfileCoordinator: OnboardingProfileDelegate {
-  public func pushToNextView(_ state: ProfileType) {
-    let profileType: ProfileType = state.nextViewType
+  public func pushToNextView(_ state: OnboardingProfileReactor.State) {
+    let profileType: ProfileType = state.viewState.nextViewType
+    let profileData: ProfileState = state.profileData
     
     let onboardingProfileReator = OnboardingProfileReactor(
       saveProfileDataUseCase: dependencyProvider.makeSaveProfileDataUseCase(),
-      getUserDataUseCase: dependencyProvider.makeGetProfileDataUseCase(),
-      getInterestsUseCase: dependencyProvider.makeGetInterestsUseCase(),
-      profileType: profileType
+      getInterestsUseCase: dependencyProvider.makeGetAllInterestsUseCase(),
+      profileType: profileType, 
+      profileData: profileData
     )
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReator)
     
@@ -93,12 +95,39 @@ extension OnboardingProfileCoordinator: OnboardingImageGuideDelegate, PHPickerVi
       itemProvider.loadObject(ofClass: UIImage.self) { image, error in
         if let image = image as? UIImage {
           DispatchQueue.main.async {
-            if let vc = self.navigationController.viewControllers.last as? OnboardingProfileController {
-              vc.reactor?.action.onNext(.selectImage(image))
-            }
+            var config = Mantis.Config()
+            config.cropViewConfig.showAttachedRotationControlView = false
+            config.cropToolbarConfig.toolbarButtonOptions = []
+            config.presetFixedRatioType = .alwaysUsingOnePresetFixedRatio(ratio: 1 / 1)
+            let cropViewController = Mantis.cropViewController(
+              image: image,
+              config: config
+            )
+            cropViewController.delegate = self
+            
+            self.navigationController.present(cropViewController, animated: true)
           }
         }
       }
+    }
+  }
+}
+
+extension OnboardingProfileCoordinator: CropViewControllerDelegate {
+  public func cropViewControllerDidCrop(_ cropViewController: Mantis.CropViewController, cropped: UIImage, transformation: Mantis.Transformation, cropInfo: Mantis.CropInfo) {
+    DispatchQueue.main.async {
+      let vcCount = self.navigationController.viewControllers.count
+      if let vc = self.navigationController.viewControllers[vcCount - 1] as? OnboardingProfileController {
+        vc.reactor?.action.onNext(.selectImage(cropped))
+      }
+      self.navigationController.dismiss(animated: true)
+
+    }
+  }
+  
+  public func cropViewControllerDidCancel(_ cropViewController: Mantis.CropViewController, original: UIImage) {
+    DispatchQueue.main.async {
+      self.navigationController.dismiss(animated: true)
     }
   }
 }
