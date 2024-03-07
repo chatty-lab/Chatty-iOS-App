@@ -18,15 +18,18 @@ public final class DefaultSaveProfileDataUseCase: SaveProfileDataUseCase {
     self.userDataRepository = userDataRepository
   }
   
-  public func excute(gender: String, birth: String, imageData: Data?, mbti: String) -> Single<Bool> {
+  public func excute(gender: String, birth: String, imageData: Data?, interests: [Interest], mbti: String) -> Single<Bool> {
     let saveGender = userAPIRepository.saveGender(gender: gender)
     let saveBirth = userAPIRepository.saveBirth(birth: birth)
+    let saveInterests = userAPIRepository.saveInterests(interest: interests)
     let saveMbti = userAPIRepository.saveMBTI(mbti: mbti)
 
+    /// 회원가입 시 저장하고 변하지 않는 데이터들은 MBTI저장을 기점으로 막히게되기에
+    /// 다른 데이터 저장 이후 MBTI를 마지막으로 저장
     if let imageData = imageData {
       let saveImageData = userAPIRepository.saveImage(imageData: imageData)
-      return Single.zip(saveGender, saveBirth, saveImageData)
-        .flatMap { _, _, _ in
+      return Single.zip(saveGender, saveBirth, saveImageData, saveInterests)
+        .flatMap { _, _, _, _ in
           return saveMbti
         }
         .map { userData in
@@ -35,8 +38,8 @@ public final class DefaultSaveProfileDataUseCase: SaveProfileDataUseCase {
           return true
         }
     } else {
-      return Single.zip(saveGender, saveBirth)
-        .flatMap { _, _ in
+      return Single.zip(saveGender, saveBirth, saveInterests)
+        .flatMap { _, _, _ in
           return saveMbti
         }
         .map { userData in
@@ -46,6 +49,6 @@ public final class DefaultSaveProfileDataUseCase: SaveProfileDataUseCase {
         }
     }
 
-    
+
   }
 }

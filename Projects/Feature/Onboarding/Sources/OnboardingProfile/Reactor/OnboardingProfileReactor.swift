@@ -14,16 +14,17 @@ import DomainCommon
 
 public final class OnboardingProfileReactor: Reactor {
   private let saveProfileDataUseCase: SaveProfileDataUseCase
-  private let getUserDataUseCase: GetUserDataUseCase
+  private let getInterestsUseCase: GetAllInterestsUseCase
   
   /// 뷰에서 수행할 수 있는 사용자의 액션
   public enum Action {
+    case viewDidLoad
     case toggleGender(Gender)
     case selectBirth(Date)
     case toggleMBTI(MBTISeletedState, Bool)
     case selectImage(UIImage)
     case tabImagePicker
-    case tabTag(String)
+    case tabTag(Interest)
     case tabContinueButton
     case didPushed
   }
@@ -35,7 +36,8 @@ public final class OnboardingProfileReactor: Reactor {
     case toggleMBTI(MBTISeletedState, Bool)
     case inputedImage(UIImage)
     case tabImagePicker
-    case tabTag(String)
+    case setInterestsTags([Interest])
+    case tabTag(Interest)
     case isSaveSuccess
     case didPushed
     case isLoading(Bool)
@@ -49,20 +51,19 @@ public final class OnboardingProfileReactor: Reactor {
     var isContinueEnabled: Bool = false
     var isPickingImage: Bool = false
     var isSuccessSave: Bool = false
-    var interestTags: [String] = []
+    var Allinterests: [Interest] = []
     var isLoading: Bool = false
     var errorState: ErrorType? = nil
   }
+  
   public var initialState: State
   
-  init(saveProfileDataUseCase: SaveProfileDataUseCase, getUserDataUseCase: GetUserDataUseCase, profileType: ProfileType) {
+  init(saveProfileDataUseCase: SaveProfileDataUseCase, getInterestsUseCase: GetAllInterestsUseCase, profileType: ProfileType, profileData: ProfileState) {
     self.saveProfileDataUseCase = saveProfileDataUseCase
-    self.getUserDataUseCase = getUserDataUseCase
+    self.getInterestsUseCase = getInterestsUseCase
     let state: State = {
-      var state = State(
-        viewState: profileType,
-        profileData: ProfileState(userData: getUserDataUseCase.execute())
-      )
+      var state = State(viewState: profileType, profileData: profileData)
+      
       switch state.viewState {
       case .gender:
         state.isContinueEnabled = state.profileData.gender != .none
@@ -71,7 +72,6 @@ public final class OnboardingProfileReactor: Reactor {
       case .profileImage:
         state.isContinueEnabled = state.profileData.porfileImage != nil
       case .interest:
-        state.interestTags = ["여행", "드라마/영화", "운동/스포츠", "독서", "맛집/카페", "제테크", "게임", "뷰티", "패션", "웹툰/애니", "직무/커리어", "문화/공연", "음악", "요리", "반려동물", "자기개발" ,"연애/사랑"]
         state.isContinueEnabled = state.profileData.interest.count > 2
       case .mbti:
         state.isContinueEnabled = state.profileData.mbti.didSeletedAll
@@ -87,6 +87,24 @@ public final class OnboardingProfileReactor: Reactor {
 extension OnboardingProfileReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
+    case .viewDidLoad:
+      if currentState.viewState == .interest {
+        return .concat([
+          .just(.isLoading(true)),
+          getInterestsUseCase.execute()
+            .asObservable()
+            .map { interest in
+              let interests = interest.interests.sorted(by: { $0.id < $1.id })
+              return .setInterestsTags(interests)
+            }
+            .catch { error -> Observable<Mutation> in
+              return error.toMutation()
+            },
+          .just(.isLoading(false))
+        ])
+      } else {
+        return .just(.isLoading(false))
+      }
     case .toggleGender(let gender):
       return .just(.inputedGender(gender))
     case .selectBirth(let date):
@@ -113,6 +131,7 @@ extension OnboardingProfileReactor {
             gender: profileData.gender.requestString,
             birth: profileData.birth.toStringYearMonthDay(),
             imageData: profileData.porfileImage?.toProfileRequestData() ?? nil,
+            interests: profileData.interest,
             mbti: profileData.mbti.requestString
           )
           .asObservable()
@@ -143,6 +162,8 @@ extension OnboardingProfileReactor {
     case .toggleMBTI(let mbti, let state):
       newState.profileData.mbti.setMBTI(mbti: mbti, state: state)
       newState.isContinueEnabled = newState.profileData.mbti.didSeletedAll
+    case .setInterestsTags(let tags):
+      newState.Allinterests = tags
     case .tabTag(let tag):
       if let duplicatedIndex = newState.profileData.interest.firstIndex(where: { $0 == tag }) {
         newState.profileData.interest.remove(at: duplicatedIndex)
@@ -157,8 +178,6 @@ extension OnboardingProfileReactor {
       newState.isPickingImage = false
     case .isLoading(let bool):
       newState.isLoading = bool
-      
-      /// 저장 api 통신 혹은 다음뷰로 가는 코드
     case .isSaveSuccess:
       newState.isSuccessSave = true
     case .setError(let error):
@@ -167,12 +186,8 @@ extension OnboardingProfileReactor {
     return newState
   }
   
-  private func getInterestTags() -> [String] {
-    return ["여행", "드라마/영화", "운동/스포츠", "독서", "맛집/카페", "제테크", "게임", "뷰티", "패션", "웹툰/애니", "직무/커리어", "문화/공연", "음악", "요리", "반려동물", "자기개발" ,"연애/사랑"]
-  }
-  
   public enum ErrorType: Error {
-    case duplicatedNickname
+    case refreshTokenExpired
     case unknownError
   }
 }
@@ -184,10 +199,8 @@ extension Error {
         return .just(.setError(.unknownError))
       }
       switch error.errorCase {
-      case .E006AlreadyExistNickname:
-        return .concat([
-          .just(.setError(.duplicatedNickname))
-        ])
+      case .E009RefreshTokenExpired:
+        return .just(.setError(.refreshTokenExpired))
       default:
         return .just(.setError(.unknownError))
       }

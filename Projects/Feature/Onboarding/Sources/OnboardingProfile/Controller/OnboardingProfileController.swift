@@ -11,7 +11,7 @@ import RxSwift
 import SharedDesignSystem
 
 public protocol OnboardingProfileDelegate: AnyObject {
-  func pushToNextView(_ state: ProfileType)
+  func pushToNextView(_ state: OnboardingProfileReactor.State)
   func presentImageGuideModal()
   func switchToMainTab()
 }
@@ -27,6 +27,7 @@ public final class OnboardingProfileController: BaseController {
   public override func viewDidLoad() {
     super.viewDidLoad()
     configureUI()
+    reactor?.action.onNext(.viewDidLoad)
   }
   
   // MARK: - Initialize Method
@@ -63,7 +64,7 @@ public final class OnboardingProfileController: BaseController {
         .bind(with: self) { owner, event in
           switch event {
           case .skipImage:
-            owner.delegate?.pushToNextView(.profileImage)
+            owner.delegate?.pushToNextView(owner.reactor!.currentState)
           }
         }
         .disposed(by: disposeBag)
@@ -107,7 +108,7 @@ extension OnboardingProfileController: ReactorKit.View {
         if result {
           let nextType = reactor.currentState.viewState.nextViewType
           if nextType != .none {
-            owner.delegate?.pushToNextView(reactor.currentState.viewState)
+            owner.delegate?.pushToNextView(reactor.currentState)
             owner.reactor?.action.onNext(.didPushed)
           } else {
             owner.delegate?.switchToMainTab()
@@ -168,7 +169,7 @@ extension OnboardingProfileController: ReactorKit.View {
     
     // Interest Tag
     reactor.state
-      .map(\.interestTags)
+      .map(\.Allinterests)
       .distinctUntilChanged()
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, tags in
@@ -191,6 +192,20 @@ extension OnboardingProfileController: ReactorKit.View {
       .observe(on: MainScheduler.asyncInstance)
       .bind(with: self) { owner, mbti in
         owner.profileView.updateMBTIView(mbti)
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.errorState)
+      .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
+      .bind(with: self) { owner, error in
+        switch error {
+        case .refreshTokenExpired:
+          print("refreshTokenExpired")
+        default:
+          return
+        }
       }
       .disposed(by: disposeBag)
     

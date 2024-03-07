@@ -134,14 +134,14 @@ extension LiveSocketServiceImpl {
     switch error {
     case .refreshTokenExpiration401:
       _ = authAPIService.refreshToken()
-        .subscribe(with: self, onSuccess: { owner, _ in
-          if owner.refreshed {
-            owner.socketStateSubject?.onError(LiveSocketError.accessTokenExpiration)
-          } else {
-            owner.refreshed = true
+        .subscribe(
+          with: self,
+          onSuccess: { owner, _ in
             _ = owner.setupWebSocket()
-          }
-        })
+          },
+          onFailure: { owner, error in
+            owner.socketStateSubject?.onError(LiveSocketError.accessTokenExpiration)
+          })
         .disposed(by: disposeBag)
     default:
       socketStateSubject?.onError(LiveSocketError.error(error))

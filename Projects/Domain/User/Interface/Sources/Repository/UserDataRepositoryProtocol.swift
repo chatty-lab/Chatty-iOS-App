@@ -11,4 +11,5 @@ import RxSwift
 public protocol UserDataRepositoryProtocol {
   func saveUserData(userData: UserDataProtocol)
   func getUserData() -> UserDataProtocol
+  func saveAllInterests(interests: Interests)
 }

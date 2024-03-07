@@ -14,7 +14,8 @@ final class FeatureOnboardingDIContainer: RepositoryDIcontainer, FeatureOnboardi
   func makeSignUseCase() -> DefaultSignUseCase {
     return DefaultSignUseCase(
       userAPIRepository: makeUserAPIRepository(),
-      keychainReposotory: makeKeychainRepository()
+      keychainRepository: makeKeychainRepository(), 
+      getAllInterestsUseCase: makeGetAllInterestsUseCase()
     )
   }
   
@@ -48,6 +49,13 @@ final class FeatureOnboardingDIContainer: RepositoryDIcontainer, FeatureOnboardi
   func makeGetProfileDataUseCase() -> DefaultGetUserDataUseCase {
     return DefaultGetUserDataUseCase(
       userAPIRepository: makeUserAPIRepository(),
+      userDataRepository: makeUserDataRepository()
+    )
+  }
+  
+  func makeGetAllInterestsUseCase() -> DefaultGetAllInterestsUseCase {
+    return DefaultGetAllInterestsUseCase(
+      userAPIRepository: makeUserAPIRepository(), 
       userDataRepository: makeUserDataRepository()
     )
   }

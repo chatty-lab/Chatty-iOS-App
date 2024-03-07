@@ -24,7 +24,8 @@ let project = Project.makeModule(
           .external(name: "SnapKit"),
           .external(name: "Then"),
           .external(name: "Realm"),
-          .external(name: "Starscream")
+          .external(name: "Starscream"),
+          .external(name: "Mantis"),
         ]
       )
     ),

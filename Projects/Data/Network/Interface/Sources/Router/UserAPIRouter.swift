@@ -19,7 +19,7 @@ public enum UserAPIRouter: RouterProtocol, AccessTokenAuthorizable {
   case school(school: String)
   case job(job: String)
   case introduce(introduce: String)
-  case interests(interest: [String])
+  case interests(interests: [Int])
   case address(address: String)
   
   case login(request: UserSignRequestDTO)
@@ -114,8 +114,8 @@ public extension UserAPIRouter  {
     case .introduce(let introduce):
       let param = ["introduce": introduce]
       return .requestParameters(parameters: param, encoding: JSONEncoding.default)
-    case .interests(let interest):
-      let param = ["interest": interest]
+    case .interests(let interests):
+      let param = ["interests": interests]
       return .requestParameters(parameters: param, encoding: JSONEncoding.default)
     case .address(let address):
       let param = ["address": address]

@@ -8,17 +8,18 @@
 import Foundation
 
 public protocol UserDataProtocol {
-  var nickname: String { get }
-  var mobileNumber: String { get }
-  var birth: String { get }
-  var gender: String { get }
-  var mbti: String { get }
-  var address: String? { get }
-  var authority: String { get }
-  var imageUrl: String? { get }
-  var interests: [String]? { get }
-  var job: String? { get }
-  var introduce: String? { get }
-  var school: String? { get }
-  var blueCheck: Bool { get }
+  var nickname: String { get set }
+  var mobileNumber: String { get set }
+  var birth: String? { get set }
+  var gender: String? { get set }
+  var mbti: String? { get set }
+  var address: String? { get set }
+  var authority: String { get set }
+  var imageUrl: String? { get set }
+  var imageData: Data? { get set }
+  var interests: [Interest] { get set }
+  var job: String? { get set }
+  var introduce: String? { get set }
+  var school: String? { get set }
+  var blueCheck: Bool { get set }
 }

@@ -42,7 +42,7 @@ extension OnboardingRootCoordinator: OnboardingRootDelegate {
   }
   
   public func pushToSignIn() {
-    let onboardingPhoneAuthenticationCoordinator = OnboardingPhoneAuthenticationCoordinator(
+    let onboardingPhoneAuthenticationCoordinator = OnboardingNickNameCoordinator(
       navigationController: navigationController,
       dependencyProvider: dependencyProvider
     )
@@ -50,7 +50,17 @@ extension OnboardingRootCoordinator: OnboardingRootDelegate {
     childCoordinators.append(onboardingPhoneAuthenticationCoordinator)
     
     onboardingPhoneAuthenticationCoordinator.finishDelegate = self
-    onboardingPhoneAuthenticationCoordinator.start(type: .signIn)
+    onboardingPhoneAuthenticationCoordinator.start()
+    
+//    let onboardingPhoneAuthenticationCoordinator = OnboardingPhoneAuthenticationCoordinator(
+//      navigationController: navigationController,
+//      dependencyProvider: dependencyProvider
+//    )
+//    
+//    childCoordinators.append(onboardingPhoneAuthenticationCoordinator)
+//    
+//    onboardingPhoneAuthenticationCoordinator.finishDelegate = self
+//    onboardingPhoneAuthenticationCoordinator.start(type: .signIn)
   }
   
   public func pushToSignUp() {

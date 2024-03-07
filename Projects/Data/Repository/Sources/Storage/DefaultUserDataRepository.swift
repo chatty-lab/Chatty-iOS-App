@@ -12,7 +12,7 @@ import DataRepositoryInterface
 import DomainUserInterface
 
 public final class DefaultUserDataRepository: UserDataRepository {
-   
+  
   private let userDataService: any UserDataServiceProtocol
   
   public init(userDataService: any UserDataServiceProtocol) {
@@ -25,5 +25,9 @@ public final class DefaultUserDataRepository: UserDataRepository {
   
   public func getUserData() -> UserDataProtocol {
     return userDataService.getData()
+  }
+  
+  public func saveAllInterests(interests: Interests) {
+    userDataService.saveAllInterests(interests: interests)
   }
 }

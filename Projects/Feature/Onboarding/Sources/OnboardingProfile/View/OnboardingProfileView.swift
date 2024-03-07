@@ -10,6 +10,7 @@ import RxSwift
 import RxCocoa
 import Then
 import SharedDesignSystem
+import DomainUserInterface
 
 public final class OnboardingProfileView: BaseView, Touchable {
   
@@ -78,7 +79,7 @@ extension OnboardingProfileView {
     case setBirth(Date)
     case continueButton
     case tabImagePicker
-    case tabTag(String)
+    case tabTag(Interest)
     case toggleMBTI(MBTISeletedState, Bool)
   }
 
@@ -336,11 +337,11 @@ extension OnboardingProfileView {
     }
   }
   
-  public func updateInterestCollectionView(_ tags: [String]) {
+  public func updateInterestCollectionView(_ tags: [Interest]) {
     interestTagCollectionView?.updateCollectionView(tags)
   }
   
-  public func updateInterestCollectionCell(_ tags: [String]) {
+  public func updateInterestCollectionCell(_ tags: [Interest]) {
     interestTagCollectionView?.updateCell(tags)
   }
   

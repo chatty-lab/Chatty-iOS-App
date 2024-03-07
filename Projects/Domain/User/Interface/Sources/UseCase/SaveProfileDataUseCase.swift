@@ -13,6 +13,7 @@ public protocol SaveProfileDataUseCase {
     gender: String,
     birth: String,
     imageData: Data?,
+    interests: [Interest],
     mbti: String
   ) -> Single<Bool>
 }

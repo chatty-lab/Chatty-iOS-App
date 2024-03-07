@@ -11,6 +11,7 @@ import RxCocoa
 import SnapKit
 import Then
 import SharedDesignSystem
+import DomainUserInterface
 
 class InterestTagCollectionViewCell: UICollectionViewCell, Touchable {
   static let cellId: String = "InserestTagCollectionViewCell"
@@ -60,8 +61,8 @@ class InterestTagCollectionViewCell: UICollectionViewCell, Touchable {
     fatalError("init(coder:) has not been implemented")
   }
   
-  public func setData(tag: String) {
-    tagView.setTag(tag)
+  public func setData(tag: Interest) {
+    tagView.setTag(tag.name)
   }
   
   public func updateCellState() {

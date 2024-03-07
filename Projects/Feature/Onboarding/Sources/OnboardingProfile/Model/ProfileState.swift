@@ -15,26 +15,10 @@ public struct ProfileState {
   var gender: Gender
   var porfileImage: UIImage? = nil
   var birth: Date
-  var interest: [String]
+  var interest: [Interest]
   var mbti: MBTI
   
-  init(userData: UserDataProtocol) {
-    self.nickName = userData.nickname
-    switch userData.gender {
-    case "MALE":
-      self.gender = .male
-    case "FEMALE":
-      self.gender = .female
-    default:
-      self.gender = .none
-    }
-//    self.porfileImage = userData.imageUrl
-    self.birth = Date().toDate(userData.birth)
-    self.interest = []
-    self.mbti = MBTI(mbti: userData.mbti)
-  }
-  
-  init(nickName: String, gender: Gender, porfileImage: UIImage? = nil, birth: Date, interest: [String], mbti: MBTI) {
+  init(nickName: String, gender: Gender, porfileImage: UIImage? = nil, birth: Date, interest: [Interest], mbti: MBTI) {
     self.nickName = nickName
     self.gender = gender
     self.porfileImage = porfileImage

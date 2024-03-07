@@ -13,8 +13,8 @@ import DomainUserInterface
 import DomainCommon
 
 public final class OnboardingNickNameReactor: Reactor {
-  
   private let saveProfileNicknameUseCase: SaveProfileNicknameUseCase
+  private let getUserDataUseCase: GetUserDataUseCase
   
   /// 뷰에서 수행할 수 있는 사용자의 액션
   public enum Action {
@@ -49,8 +49,9 @@ public final class OnboardingNickNameReactor: Reactor {
   
   public var initialState: State = State()
   
-  public init(saveProfileNicknameUseCase: SaveProfileNicknameUseCase) {
+  init(saveProfileNicknameUseCase: SaveProfileNicknameUseCase, getUserDataUseCase: GetUserDataUseCase) {
     self.saveProfileNicknameUseCase = saveProfileNicknameUseCase
+    self.getUserDataUseCase = getUserDataUseCase
   }
 }
 
@@ -64,16 +65,21 @@ extension OnboardingNickNameReactor {
         .just(.nicknameValid(checkedResult))
       ])
     case .tabContinueButton:
-      return .concat([
-        .just(.isLoading(true)),
-        self.saveProfileNicknameUseCase.excute(nickname: self.currentState.nickNameText)
-          .asObservable()
-          .map { _ in .isSavedSuccess }
-          .catch { error -> Observable<Mutation> in
-            return error.toMutation()
-          },
-        .just(.isLoading(false))
-      ])
+      /// 닉네임
+      if currentState.nickNameText == getUserDataUseCase.execute().nickname {
+        return .just(.isSavedSuccess)
+      } else {
+        return .concat([
+          .just(.isLoading(true)),
+          self.saveProfileNicknameUseCase.excute(nickname: self.currentState.nickNameText)
+            .asObservable()
+            .map { _ in .isSavedSuccess }
+            .catch { error -> Observable<Mutation> in
+              return error.toMutation()
+            },
+          .just(.isLoading(false))
+        ])
+      }
     case .didPushed:
       return .just(.didPushed)
     }
