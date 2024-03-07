@@ -18,5 +18,5 @@ public protocol FeatureOnboardingDependencyProvider {
   func makeSaveProfileDataUseCase() -> DefaultSaveProfileDataUseCase
   func makeGetProfileDataUseCase() -> DefaultGetUserDataUseCase
   
-  func makeGetInterestsUseCase() -> DefaultGetInterestsUseCase
+  func makeGetAllInterestsUseCase() -> DefaultGetAllInterestsUseCase
 }

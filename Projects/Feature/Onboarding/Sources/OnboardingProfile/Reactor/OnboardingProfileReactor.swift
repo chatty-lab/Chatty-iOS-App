@@ -14,8 +14,7 @@ import DomainCommon
 
 public final class OnboardingProfileReactor: Reactor {
   private let saveProfileDataUseCase: SaveProfileDataUseCase
-  private let getUserDataUseCase: GetUserDataUseCase
-  private let getInterestsUseCase: GetInterestsUseCase
+  private let getInterestsUseCase: GetAllInterestsUseCase
   
   /// 뷰에서 수행할 수 있는 사용자의 액션
   public enum Action {
@@ -52,21 +51,19 @@ public final class OnboardingProfileReactor: Reactor {
     var isContinueEnabled: Bool = false
     var isPickingImage: Bool = false
     var isSuccessSave: Bool = false
-    var interestTags: [Interest] = []
+    var Allinterests: [Interest] = []
     var isLoading: Bool = false
     var errorState: ErrorType? = nil
   }
+  
   public var initialState: State
   
-  init(saveProfileDataUseCase: SaveProfileDataUseCase, getUserDataUseCase: GetUserDataUseCase, getInterestsUseCase: GetInterestsUseCase, profileType: ProfileType) {
+  init(saveProfileDataUseCase: SaveProfileDataUseCase, getInterestsUseCase: GetAllInterestsUseCase, profileType: ProfileType, profileData: ProfileState) {
     self.saveProfileDataUseCase = saveProfileDataUseCase
     self.getInterestsUseCase = getInterestsUseCase
-    self.getUserDataUseCase = getUserDataUseCase
     let state: State = {
-      var state = State(
-        viewState: profileType,
-        profileData: ProfileState(userData: getUserDataUseCase.execute())
-      )
+      var state = State(viewState: profileType, profileData: profileData)
+      
       switch state.viewState {
       case .gender:
         state.isContinueEnabled = state.profileData.gender != .none
@@ -81,7 +78,6 @@ public final class OnboardingProfileReactor: Reactor {
       case .none:
         print("none")
       }
-      print("state - \(state.profileData.interest)")
       return state
     }()
     self.initialState = state
@@ -98,7 +94,7 @@ extension OnboardingProfileReactor {
           getInterestsUseCase.execute()
             .asObservable()
             .map { interest in
-              let interests = interest.interests.sorted(by: { $0.id < $1.id})
+              let interests = interest.interests.sorted(by: { $0.id < $1.id })
               return .setInterestsTags(interests)
             }
             .catch { error -> Observable<Mutation> in
@@ -167,7 +163,7 @@ extension OnboardingProfileReactor {
       newState.profileData.mbti.setMBTI(mbti: mbti, state: state)
       newState.isContinueEnabled = newState.profileData.mbti.didSeletedAll
     case .setInterestsTags(let tags):
-      newState.interestTags = tags
+      newState.Allinterests = tags
     case .tabTag(let tag):
       if let duplicatedIndex = newState.profileData.interest.firstIndex(where: { $0 == tag }) {
         newState.profileData.interest.remove(at: duplicatedIndex)

@@ -18,13 +18,13 @@ public extension InterestAPIRouter {
   }
   
   var basePath: String {
-    return "/api"
+    return "/v1"
   }
   
   var path: String {
     switch self {
     case .interests:
-      return "/v1/interests"
+      return "/interests"
     }
   }
   

@@ -8,6 +8,6 @@
 import Foundation
 import RxSwift
 
-public protocol GetInterestsUseCase {
+public protocol GetAllInterestsUseCase {
   func execute() -> Single<Interests>
 }
