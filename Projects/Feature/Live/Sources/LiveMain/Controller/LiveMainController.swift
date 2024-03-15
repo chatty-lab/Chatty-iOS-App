@@ -21,8 +21,7 @@ final class LiveMainController: BaseController {
     $0.contentMode = .scaleAspectFit
   }
   private let mainView = LiveMainView()
-  
-  
+    
   // MARK: - Reactor Property
   typealias Reactor = LiveMainReactor
   
@@ -114,7 +113,6 @@ extension LiveMainController {
     backgroundImageView.snp.makeConstraints {
       $0.horizontalEdges.verticalEdges.equalToSuperview()
     }
-    
     
     self.view.addSubview(mainView)
     mainView.snp.makeConstraints {

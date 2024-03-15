@@ -35,7 +35,6 @@ final class MatchModeButton: UIControl, Touchable, Highlightable {
   private let ticketCountLabel: UILabel = UILabel().then {
     $0.font = SystemFont.caption01.font
     $0.textColor = SystemColor.gray600.uiColor
-
   }
   
   // MARK: - Rx Property

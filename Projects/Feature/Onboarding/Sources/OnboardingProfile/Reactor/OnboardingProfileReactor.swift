@@ -127,14 +127,13 @@ extension OnboardingProfileReactor {
         let profileData = self.currentState.profileData
         return .concat([
           .just(.isLoading(true)),
-          saveProfileDataUseCase.excute(
+          saveProfileDataUseCase.executeObs(
             gender: profileData.gender.requestString,
             birth: profileData.birth.toStringYearMonthDay(),
             imageData: profileData.porfileImage?.toProfileRequestData() ?? nil,
             interests: profileData.interest,
             mbti: profileData.mbti.requestString
           )
-          .asObservable()
           .map { _ in .isSaveSuccess }
             .catch { error -> Observable<Mutation> in
               return error.toMutation()

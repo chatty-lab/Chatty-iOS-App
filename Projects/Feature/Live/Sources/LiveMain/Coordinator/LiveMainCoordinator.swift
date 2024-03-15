@@ -32,7 +32,6 @@ public final class LiveMainCoordinator: BaseCoordinator {
     let reactor = LiveMainReactor()
     let liveController = LiveMainController(reactor: reactor)
     liveController.delegate = self
-    childViewControllers.increase()
     navigationController.pushViewController(liveController, animated: false)
   }
 }
