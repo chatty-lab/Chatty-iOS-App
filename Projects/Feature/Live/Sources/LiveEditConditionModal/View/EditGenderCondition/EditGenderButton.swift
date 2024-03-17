@@ -12,6 +12,8 @@ import RxCocoa
 import RxGesture
 import SharedDesignSystem
 
+import DomainLiveInterface
+
 final class EditGenderButton: UIControl, Touchable, Highlightable {
   // MARK: - View Property
   private let imageView: UIImageView = UIImageView().then {

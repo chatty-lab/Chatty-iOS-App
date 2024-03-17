@@ -15,6 +15,8 @@ import DataNetworkInterface
 import DomainLiveInterface
 
 public final class LiveEditConditionModalReactor: Reactor {
+  private let matchConditionUseCase: MatchConditionUseCase
+
   private let connectMatchUserCase: ConnectMatchUseCase
   private var socketResultSubject: PublishSubject<MatchSocketResult> = .init()
   private var isSocketOpenedSubject: PublishSubject<Void> = .init()
@@ -22,6 +24,7 @@ public final class LiveEditConditionModalReactor: Reactor {
   private let disposeBag = DisposeBag()
   
   public enum Action {
+    case tabSaveButton
     // LiveEditGenderConditionModal
     case selectGender(MatchGender)
     
@@ -36,6 +39,7 @@ public final class LiveEditConditionModalReactor: Reactor {
   }
   
   public enum Mutation {
+    case setConditionState
     case setGenderCondition(MatchGender)
     case setAgeCondition(Int)
     
@@ -47,19 +51,27 @@ public final class LiveEditConditionModalReactor: Reactor {
     var matchConditionState: MatchConditionState
     var matchingState: MatchingState = .ready
     var errorState: ErrorType? = nil
+    
+    var matchMode: MatchMode = .nomalMode
+    
+    var isSuccessSaved: Bool = false
   }
   
   public var initialState: State
   
-  init(matchState: MatchConditionState, connectMatchUserCase: ConnectMatchUseCase) {
-    self.connectMatchUserCase = connectMatchUserCase
+  init(matchState: MatchConditionState, matchConditionUseCase: MatchConditionUseCase, connectMatchUserCase: ConnectMatchUseCase) {
     self.initialState = State(matchConditionState: matchState)
+    self.matchConditionUseCase = matchConditionUseCase
+    self.connectMatchUserCase = connectMatchUserCase
   }
 }
 
 extension LiveEditConditionModalReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
+    case .tabSaveButton:
+      _ = matchConditionUseCase.saveCondition(state: currentState.matchConditionState)
+      return .just(.setConditionState)
     case .selectGender(let matchGender):
       return .just(.setGenderCondition(matchGender))
     case .selectAge(let int):
@@ -94,6 +106,7 @@ extension LiveEditConditionModalReactor {
       return .just(.setMathcingState(.successMatching))
     case .getError(let error):
       return error.toMutation()
+    
     }
   }
   
@@ -128,6 +141,8 @@ extension LiveEditConditionModalReactor {
   public func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
+    case .setConditionState:
+      newState.isSuccessSaved = true
     case .setGenderCondition(let matchGender):
       newState.matchConditionState.gender = matchGender
     case .setAgeCondition(let int):

@@ -7,3 +7,6 @@
 
 import Foundation
 
+public enum UserDefaultsCase {
+  case matchConditionState(_ state: Data? = nil)
+}

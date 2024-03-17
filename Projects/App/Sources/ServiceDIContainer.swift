@@ -16,6 +16,7 @@ public protocol ServiceDIContainer {
   func makeLiveSocketService() -> LiveSocketServiceImpl
   func makeProfileAPIService() -> ProfileAPIServiceImpl
   func makeInterestAPIService() -> InterestAPIServiceImpl
+  func makeUserDefaultsService() -> UserDefaultsService
 }
 
 extension ServiceDIContainer {
@@ -57,5 +58,9 @@ extension ServiceDIContainer {
       authAPIService: makeAuthAPIService(),
       keychainService: KeychainService.shared
     )
+  }
+  
+  func makeUserDefaultsService() -> UserDefaultsService {
+    return UserDefaultsService()
   }
 }

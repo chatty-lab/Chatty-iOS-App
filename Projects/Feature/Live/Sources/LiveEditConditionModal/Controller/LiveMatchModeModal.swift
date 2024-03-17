@@ -13,6 +13,8 @@ import Then
 import SharedDesignSystem
 import ReactorKit
 
+import DomainLiveInterface
+
 public protocol LiveMatchModeModalDelegate: AnyObject {
   func dismiss()
   func startMatching(_ matchState: MatchConditionState)

@@ -19,7 +19,8 @@ let SPM = SwiftPackageManagerDependencies(
     .remote(url: "https://github.com/realm/realm-swift.git", requirement: .upToNextMajor(from: "10.46.0")),
     .remote(url: "https://github.com/daltoniam/Starscream.git", requirement: .upToNextMajor(from: "4.0.6")),
     .remote(url: "https://github.com/guoyingtao/Mantis.git", requirement: .upToNextMajor(from: "2.19.0")),
-    .remote(url: "https://github.com/kaishin/Gifu.git", requirement: .upToNextMajor(from: "3.4"))
+    .remote(url: "https://github.com/kaishin/Gifu.git", requirement: .upToNextMajor(from: "3.4.0")),
+    .remote(url: "https://github.com/yhkaplan/DoubleSlider", requirement: .upToNextMajor(from: "1.0.0"))
   ],
   productTypes: [
     "RxGesture": .framework,

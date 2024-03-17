@@ -85,6 +85,14 @@ extension LiveMatchingController: ReactorKit.View {
       .disposed(by: disposeBag)
     
     reactor.state
+      .map(\.matchMode)
+      .distinctUntilChanged()
+      .bind(with: self) { owner, matchMode in
+        owner.mainView.setMatchMode(matchMode)
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
       .map(\.errorState)
       .distinctUntilChanged()
       .bind(with: self) { owner, error in

@@ -16,4 +16,10 @@ final class FeatureLiveDIcontainer: RepositoryDIcontainer, FeatureLiveDependency
       liveSocketRepository: makeLiveSocketRepository()
     )
   }
+  
+  func makeMatchConditionUseCase() -> DefaultMatchConditionUseCase {
+    return DefaultMatchConditionUseCase(
+      userDefaultsRepository: makeUserDefaultsRepository()
+    )
+  }
 }

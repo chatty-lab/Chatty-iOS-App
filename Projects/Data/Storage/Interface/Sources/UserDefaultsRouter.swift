@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainCommon
 
 public enum UserDefaualtsReadType<T: Decodable> {
   case string
@@ -13,37 +14,41 @@ public enum UserDefaualtsReadType<T: Decodable> {
   case dict
 }
 
+///case exampleString(_ string: String = "")
+///case exampleInt(_ int: Int = 0)
+///case exampleDecoderble(_ data: Data? = nil)
+///case exampleDictionary(_ dict: Dictionary<String, Any>? = nil)
 public enum UserDefaultsRouter {
-  case exampleString(_ string: String = "")
-  case exampleInt(_ int: Int = 0)
-  case exampleDecoderble(_ data: Data? = nil)
-  case exampleDictionary(_ dict: Dictionary<String, Any>? = nil)
+  case matchConditionState(_ state: Data)
+
+  public static func toRouterCase(type: UserDefaultsCase) -> Self {
+    switch type {
+    case .matchConditionState(let state):
+      return .matchConditionState(state ?? Data())
+    }
+  }
 }
 
 public extension UserDefaultsRouter {
   var key: String {
     switch self {
-    case .exampleString:
-      return "exampleKey"
-    case .exampleDecoderble:
-      return "exampleKey2"
-    case .exampleDictionary:
-      return "exampleKey3"
-    case .exampleInt:
-      return "exampleKey4"
+    case .matchConditionState:
+      return "matchConditionState"
     }
   }
   
+///case .exampleString(let string):
+///  return string as AnyObject
+///case .exampleDecoderble(let data):
+///  return data as AnyObject
+///case .exampleDictionary(let dict):
+///  return dict as AnyObject
+///case .exampleInt(let int):
+///  return int as AnyObject
   var object: AnyObject {
     switch self {
-    case .exampleString(let string):
-      return string as AnyObject
-    case .exampleDecoderble(let data):
+    case .matchConditionState(let data):
       return data as AnyObject
-    case .exampleDictionary(let dict):
-      return dict as AnyObject
-    case .exampleInt(let int):
-      return int as AnyObject
     }
   }
 }

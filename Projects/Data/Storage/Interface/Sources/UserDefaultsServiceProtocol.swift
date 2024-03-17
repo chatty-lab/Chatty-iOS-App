@@ -10,6 +10,6 @@ import RxSwift
 
 public protocol UserDefaultsServiceProtocol: AnyObject {
   func creat(type: UserDefaultsRouter)
-  func read<T>(type: UserDefaultsRouter) -> Observable<T?>
+  func read<T>(type: UserDefaultsRouter) -> T?
   func delete(type: UserDefaultsRouter)
 }

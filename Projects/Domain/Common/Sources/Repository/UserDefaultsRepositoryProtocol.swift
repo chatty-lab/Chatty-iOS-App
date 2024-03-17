@@ -9,7 +9,7 @@ import Foundation
 import RxSwift
 
 public protocol UserDefaultsRepositoryProtocol {
-  func requestCreate(type: String)
-  func requestRead<T>(type: String) -> Observable<T?>
-  func requestDelete(type: String)
+  func requestCreate(type: UserDefaultsCase)
+  func requestRead<T>(type: UserDefaultsCase) -> T?
+  func requestDelete(type: UserDefaultsCase)
 }

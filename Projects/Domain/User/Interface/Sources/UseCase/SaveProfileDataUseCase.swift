@@ -9,11 +9,11 @@ import Foundation
 import RxSwift
 
 public protocol SaveProfileDataUseCase {
-  func excute(
+  func executeObs(
     gender: String,
     birth: String,
     imageData: Data?,
     interests: [Interest],
     mbti: String
-  ) -> Single<Bool>
+  ) -> Observable<UserDataProtocol>
 }

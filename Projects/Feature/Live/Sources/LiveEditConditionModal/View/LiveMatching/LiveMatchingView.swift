@@ -13,6 +13,8 @@ import SnapKit
 import Then
 import Gifu
 
+import DomainLiveInterface
+
 
 final class LiveMatchingView: BaseView, GIFAnimatable {
  
@@ -134,7 +136,9 @@ extension LiveMatchingView {
   
   func setCondition(_ condition: MatchConditionState) {
     conditionLabel.text = "\(condition.gender.text) ・ \(condition.ageRange.toTilde)세"
-    
-    matchingModeStateView.setData(condition.matchMode)
+  }
+  
+  func setMatchMode(_ matchMode: MatchMode) {
+    matchingModeStateView.setData(matchMode)
   }
 }

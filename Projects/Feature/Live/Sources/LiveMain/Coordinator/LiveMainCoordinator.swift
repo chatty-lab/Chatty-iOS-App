@@ -10,6 +10,7 @@ import Shared
 import SharedDesignSystem
 
 import FeatureLiveInterface
+import DomainLiveInterface
 
 public final class LiveMainCoordinator: BaseCoordinator {
   public override var type: CoordinatorType {
@@ -29,7 +30,9 @@ public final class LiveMainCoordinator: BaseCoordinator {
   }
   
   public override func start() {
-    let reactor = LiveMainReactor()
+    let reactor = LiveMainReactor(
+      matchConditionUseCase: featureLiveDependencyProvider.makeMatchConditionUseCase()
+    )
     let liveController = LiveMainController(reactor: reactor)
     liveController.delegate = self
     navigationController.pushViewController(liveController, animated: false)
@@ -51,7 +54,8 @@ extension LiveMainCoordinator: LiveMainControllerDelegate {
   
   func presentEditGenderConditionModal(_ matchState: MatchConditionState) {
     let liveMatchingReactor = LiveEditConditionModalReactor(
-      matchState: matchState,
+      matchState: matchState, 
+      matchConditionUseCase: self.featureLiveDependencyProvider.makeMatchConditionUseCase(),
       connectMatchUserCase: self.featureLiveDependencyProvider.makeConnectMatchUseCase()
     )
     let editGenderConditionModal = LiveEditGenderConditionModal(reactor: liveMatchingReactor)
@@ -63,6 +67,7 @@ extension LiveMainCoordinator: LiveMainControllerDelegate {
   func presentEditAgeConditionModal(_ matchState: MatchConditionState) {
     let liveMatchingReactor = LiveEditConditionModalReactor(
       matchState: matchState,
+      matchConditionUseCase: self.featureLiveDependencyProvider.makeMatchConditionUseCase(),
       connectMatchUserCase: self.featureLiveDependencyProvider.makeConnectMatchUseCase()
     )
     let editAgeConditionModal = LiveEditAgeConditionModal(reactor: liveMatchingReactor)
@@ -74,6 +79,7 @@ extension LiveMainCoordinator: LiveMainControllerDelegate {
   func presentMatchModeModal(_ matchState: MatchConditionState) {
     let liveMatchingReactor = LiveEditConditionModalReactor(
       matchState: matchState,
+      matchConditionUseCase: self.featureLiveDependencyProvider.makeMatchConditionUseCase(),
       connectMatchUserCase: self.featureLiveDependencyProvider.makeConnectMatchUseCase()
     )
     let matchModeModal = LiveMatchModeModal(reactor: liveMatchingReactor)
@@ -83,26 +89,18 @@ extension LiveMainCoordinator: LiveMainControllerDelegate {
   }
 }
 
-extension LiveMainCoordinator: LiveEditGenderConditionModalDelegate {
+extension LiveMainCoordinator: LiveEditGenderConditionModalDelegate, LiveEditAgeConditionModalDelegate {
   public func dismiss() {
     DispatchQueue.main.async {
       self.navigationController.dismiss(animated: true)
     }
   }
   
-  public func editFinished(_ selectedGender: MatchGender) {
+  public func editFinished() {
     DispatchQueue.main.async {
       if let vc = self.navigationController.viewControllers.last as? LiveMainController {
-        vc.reactor?.action.onNext(.selectGender(selectedGender))
+        vc.reactor?.action.onNext(.viewWillAppear)
       }
-      self.navigationController.dismiss(animated: true)
-    }
-  }
-}
-
-extension LiveMainCoordinator: LiveEditAgeConditionModalDelegate {
-  public func editFinished(_ ageRange: MatchAgeRange) {
-    DispatchQueue.main.async {
       self.navigationController.dismiss(animated: true)
     }
   }
@@ -115,6 +113,7 @@ extension LiveMainCoordinator: LiveMatchModeModalDelegate {
       
       let liveMatchingReactor = LiveEditConditionModalReactor(
         matchState: matchState,
+        matchConditionUseCase: self.featureLiveDependencyProvider.makeMatchConditionUseCase(),
         connectMatchUserCase: self.featureLiveDependencyProvider.makeConnectMatchUseCase()
       )
       let liveMatchingController = LiveMatchingController(reactor: liveMatchingReactor)

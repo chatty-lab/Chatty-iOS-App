@@ -37,6 +37,11 @@ final class LiveMainController: BaseController {
     super.viewDidLoad()
   }
   
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    self.reactor?.action.onNext(.viewWillAppear)
+  }
+  
   // MARK: - Initialize Method
   required init(reactor: Reactor) {
     defer {

@@ -9,6 +9,9 @@ import UIKit
 import RxSwift
 import RxCocoa
 import SharedDesignSystem
+import DoubleSlider
+
+import DomainLiveInterface
 
 final class EditAgeConditionView: BaseView {
   // MARK: - View Property
@@ -20,9 +23,14 @@ final class EditAgeConditionView: BaseView {
     
   private let cancelButton: CancelButton = CancelButton()
   
-  private let ageRangeSlider: EditAgeRangeSliderView = EditAgeRangeSliderView().then {
-    $0.backgroundColor = .green
-  }
+//  private let ageRangeSlider: EditAgeRangeSliderView = EditAgeRangeSliderView().then {
+//    $0.backgroundColor = .green
+//  }
+  
+  private var ageRangeSlider: DoubleSlider = DoubleSlider(frame: .init(x: 30, y: 30, width: 200, height: 50))
+  private var labels: [String] = []
+  
+
   
   private let checkRoundButton: FillButton = FillButton().then {
     typealias Configuration = FillButton.Configuration
@@ -51,6 +59,7 @@ final class EditAgeConditionView: BaseView {
   
   // MARK: - UIConfigurable
   override func configureUI() {
+    print("frame - \(self.frame)")
     setTitleLabel()
     setCancelButton()
     setAgeRangeSlider()
@@ -100,14 +109,32 @@ extension EditAgeConditionView {
   }
   
   private func setAgeRangeSlider() {
-    let viewFrame: CGRect = .appFrame
-    let buttonWidth = (viewFrame.width - 88) / 3
-    let buttonHeight = buttonWidth * 1.27
+    for num in stride(from: 20, to: 40, by: 5) {
+      labels.append("$\(num)")
+    }
+    labels.append("No limit")
+    
+    
+    ageRangeSlider.labelDelegate = self
 
+    ageRangeSlider.valueChangedDelegate = self
+    ageRangeSlider.editingDidEndDelegate = self
+    
+    ageRangeSlider.numberOfSteps = labels.count
+    ageRangeSlider.smoothStepping = true
+
+    ageRangeSlider.labelsAreHidden = false
+    
+    ageRangeSlider.lowerLabelMarginOffset = 8.0
+    ageRangeSlider.upperLabelMarginOffset = 8.0
+
+    ageRangeSlider.lowerValueStepIndex = 0
+    ageRangeSlider.upperValueStepIndex = labels.count - 1
+    
     addSubview(ageRangeSlider)
     ageRangeSlider.snp.makeConstraints {
       $0.top.equalTo(titleLabel.snp.bottom).offset(30)
-      $0.height.equalTo(127)
+      $0.height.equalTo(50)
       $0.horizontalEdges.equalToSuperview().inset(20)
     }
   }
@@ -115,16 +142,40 @@ extension EditAgeConditionView {
   private func setCheckRoundButton() {
     addSubview(checkRoundButton)
     checkRoundButton.snp.makeConstraints {
-      $0.top.equalTo(ageRangeSlider.snp.bottom).offset(30)
+      $0.top.equalTo(ageRangeSlider.snp.bottom).offset(137)
       $0.height.equalTo(52)
       $0.leading.trailing.equalToSuperview().inset(20)
       $0.bottom.equalToSuperview().inset(28)
     }
   }
+  
 }
 
 extension EditAgeConditionView {
   func setGenderState(_ gender: MatchGender) {
     
+  }
+}
+
+extension EditAgeConditionView: DoubleSliderValueChangedDelegate {
+  func valueChanged(for doubleSlider: DoubleSlider) {
+    print("doubleSlider1 - \(doubleSlider.lowerValue)")
+    print("doubleSlider2 - \(doubleSlider.upperValue)")
+
+  }
+}
+
+extension EditAgeConditionView: DoubleSliderLabelDelegate {
+  func labelForStep(at index: Int) -> String? {
+    print("labelForStep - \(index)")
+    return "label"
+  }
+  
+  
+}
+
+extension EditAgeConditionView: DoubleSliderEditingDidEndDelegate {
+  func editingDidEnd(for doubleSlider: DoubleSlider) {
+    print("editingDidEnd")
   }
 }

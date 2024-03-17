@@ -10,6 +10,8 @@ import RxSwift
 import RxCocoa
 import SharedDesignSystem
 
+import DomainLiveInterface
+
 final class EditGenderConditionView: BaseView {
   // MARK: - View Property
   private let titleLabel: UILabel = UILabel().then {

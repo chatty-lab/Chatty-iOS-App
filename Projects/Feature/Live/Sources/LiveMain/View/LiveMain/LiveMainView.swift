@@ -10,6 +10,8 @@ import RxSwift
 import RxCocoa
 import SharedDesignSystem
 
+import DomainLiveInterface
+
 final class LiveMainView: BaseView {
   // MARK: - View Property
   private let membershipButton: MatchMembershipButton = MatchMembershipButton()

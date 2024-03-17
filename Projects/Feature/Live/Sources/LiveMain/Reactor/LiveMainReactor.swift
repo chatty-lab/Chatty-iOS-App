@@ -6,38 +6,45 @@
 //
 
 import ReactorKit
+import DomainLiveInterface
 
 final class LiveMainReactor: Reactor {
+  private let matchConditionUseCase: MatchConditionUseCase
   
   enum Action {
-    case selectGender(MatchGender)
+    case viewWillAppear
   }
   
   enum Mutation {
-    case setGender(MatchGender)
+    case setMatchConditionState(MatchConditionState)
   }
   
   struct State {
     var matchState: MatchConditionState = MatchConditionState()
+    var matchMode: MatchMode = .nomalMode
   }
   
   var initialState: State = State()
   
-}
+  public init(matchConditionUseCase: MatchConditionUseCase) {
+    self.matchConditionUseCase = matchConditionUseCase
+  }
+} 
 
 extension LiveMainReactor {
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .selectGender(let matchGender):
-      return .just(.setGender(matchGender))
+    case .viewWillAppear:
+      let state = matchConditionUseCase.getCondition()
+      return .just(.setMatchConditionState(state))
     }
   }
   
   func reduce(state: State, mutation: Mutation) -> State {
     var newState = state
     switch mutation {
-    case .setGender(let matchGender):
-      newState.matchState.gender = matchGender
+    case .setMatchConditionState(let matchConditionState):
+      newState.matchState.gender = matchConditionState.gender
     }
     return newState
   }

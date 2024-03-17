@@ -13,9 +13,11 @@ import Then
 import SharedDesignSystem
 import ReactorKit
 
+import DomainLiveInterface
+
 public protocol LiveEditAgeConditionModalDelegate: AnyObject {
   func dismiss()
-  func editFinished(_ ageRange: MatchAgeRange)
+  func editFinished()
 }
 
 public final class LiveEditAgeConditionModal: BaseController {
@@ -67,7 +69,7 @@ extension LiveEditAgeConditionModal: ReactorKit.View {
         case .cancel:
           owner.delegate?.dismiss()
         case .checkButton:
-          owner.delegate?.editFinished(reactor.currentState.matchConditionState.ageRange)
+          owner.reactor?.action.onNext(.tabSaveButton)
         case .selectGender(let matchGender):
           owner.reactor?.action.onNext(.selectGender(matchGender))
         }
@@ -79,6 +81,16 @@ extension LiveEditAgeConditionModal: ReactorKit.View {
       .distinctUntilChanged()
       .bind(with: self) { owner, gender in
         
+      }
+      .disposed(by: disposeBag)
+
+    reactor.state
+      .map(\.isSuccessSaved)
+      .distinctUntilChanged()
+      .bind(with: self) { owner, bool in
+        if bool {
+          owner.delegate?.editFinished()
+        }
       }
       .disposed(by: disposeBag)
   }

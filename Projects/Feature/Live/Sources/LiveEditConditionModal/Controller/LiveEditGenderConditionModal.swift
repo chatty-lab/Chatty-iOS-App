@@ -12,9 +12,11 @@ import Then
 import SharedDesignSystem
 import ReactorKit
 
+import DomainLiveInterface
+
 public protocol LiveEditGenderConditionModalDelegate: AnyObject {
   func dismiss()
-  func editFinished(_ selectedGender: MatchGender)
+  func editFinished()
 }
 
 public final class LiveEditGenderConditionModal: BaseController {
@@ -66,7 +68,7 @@ extension LiveEditGenderConditionModal: ReactorKit.View {
         case .cancel:
           owner.delegate?.dismiss()
         case .checkButton:
-          owner.delegate?.editFinished(reactor.currentState.matchConditionState.gender)
+          owner.reactor?.action.onNext(.tabSaveButton)
         case .selectGender(let matchGender):
           owner.reactor?.action.onNext(.selectGender(matchGender))
         }
@@ -78,6 +80,16 @@ extension LiveEditGenderConditionModal: ReactorKit.View {
       .distinctUntilChanged()
       .bind(with: self) { owner, gender in
         owner.mainView.setGenderState(gender)
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.isSuccessSaved)
+      .distinctUntilChanged()
+      .bind(with: self) { owner, bool in
+        if bool {
+          owner.delegate?.editFinished()
+        }
       }
       .disposed(by: disposeBag)
   }
