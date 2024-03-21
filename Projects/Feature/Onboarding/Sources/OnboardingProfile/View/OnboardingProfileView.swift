@@ -288,7 +288,7 @@ extension OnboardingProfileView {
 }
 
 extension OnboardingProfileView {
-  public func updateTitleTextView(_ type: ProfileType, nickName: String = "") {
+  public func updateTitleTextView(_ type: EditProfileType, nickName: String = "") {
     titleTextView.updateTitleLabels(type, nickName: nickName)
     warningLabel.text = type.warningDescription
     

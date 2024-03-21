@@ -12,6 +12,7 @@ public enum CoordinatorType {
   case chat, feed, myChatty
   case live(LiveType)
   case onboarding(OnboardingType)
+  case profile(ProfileType)
 }
 
 public enum LiveType {
@@ -39,4 +40,8 @@ public enum OnboardingProfileType {
 public enum NewDeviceAccessType {
   case accountOwnerCheck
   case accountSecurityQuestion
+}
+
+public enum ProfileType {
+  case main
 }

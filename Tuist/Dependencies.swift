@@ -31,7 +31,8 @@ let SPM = SwiftPackageManagerDependencies(
     "ReactiveMoya": .framework,
     "CombineMoya": .framework,
     "Alamofire": .framework,
-    "Mantis": .framework
+    "Mantis": .framework,
+    "DoubleSlider": .framework
   ],
   baseSettings: .settings(
     configurations: [

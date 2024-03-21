@@ -7,10 +7,10 @@
 
 import Foundation
 
-public enum ProfileType: CaseIterable {
+public enum EditProfileType: CaseIterable {
   case gender, birth, profileImage, interest, mbti, none
   
-  var nextViewType: ProfileType {
+  var nextViewType: EditProfileType {
     switch self {
     case .gender:
       return .birth

@@ -43,7 +43,7 @@ public final class OnboardingProfileCoordinator: BaseCoordinator {
 
 extension OnboardingProfileCoordinator: OnboardingProfileDelegate {
   public func pushToNextView(_ state: OnboardingProfileReactor.State) {
-    let profileType: ProfileType = state.viewState.nextViewType
+    let profileType: EditProfileType = state.viewState.nextViewType
     let profileData: ProfileState = state.profileData
     
     let onboardingProfileReator = OnboardingProfileReactor(
