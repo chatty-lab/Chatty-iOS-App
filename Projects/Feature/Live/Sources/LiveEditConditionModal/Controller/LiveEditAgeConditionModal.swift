@@ -70,17 +70,19 @@ extension LiveEditAgeConditionModal: ReactorKit.View {
           owner.delegate?.dismiss()
         case .checkButton:
           owner.reactor?.action.onNext(.tabSaveButton)
-        case .selectGender(let matchGender):
-          owner.reactor?.action.onNext(.selectGender(matchGender))
+        case .selectAgeRange(let matchAgeRange):
+          owner.reactor?.action.onNext(.selectAge(matchAgeRange))
+        case .resetRange:
+          owner.reactor?.action.onNext(.resetAge)
         }
       }
       .disposed(by: disposeBag)
     
     reactor.state
-      .map(\.matchConditionState.ageRange.startAge)
+      .map(\.matchConditionState.ageRange)
       .distinctUntilChanged()
-      .bind(with: self) { owner, gender in
-        
+      .bind(with: self) { owner, ageRange in
+        owner.mainView.setAgeCondition(ageRange)
       }
       .disposed(by: disposeBag)
 

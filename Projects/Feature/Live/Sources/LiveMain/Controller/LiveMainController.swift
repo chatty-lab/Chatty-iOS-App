@@ -109,6 +109,14 @@ extension LiveMainController: ReactorKit.View {
         owner.mainView.setGender(gender)
       }
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.matchState.ageRange)
+      .distinctUntilChanged()
+      .bind(with: self) { owner, ageRange in
+        owner.mainView.setAgeRange(ageRange)
+      }
+      .disposed(by: disposeBag)
   }
 }
 

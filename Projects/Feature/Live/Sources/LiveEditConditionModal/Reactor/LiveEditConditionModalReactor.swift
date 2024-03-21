@@ -29,7 +29,8 @@ public final class LiveEditConditionModalReactor: Reactor {
     case selectGender(MatchGender)
     
     // LiveEditAgeConditionModal
-    case selectAge(Int)
+    case selectAge(MatchAgeRange)
+    case resetAge
     
     // LiveMatchingController
     case matchingStart
@@ -41,7 +42,7 @@ public final class LiveEditConditionModalReactor: Reactor {
   public enum Mutation {
     case setConditionState
     case setGenderCondition(MatchGender)
-    case setAgeCondition(Int)
+    case setAgeCondition(MatchAgeRange)
     
     case setMathcingState(MatchingState)
     case setError(ErrorType?)
@@ -70,12 +71,16 @@ extension LiveEditConditionModalReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
     case .tabSaveButton:
+      /// Match Condition - User Defaults에 저장 저장
       _ = matchConditionUseCase.saveCondition(state: currentState.matchConditionState)
       return .just(.setConditionState)
     case .selectGender(let matchGender):
       return .just(.setGenderCondition(matchGender))
-    case .selectAge(let int):
-      return .just(.setAgeCondition(int))
+    case .selectAge(let range):
+      return .just(.setAgeCondition(range))
+    case .resetAge:
+      let data = matchConditionUseCase.getCondition().ageRange
+      return .just(.setAgeCondition(data))
       
       /// 1. 소켓 연결 확인 Subject
     case .matchingStart:
@@ -106,7 +111,6 @@ extension LiveEditConditionModalReactor {
       return .just(.setMathcingState(.successMatching))
     case .getError(let error):
       return error.toMutation()
-    
     }
   }
   
@@ -145,8 +149,9 @@ extension LiveEditConditionModalReactor {
       newState.isSuccessSaved = true
     case .setGenderCondition(let matchGender):
       newState.matchConditionState.gender = matchGender
-    case .setAgeCondition(let int):
-      newState.matchConditionState.ageRange.startAge = int
+    case .setAgeCondition(let range):
+      newState.matchConditionState.ageRange.startAge = range.startAge
+      newState.matchConditionState.ageRange.endAge = range.endAge
     case .setMathcingState(let matchingState):
       newState.matchingState = matchingState
     case .setError(let error):

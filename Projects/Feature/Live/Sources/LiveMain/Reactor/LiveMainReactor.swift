@@ -45,6 +45,8 @@ extension LiveMainReactor {
     switch mutation {
     case .setMatchConditionState(let matchConditionState):
       newState.matchState.gender = matchConditionState.gender
+      newState.matchState.ageRange = matchConditionState.ageRange
+      newState.matchState.isProfileAuthenticationConnection = matchConditionState.isProfileAuthenticationConnection
     }
     return newState
   }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct MatchAgeRange: Codable {
+public struct MatchAgeRange: Codable, Equatable {
   public var startAge: Int
   public var endAge: Int
   
@@ -24,5 +24,9 @@ public struct MatchAgeRange: Codable {
   /// "20~30세"
   public var toTilde: String {
     return "\(startAge)~\(endAge)"
+  }
+  
+  public static func == (lhs: Self, rhs: Self) -> Bool {
+    return lhs.startAge == rhs.startAge && lhs.endAge == rhs.endAge
   }
 }
