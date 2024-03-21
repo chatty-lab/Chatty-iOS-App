@@ -32,6 +32,10 @@ public final class LiveEditConditionModalReactor: Reactor {
     case selectAge(MatchAgeRange)
     case resetAge
     
+    // LiveSelectMatchMode
+    case toggleProfileAuthenticationConnection(Bool)
+    case startMatching(MatchMode)
+    
     // LiveMatchingController
     case matchingStart
     case matchSocketOpened
@@ -43,7 +47,9 @@ public final class LiveEditConditionModalReactor: Reactor {
     case setConditionState
     case setGenderCondition(MatchGender)
     case setAgeCondition(MatchAgeRange)
-    
+    case toggleProfileAuthenticationConnection(Bool)
+    case startMatching(MatchMode)
+
     case setMathcingState(MatchingState)
     case setError(ErrorType?)
   }
@@ -56,6 +62,7 @@ public final class LiveEditConditionModalReactor: Reactor {
     var matchMode: MatchMode = .nomalMode
     
     var isSuccessSaved: Bool = false
+    var isMatchStarted: Bool = false
   }
   
   public var initialState: State
@@ -81,6 +88,11 @@ extension LiveEditConditionModalReactor {
     case .resetAge:
       let data = matchConditionUseCase.getCondition().ageRange
       return .just(.setAgeCondition(data))
+    case .toggleProfileAuthenticationConnection(let bool):
+      return .just(.toggleProfileAuthenticationConnection(bool))
+    case .startMatching(let matchMode):
+      _ = matchConditionUseCase.saveCondition(state: currentState.matchConditionState)
+      return .just(.startMatching(matchMode))
       
       /// 1. 소켓 연결 확인 Subject
     case .matchingStart:
@@ -131,7 +143,6 @@ extension LiveEditConditionModalReactor {
     socketResultSubject.subscribe(
         with: self,
         onNext: { reactor, matchRes in
-          print("reactor - matchSocket matchRes - \(matchRes)")
           reactor.action.onNext(.matchingSuccess)
         },
         onError: { reactor, error in
@@ -152,6 +163,12 @@ extension LiveEditConditionModalReactor {
     case .setAgeCondition(let range):
       newState.matchConditionState.ageRange.startAge = range.startAge
       newState.matchConditionState.ageRange.endAge = range.endAge
+    case .toggleProfileAuthenticationConnection(let bool):
+      newState.matchConditionState.isProfileAuthenticationConnection = bool
+    case .startMatching(let matchMode):
+      newState.matchMode = matchMode
+      newState.isMatchStarted = true
+      
     case .setMathcingState(let matchingState):
       newState.matchingState = matchingState
     case .setError(let error):
