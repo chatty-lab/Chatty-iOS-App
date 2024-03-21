@@ -10,6 +10,8 @@ import RxSwift
 import RxCocoa
 import SnapKit
 import Then
+
+import DomainUserInterface
 import SharedDesignSystem
 
 final class ProfileMainView: BaseView, Touchable {
@@ -78,7 +80,7 @@ extension ProfileMainView {
     addSubview(profileBoxView)
     profileBoxView.snp.makeConstraints {
       $0.top.horizontalEdges.equalToSuperview()
-      $0.height.equalTo(243)
+      $0.height.equalTo(295)
     }
   }
   
@@ -97,5 +99,19 @@ extension ProfileMainView {
       $0.top.equalTo(profileCashsItemView.snp.bottom).offset(5)
       $0.horizontalEdges.bottom.equalToSuperview()
     }
+  }
+}
+
+extension ProfileMainView {
+  func setPercent(percent: Double) {
+    self.profileBoxView.setPercent(percent: percent)
+  }
+  
+  func setProfileData(_ data: UserDataProtocol) {
+    self.profileBoxView.setProfileData(data)
+  }
+  
+  func setCashItemCount(candyCount: Int, ticketCount: Int) {
+    self.profileCashsItemView.setCashItemsData(candyCount: candyCount, ticketCount: ticketCount)
   }
 }

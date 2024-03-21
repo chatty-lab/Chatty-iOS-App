@@ -10,10 +10,13 @@ import RxSwift
 import RxCocoa
 import SnapKit
 import Then
+
+import DomainUserInterface
 import SharedDesignSystem
 
 final class ProfileMainBoxView: BaseView, Touchable {
   // MARK: - View Property
+  
   private let percentLabel: UILabel = UILabel().then {
     $0.backgroundColor = SystemColor.primaryNormal.uiColor
     $0.textColor = SystemColor.basicWhite.uiColor
@@ -24,8 +27,9 @@ final class ProfileMainBoxView: BaseView, Touchable {
     $0.clipsToBounds = true
     $0.text = "20% 완성"
   }
+  private let percentProgress = CircularProgressBarView()
   
-  private let profileImageView: UIView = UIView().then {
+  private let profileImageView: UIImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFit
     $0.layer.cornerRadius = 148 / 2
     $0.layer.borderWidth = 2
@@ -71,6 +75,7 @@ final class ProfileMainBoxView: BaseView, Touchable {
   // MARK: - UIConfigurable
   override func configureUI() {
     setupProfileBoxItemView()
+    setupLabels()
   }
   
   // MARK: - UIBindable
@@ -90,14 +95,20 @@ extension ProfileMainBoxView {
 
 extension ProfileMainBoxView {
   private func setupProfileBoxItemView() {
-    addSubview(profileImageView)
-    addSubview(percentLabel)
-    addSubview(editProfileButton)
+    addSubview(percentProgress)
+    percentProgress.addSubview(profileImageView)
+    percentProgress.addSubview(percentLabel)
+    percentProgress.addSubview(editProfileButton)
+    
+    percentProgress.snp.makeConstraints {
+      $0.top.equalToSuperview().inset(65)
+      $0.height.width.equalTo(154)
+      $0.centerX.equalToSuperview()
+    }
     
     profileImageView.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(72)
       $0.height.width.equalTo(148)
-      $0.centerX.equalToSuperview()
+      $0.centerX.centerY.equalToSuperview()
     }
     
     percentLabel.snp.makeConstraints {
@@ -109,8 +120,39 @@ extension ProfileMainBoxView {
     
     editProfileButton.snp.makeConstraints {
       $0.size.equalTo(36)
-      $0.trailing.bottom.equalTo(profileImageView)
+      $0.trailing.bottom.equalToSuperview().inset(1)
     }
     
+  }
+  
+  private func setupLabels() {
+    addSubview(nicknameLabel)
+    addSubview(ageAndGenderLabel)
+    
+    nicknameLabel.snp.makeConstraints {
+      $0.top.equalTo(percentProgress.snp.bottom).offset(15)
+      $0.height.equalTo(24)
+      $0.centerX.equalToSuperview()
+    }
+    
+    ageAndGenderLabel.snp.makeConstraints {
+      $0.top.equalTo(nicknameLabel.snp.bottom).offset(4)
+      $0.height.equalTo(20)
+      $0.centerX.equalToSuperview()
+    }
+  }
+}
+
+extension ProfileMainBoxView {
+  func setPercent(percent: Double) {
+    self.percentLabel.text = "\(Int(percent))% 완성"
+    self.percentProgress.setCirclePercent(percent: percent)
+  }
+  
+  func setProfileData(_ data: UserDataProtocol) {
+//    self.profileImageView.image = image
+//    
+    self.nicknameLabel.text = data.nickname
+    self.ageAndGenderLabel.text = "\(data.birth) ・ \(data.gender)"
   }
 }

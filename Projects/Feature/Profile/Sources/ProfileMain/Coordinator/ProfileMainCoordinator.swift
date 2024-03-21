@@ -34,6 +34,36 @@ public final class ProfileMainCoordinator: BaseCoordinator, ProfileMainCoordinat
 }
 
 extension ProfileMainCoordinator: ProfileMainControllerDelegate {
+  func pushProfileEditView() {
+    print("push Profile Edit")
+
+  }
+  
+  func pushCashItemsView() {
+    print("push possessionItems")
+
+  }
+  
+  func pushMembershipView() {
+    print("push membership")
+
+  }
+  
+  func pushProblemNotice() {
+    print("push problem Notice")
+
+  }
+  
+  func pushProblemFrequentlyQuestion() {
+    print("push problem FrequentlyQuestion")
+
+  }
+  
+  func pushProblemContactService() {
+    print("push problem ContactService")
+
+  }
+  
   
 }
 

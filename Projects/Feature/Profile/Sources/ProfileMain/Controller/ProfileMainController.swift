@@ -14,7 +14,12 @@ import RxCocoa
 import ReactorKit
 
 protocol ProfileMainControllerDelegate: AnyObject {
-  
+  func pushProfileEditView()
+  func pushCashItemsView()
+  func pushMembershipView()
+  func pushProblemNotice()
+  func pushProblemFrequentlyQuestion()
+  func pushProblemContactService()
 }
 
 final class ProfileMainController: BaseController {
@@ -80,7 +85,46 @@ final class ProfileMainController: BaseController {
 
 extension ProfileMainController: ReactorKit.View {
   func bind(reactor: ProfileMainReactor) {
+    mainView.touchEventRelay
+      .bind(with: self) { owner, event in
+        switch event {
+        case .editProfile:
+          owner.delegate?.pushProfileEditView()
+        case .possessionItems:
+          owner.delegate?.pushCashItemsView()
+        case .membership:
+          owner.delegate?.pushMembershipView()
+        case .problemNotice:
+          owner.delegate?.pushProblemNotice()
+        case .problemFrequentlyQuestion:
+          owner.delegate?.pushProblemFrequentlyQuestion()
+        case .problemContactService:
+          owner.delegate?.pushProblemContactService()
+        }
+      }
+      .disposed(by: disposeBag)
     
+    
+    reactor.state
+      .map(\.profileData)
+      .bind(with: self) { owner, profileData in
+        owner.mainView.setPercent(percent: reactor.inputFinishPercent)
+      }
+      .disposed(by: disposeBag)
+
+    reactor.state
+      .map(\.profileData)
+      .bind(with: self) { owner, userData in
+        owner.mainView.setProfileData(userData)
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.candyCount)
+      .bind(with: self) { owner, candyCount in
+        owner.mainView.setCashItemCount(candyCount: candyCount, ticketCount: reactor.currentState.ticketCount)
+      }
+      .disposed(by: disposeBag)
   }
 }
 
