@@ -11,7 +11,7 @@ import RxCocoa
 import SnapKit
 import Then
 
-import DomainUserInterface
+import DomainUser
 import SharedDesignSystem
 
 final class ProfileMainBoxView: BaseView, Touchable {
@@ -59,13 +59,11 @@ final class ProfileMainBoxView: BaseView, Touchable {
     $0.font = SystemFont.title02.font
   }
   
-
   private let ageAndGenderLabel: UILabel = UILabel().then {
     $0.textColor = SystemColor.gray700.uiColor
     $0.font = SystemFont.body01.font
   }
 
-  
   // MARK: - Rx Property
   private let disposeBag = DisposeBag()
   
@@ -149,10 +147,10 @@ extension ProfileMainBoxView {
     self.percentProgress.setCirclePercent(percent: percent)
   }
   
-  func setProfileData(_ data: UserDataProtocol) {
-//    self.profileImageView.image = image
-//    
+  func setProfileData(_ data: UserData) {
+    self.profileImageView.setImageKF(urlString: data.imageUrl ?? "")
+
     self.nicknameLabel.text = data.nickname
-    self.ageAndGenderLabel.text = "\(data.birth) ・ \(data.gender)"
+    self.ageAndGenderLabel.text = "만 \(data.americanAge)세 ・ \(data.genderStringKR)"
   }
 }

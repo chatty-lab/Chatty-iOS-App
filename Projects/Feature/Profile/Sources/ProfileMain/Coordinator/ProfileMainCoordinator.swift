@@ -14,7 +14,7 @@ public final class ProfileMainCoordinator: BaseCoordinator, ProfileMainCoordinat
     .profile(.main)
   }
   
-  let featureProfileDependencyProvider: FeatureProfileDependencyProvider
+  private let featureProfileDependencyProvider: FeatureProfileDependencyProvider
   
   public init(navigationController: CustomNavigationController, featureProfileDependencyProvider: FeatureProfileDependencyProvider) {
     self.featureProfileDependencyProvider = featureProfileDependencyProvider
@@ -26,7 +26,7 @@ public final class ProfileMainCoordinator: BaseCoordinator, ProfileMainCoordinat
   }
   
   public override func start() {
-    let reactor = ProfileMainReactor()
+    let reactor = ProfileMainReactor(getUserDataUseCase: featureProfileDependencyProvider.makeGetProfileDataUseCase())
     let profileMainController = ProfileMainController(reactor: reactor)
     profileMainController.delegate = self
     navigationController.pushViewController(profileMainController, animated: true)
@@ -36,7 +36,12 @@ public final class ProfileMainCoordinator: BaseCoordinator, ProfileMainCoordinat
 extension ProfileMainCoordinator: ProfileMainControllerDelegate {
   func pushProfileEditView() {
     print("push Profile Edit")
-
+    let profileEditMainCoordinator = ProfileEditMainCoordinator(
+      navigationController: navigationController,
+      featureProfileDependencyProvider: featureProfileDependencyProvider
+    )
+    childCoordinators.append(profileEditMainCoordinator)
+    profileEditMainCoordinator.start()
   }
   
   func pushCashItemsView() {

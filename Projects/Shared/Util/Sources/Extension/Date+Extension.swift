@@ -45,4 +45,25 @@ extension Date {
       }
     }
   }
+  
+  /// "yyyy-MM-dd" > 만나이
+  public func toAmericanAge(_ string: String) -> Int {
+    let birthDate = string.split(separator: "-").map{ Int($0)! }
+    let currentDate = Date.now.toStringYearMonthDay().split(separator: "-").map{ Int($0)! }
+    
+    let birthYear = birthDate[0]
+    let birthMonth = birthDate[1]
+    let birthDay = birthDate[2]
+    let currentYear = currentDate[0]
+    let currentMonth = currentDate[1]
+    let currentDay = currentDate[2]
+    print("string - \(string) / currentYear - \(currentYear), birthYear - \(birthYear)")
+    if currentMonth > birthMonth {
+      return currentYear - birthYear
+    } else if currentMonth == birthMonth && currentDay >= birthDay {
+      return currentYear - birthYear
+    } else {
+      return currentYear - birthYear - 1
+    }
+  }
 }

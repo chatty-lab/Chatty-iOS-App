@@ -42,6 +42,11 @@ final class ProfileMainController: BaseController {
     super.viewDidLoad()
   }
   
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    reactor?.action.onNext(.viewWillAppear)
+  }
+  
   // MARK: - Initialize Method
   required init(reactor: Reactor) {
     defer {
@@ -123,6 +128,19 @@ extension ProfileMainController: ReactorKit.View {
       .map(\.candyCount)
       .bind(with: self) { owner, candyCount in
         owner.mainView.setCashItemCount(candyCount: candyCount, ticketCount: reactor.currentState.ticketCount)
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.isLoading)
+      .distinctUntilChanged()
+      .observe(on: MainScheduler.asyncInstance)
+      .bind(with: self) { owner, isLoading in
+        if isLoading {
+          owner.showLoadingIndicactor()
+        } else {
+          owner.hideLoadingIndicator()
+        }
       }
       .disposed(by: disposeBag)
   }

@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol UserDataProtocol {
-  var nickname: String { get set }
+  var nickname: String? { get set }
   var mobileNumber: String { get set }
   var birth: String? { get set }
   var gender: String? { get set }
@@ -16,7 +16,6 @@ public protocol UserDataProtocol {
   var address: String? { get set }
   var authority: String { get set }
   var imageUrl: String? { get set }
-  var imageData: Data? { get set }
   var interests: [Interest] { get set }
   var job: String? { get set }
   var introduce: String? { get set }

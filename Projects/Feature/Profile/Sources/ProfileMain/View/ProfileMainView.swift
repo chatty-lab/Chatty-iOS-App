@@ -11,7 +11,7 @@ import RxCocoa
 import SnapKit
 import Then
 
-import DomainUserInterface
+import DomainUser
 import SharedDesignSystem
 
 final class ProfileMainView: BaseView, Touchable {
@@ -33,7 +33,7 @@ final class ProfileMainView: BaseView, Touchable {
   
   // MARK: - Touchable Property
   var touchEventRelay: PublishRelay<TouchEventType> = .init()
-
+  
   // MARK: - UIConfigurable
   override func configureUI() {
     self.backgroundColor = SystemColor.gray100.uiColor
@@ -44,7 +44,22 @@ final class ProfileMainView: BaseView, Touchable {
   
   // MARK: - UIBindable
   override func bind() {
-  
+    profileBoxView.touchEventRelay
+      .map { _ in TouchEventType.editProfile }
+      .bind(to: touchEventRelay)
+      .disposed(by: disposeBag)
+    
+    profileCashsItemView.touchEventRelay
+      .map { event in
+        switch event {
+        case .possessionItems:
+          return TouchEventType.possessionItems
+        case .membership:
+          return TouchEventType.membership
+        }
+      }
+      .bind(to: touchEventRelay)
+      .disposed(by: disposeBag)
     
     problemServicesView.touchEventRelay
       .map { event in
@@ -107,7 +122,7 @@ extension ProfileMainView {
     self.profileBoxView.setPercent(percent: percent)
   }
   
-  func setProfileData(_ data: UserDataProtocol) {
+  func setProfileData(_ data: UserData) {
     self.profileBoxView.setProfileData(data)
   }
   
