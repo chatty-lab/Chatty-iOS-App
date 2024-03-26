@@ -20,7 +20,8 @@ let project = Project.makeModule(
           .external(name: "RxGesture"),
           .external(name: "SnapKit"),
           .external(name: "Then"),
-          .external(name: "DoubleSlider")
+          .external(name: "DoubleSlider"),
+          .external(name: "Kingfisher")
         ]
       )
     )

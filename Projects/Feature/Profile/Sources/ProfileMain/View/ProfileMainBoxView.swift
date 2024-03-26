@@ -34,6 +34,7 @@ final class ProfileMainBoxView: BaseView, Touchable {
     $0.layer.cornerRadius = 148 / 2
     $0.layer.borderWidth = 2
     $0.layer.borderColor = SystemColor.basicBlack.uiColor.cgColor
+    $0.clipsToBounds = true
     $0.backgroundColor = .lightGray
   }
   
