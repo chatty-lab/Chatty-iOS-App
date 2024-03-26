@@ -46,7 +46,7 @@ public final class OnboardingProfileReactor: Reactor {
   
   /// 화면의 상태를 나타내는 구조체
   public struct State {
-    var viewState: ProfileType
+    var viewState: EditProfileType
     var profileData: ProfileState
     var isContinueEnabled: Bool = false
     var isPickingImage: Bool = false
@@ -58,7 +58,7 @@ public final class OnboardingProfileReactor: Reactor {
   
   public var initialState: State
   
-  init(saveProfileDataUseCase: SaveProfileDataUseCase, getInterestsUseCase: GetAllInterestsUseCase, profileType: ProfileType, profileData: ProfileState) {
+  init(saveProfileDataUseCase: SaveProfileDataUseCase, getInterestsUseCase: GetAllInterestsUseCase, profileType: EditProfileType, profileData: ProfileState) {
     self.saveProfileDataUseCase = saveProfileDataUseCase
     self.getInterestsUseCase = getInterestsUseCase
     let state: State = {
@@ -127,14 +127,13 @@ extension OnboardingProfileReactor {
         let profileData = self.currentState.profileData
         return .concat([
           .just(.isLoading(true)),
-          saveProfileDataUseCase.excute(
+          saveProfileDataUseCase.executeObs(
             gender: profileData.gender.requestString,
             birth: profileData.birth.toStringYearMonthDay(),
             imageData: profileData.porfileImage?.toProfileRequestData() ?? nil,
             interests: profileData.interest,
             mbti: profileData.mbti.requestString
           )
-          .asObservable()
           .map { _ in .isSaveSuccess }
             .catch { error -> Observable<Mutation> in
               return error.toMutation()

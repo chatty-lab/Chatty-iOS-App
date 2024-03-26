@@ -15,7 +15,8 @@ let targets: [Target] = [
       dependencies: [
         .feature(implements: .Onboarding),
         .feature(implements: .Live),
-        .feature(implements: .Chat)
+        .feature(implements: .Chat),
+        .feature(implements: .Profile)
       ]
     )
   )

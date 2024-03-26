@@ -9,6 +9,9 @@ import UIKit
 import RxSwift
 import RxCocoa
 import SharedDesignSystem
+import DoubleSlider
+
+import DomainLiveInterface
 
 final class EditAgeConditionView: BaseView {
   // MARK: - View Property
@@ -19,10 +22,7 @@ final class EditAgeConditionView: BaseView {
   }
     
   private let cancelButton: CancelButton = CancelButton()
-  
-  private let ageRangeSlider: EditAgeRangeSliderView = EditAgeRangeSliderView().then {
-    $0.backgroundColor = .green
-  }
+  private let ageRangeSliderView: EditAgeRangeSliderView = EditAgeRangeSliderView()
   
   private let checkRoundButton: FillButton = FillButton().then {
     typealias Configuration = FillButton.Configuration
@@ -64,6 +64,17 @@ final class EditAgeConditionView: BaseView {
       .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
     
+    ageRangeSliderView.touchEventRelay
+      .map { event in
+        switch event {
+        case .setAgeRange(let matchAgeRange):
+          return TouchEventType.selectAgeRange(matchAgeRange)
+        case .resetRange:
+          return TouchEventType.resetRange
+        }
+      }
+      .bind(to: touchEventRelay)
+      .disposed(by: disposeBag)
     
     checkRoundButton.touchEventRelay
       .map { _ in TouchEventType.checkButton }
@@ -76,7 +87,8 @@ extension EditAgeConditionView: Touchable {
   enum TouchEventType {
     case cancel
     case checkButton
-    case selectGender(MatchGender)
+    case selectAgeRange(MatchAgeRange)
+    case resetRange
   }
 }
 
@@ -100,31 +112,28 @@ extension EditAgeConditionView {
   }
   
   private func setAgeRangeSlider() {
-    let viewFrame: CGRect = .appFrame
-    let buttonWidth = (viewFrame.width - 88) / 3
-    let buttonHeight = buttonWidth * 1.27
-
-    addSubview(ageRangeSlider)
-    ageRangeSlider.snp.makeConstraints {
+    addSubview(ageRangeSliderView)
+    ageRangeSliderView.snp.makeConstraints {
       $0.top.equalTo(titleLabel.snp.bottom).offset(30)
       $0.height.equalTo(127)
-      $0.horizontalEdges.equalToSuperview().inset(20)
+      $0.horizontalEdges.equalToSuperview()
     }
   }
   
   private func setCheckRoundButton() {
     addSubview(checkRoundButton)
     checkRoundButton.snp.makeConstraints {
-      $0.top.equalTo(ageRangeSlider.snp.bottom).offset(30)
+      $0.top.equalTo(ageRangeSliderView.snp.bottom).offset(30)
       $0.height.equalTo(52)
       $0.leading.trailing.equalToSuperview().inset(20)
       $0.bottom.equalToSuperview().inset(28)
     }
   }
+  
 }
 
 extension EditAgeConditionView {
-  func setGenderState(_ gender: MatchGender) {
-    
+  func setAgeCondition(_ ageRange: MatchAgeRange) {
+    ageRangeSliderView.setAgeCondition(ageRange)
   }
 }

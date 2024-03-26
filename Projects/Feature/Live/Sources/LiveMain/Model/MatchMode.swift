@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum MatchMode {
+public enum MatchMode {
   case nomalMode
   case fastMode
 }

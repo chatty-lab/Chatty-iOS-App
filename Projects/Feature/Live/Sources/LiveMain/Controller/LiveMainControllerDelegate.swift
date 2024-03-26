@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainLiveInterface
 
 protocol LiveMainControllerDelegate: AnyObject {
   func pushToMatchingView()

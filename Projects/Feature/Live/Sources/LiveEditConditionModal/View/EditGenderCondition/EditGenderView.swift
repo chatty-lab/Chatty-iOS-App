@@ -12,6 +12,8 @@ import SnapKit
 import Then
 import SharedDesignSystem
 
+import DomainLiveInterface
+
 final class EditGenderView: BaseView, Touchable {
   
   var gender: MatchGender = .all {

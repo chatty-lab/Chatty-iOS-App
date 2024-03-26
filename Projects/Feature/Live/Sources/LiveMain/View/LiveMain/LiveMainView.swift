@@ -10,6 +10,8 @@ import RxSwift
 import RxCocoa
 import SharedDesignSystem
 
+import DomainLiveInterface
+
 final class LiveMainView: BaseView {
   // MARK: - View Property
   private let membershipButton: MatchMembershipButton = MatchMembershipButton()
@@ -100,5 +102,13 @@ extension LiveMainView {
 extension LiveMainView {
   func setGender(_ gender: MatchGender) {
     matchBoxView.setGenderCondition(gender)
+  }
+  
+  func setAgeRange(_ ageRange: MatchAgeRange) {
+    if ageRange.endAge == 40 {
+      matchBoxView.setAgeCondition("\(ageRange.startAge) - \(ageRange.endAge)+")
+    } else {
+      matchBoxView.setAgeCondition("\(ageRange.startAge) - \(ageRange.endAge)")
+    }
   }
 }

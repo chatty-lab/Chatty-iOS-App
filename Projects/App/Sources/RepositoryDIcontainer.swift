@@ -22,6 +22,7 @@ public protocol RepositoryDIcontainer: ServiceDIContainer {
   func makeUserDataRepository() -> DefaultUserDataRepository
   func makeLiveAPIRepository() -> DefaultLiveAPIRepository
   func makeLiveSocketRepository() -> DefaultLiveSocketRepository
+  func makeUserDefaultsRepository() -> DefaultUserDefaultsRepository
 }
 
 extension RepositoryDIcontainer {
@@ -60,6 +61,12 @@ extension RepositoryDIcontainer {
   func makeLiveSocketRepository() -> DefaultLiveSocketRepository {
     return DefaultLiveSocketRepository(
       liveWebSocketService: makeLiveSocketService()
+    )
+  }
+  
+  public func makeUserDefaultsRepository() -> DefaultUserDefaultsRepository {
+    return DefaultUserDefaultsRepository(
+      userDefaultService: makeUserDefaultsService()
     )
   }
 }

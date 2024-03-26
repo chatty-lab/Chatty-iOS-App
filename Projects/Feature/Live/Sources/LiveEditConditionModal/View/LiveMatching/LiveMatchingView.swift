@@ -11,8 +11,13 @@ import RxCocoa
 import SharedDesignSystem
 import SnapKit
 import Then
+import Gifu
 
-final class LiveMatchingView: BaseView {
+import DomainLiveInterface
+
+
+final class LiveMatchingView: BaseView, GIFAnimatable {
+ 
   // MARK: - View Property
   private let cancelButton: CancelButton = CancelButton()
   
@@ -21,16 +26,15 @@ final class LiveMatchingView: BaseView {
     $0.textColor = SystemColor.gray600.uiColor
   }
   
-  private let matchingImageView: UIView = UIView().then {
-    $0.backgroundColor = SystemColor.gray200.uiColor
-    $0.layer.cornerRadius = 204 / 2
-  }
+  private let matchingModeStateView: LiveMatchingStateView = LiveMatchingStateView()
+    
+  private let matchingAnimationView: GIFImageView = GIFImageView()
   
   private let matchingStateLabel: UILabel = UILabel().then {
     $0.font = SystemFont.headLine02.font
     $0.textColor = SystemColor.basicBlack.uiColor
   }
-  
+    
   private let warningLabel: UILabel = UILabel().then {
     $0.text = "대기 중 앱 밖으로 나가면 종료되니 주의해 주세요."
     $0.font = SystemFont.caption02.font
@@ -48,6 +52,7 @@ final class LiveMatchingView: BaseView {
     setupCancelButton()
     setupMatchingViews()
     setupWarningLabel()
+    matchingAnimationView.animate(withGIFNamed: "matchingAnimation")
   }
   
   // MARK: - UIBindable
@@ -57,7 +62,15 @@ final class LiveMatchingView: BaseView {
       .bind(to: touchEventRelay)
       .disposed(by: disposeBag)
   }
+  public lazy var animator: Animator? = {
+    return Animator(withDelegate: self)
+  }()
+  
+  override public func display(_ layer: CALayer) {
+    updateImageIfNeeded()
+  }
 }
+
 
 extension LiveMatchingView: Touchable {
   enum TouchEventType {
@@ -76,12 +89,19 @@ extension LiveMatchingView {
   }
   
   private func setupMatchingViews() {
-    addSubview(matchingImageView)
+    addSubview(matchingModeStateView)
+    addSubview(matchingAnimationView)
     addSubview(matchingStateLabel)
     addSubview(conditionLabel)
     
-    matchingImageView.snp.makeConstraints {
+    matchingModeStateView.snp.makeConstraints {
       $0.height.width.equalTo(204)
+      $0.centerX.equalToSuperview()
+      $0.centerY.equalToSuperview().offset(-4)
+    }
+    
+    matchingAnimationView.snp.makeConstraints {
+      $0.height.width.equalTo(204 + 110)
       $0.centerX.equalToSuperview()
       $0.centerY.equalToSuperview().offset(-4)
     }
@@ -89,7 +109,7 @@ extension LiveMatchingView {
     matchingStateLabel.snp.makeConstraints {
       $0.height.equalTo(29)
       $0.centerX.equalToSuperview()
-      $0.bottom.equalTo(matchingImageView.snp.top).offset(-69)
+      $0.bottom.equalTo(matchingAnimationView.snp.top).offset(-69)
     }
     
     conditionLabel.snp.makeConstraints {
@@ -116,5 +136,9 @@ extension LiveMatchingView {
   
   func setCondition(_ condition: MatchConditionState) {
     conditionLabel.text = "\(condition.gender.text) ・ \(condition.ageRange.toTilde)세"
+  }
+  
+  func setMatchMode(_ matchMode: MatchMode) {
+    matchingModeStateView.setData(matchMode)
   }
 }

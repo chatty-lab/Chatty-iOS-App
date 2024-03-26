@@ -21,8 +21,7 @@ final class LiveMainController: BaseController {
     $0.contentMode = .scaleAspectFit
   }
   private let mainView = LiveMainView()
-  
-  
+    
   // MARK: - Reactor Property
   typealias Reactor = LiveMainReactor
   
@@ -36,6 +35,11 @@ final class LiveMainController: BaseController {
   // MARK: - Life Method
   override func viewDidLoad() {
     super.viewDidLoad()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    self.reactor?.action.onNext(.viewWillAppear)
   }
   
   // MARK: - Initialize Method
@@ -105,6 +109,14 @@ extension LiveMainController: ReactorKit.View {
         owner.mainView.setGender(gender)
       }
       .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.matchState.ageRange)
+      .distinctUntilChanged()
+      .bind(with: self) { owner, ageRange in
+        owner.mainView.setAgeRange(ageRange)
+      }
+      .disposed(by: disposeBag)
   }
 }
 
@@ -114,7 +126,6 @@ extension LiveMainController {
     backgroundImageView.snp.makeConstraints {
       $0.horizontalEdges.verticalEdges.equalToSuperview()
     }
-    
     
     self.view.addSubview(mainView)
     mainView.snp.makeConstraints {

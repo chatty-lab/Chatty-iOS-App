@@ -13,6 +13,8 @@ import Then
 import SharedDesignSystem
 import ReactorKit
 
+import DomainLiveInterface
+
 public protocol LiveMatchModeModalDelegate: AnyObject {
   func dismiss()
   func startMatching(_ matchState: MatchConditionState)
@@ -65,26 +67,25 @@ extension LiveMatchModeModal: ReactorKit.View {
       .bind(with: self) { owner, event in
         switch event {
         case .cancel:
-          print("modeModal - cancel")
+          owner.delegate?.dismiss()
         case .toggle(let bool):
-          print("modeModal - toggle \(bool)")
+          owner.reactor?.action.onNext(.toggleProfileAuthenticationConnection(bool))
         case .matchMode(let matchMode):
-          owner.delegate?.startMatching(reactor.currentState.matchConditionState)
-          print("modeModal - matchMode \(matchMode)")
+          owner.reactor?.action.onNext(.startMatching(matchMode))
         }
       }
       .disposed(by: disposeBag)
-
+    
     reactor.state
-      .map(\.matchConditionState.ageRange.startAge)
+      .map(\.isMatchStarted)
       .distinctUntilChanged()
-      .bind(with: self) { owner, gender in
-        
+      .bind(with: self) { owner, bool in
+        if bool {
+          owner.delegate?.startMatching(reactor.currentState.matchConditionState)
+        }
       }
       .disposed(by: disposeBag)
   }
-  
-  
 }
 
 extension LiveMatchModeModal {

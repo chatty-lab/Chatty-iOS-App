@@ -12,6 +12,8 @@ import RxCocoa
 import SnapKit
 import Then
 
+import DomainLiveInterface
+
 final class MatchBoxView: BaseView {
   private let titleLabel: UILabel = UILabel().then {
     $0.text = "어떤 친구와 대화할까요?"
