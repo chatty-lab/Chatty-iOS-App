@@ -9,30 +9,36 @@ import UIKit
 import Shared
 import SharedDesignSystem
 import FeatureLive
+import FeatureChat
+import FeatureChatInterface
 
-final class MainTabBarCoordinator: Coordinator {
-  var childViewControllers: ReferenceCounter = .init()
-  
-  weak var finishDelegate: CoordinatorFinishDelegate?
-  var navigationController: CustomNavigationController
-  var childCoordinators: [Coordinator] = []
-  var type: CoordinatorType = .tab
-  
-  var tabBarController: UITabBarController
-  
-  init(_ navigationController: CustomNavigationController) {
-    self.navigationController = navigationController
-    self.tabBarController = UITabBarController()
+final class MainTabBarCoordinator: BaseCoordinator {
+  override var type: CoordinatorType {
+   return .tab
   }
   
-  func start() {
+  private let featureChatDependencyProvider: FeatureChatDependecyProvider
+  
+  public init(_ navigationController: CustomNavigationController, featureChatDependencyProvider: FeatureChatDependecyProvider) {
+    self.featureChatDependencyProvider = featureChatDependencyProvider
+    super.init(navigationController: navigationController)
+  }
+  
+  override func start() {
     let liveTabCoordinator = LiveCoordinator(CustomNavigationController())
     liveTabCoordinator.start()
     
+    let chatTabCoordinator = ChatCoordinator(navigationController: CustomNavigationController(), dependencyProvider: featureChatDependencyProvider)
+    chatTabCoordinator.start()
+    
     let tabBarController = MainTabBarController(tabNavigationControllers: [
-      .live: liveTabCoordinator.navigationController
+      .live: liveTabCoordinator.navigationController,
+      .chat: chatTabCoordinator.navigationController
     ])
     
-    navigationController.pushViewController(tabBarController, animated: false)
+    childCoordinators.append(liveTabCoordinator)
+    childCoordinators.append(chatTabCoordinator)
+    
+    navigationController.setViewControllers([tabBarController], animated: false)
   }
 }

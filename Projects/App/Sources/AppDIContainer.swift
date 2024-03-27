@@ -1,5 +1,5 @@
 //
-//  FeatureDIContainer.swift
+//  AppDIContainer.swift
 //  Chatty
 //
 //  Created by HUNHIE LEE on 2/2/24.
@@ -8,6 +8,7 @@
 import Foundation
 import Feature
 import FeatureOnboardingInterface
+import FeatureChatInterface
 import DomainCommon
 import DomainUser
 import DomainAuth
@@ -15,13 +16,17 @@ import DataRepository
 import DataNetwork
 import DataStorage
 
-final class FeatureDIContainer: RepositoryDIcontainer, FeatureDependencyProvider {
-  static let shared: FeatureDIContainer = FeatureDIContainer()
+final class AppDIContainer: RepositoryDIcontainer, AppDependencyProvider {
+  static let shared: AppDIContainer = AppDIContainer()
   
   private init() { }
   
   func makeFeatureOnboardingDependencyProvider() -> FeatureOnboardingDependencyProvider {
     return FeatureOnboardingDIContainer()
+  }
+  
+  func makeFeatureChatDependencyProvider() -> FeatureChatDependecyProvider {
+    return FeatureChatDIContainer()
   }
   
   func makeDefaultSaveDeviceTokenUseCase() -> DefaultSaveDeviceTokenUseCase {
@@ -34,5 +39,17 @@ final class FeatureDIContainer: RepositoryDIcontainer, FeatureDependencyProvider
   
   func makeDefaultGetDeviceIdUseCase() -> DefaultGetDeviceIdUseCase {
     return DefaultGetDeviceIdUseCase(keychainRepository: makeKeychainRepository())
+  }
+  
+  func makeValiateAccessTokenUseCase() -> DomainAuth.DefaultValidateAccessTokenUseCase {
+    return DefaultValidateAccessTokenUseCase(authAPIRepository: makeAuthAPIRepository())
+  }
+  
+  func makeGetAccessTokenUseCase() -> DomainAuth.DefaultGetAccessTokenUseCase {
+    return DefaultGetAccessTokenUseCase(keychainRepository: makeKeychainRepository())
+  }
+  
+  func makeGetProfileUseCase() -> DomainUser.DefaultGetUserDataUseCase {
+    return DefaultGetUserDataUseCase(userAPIRepository: makeUserAPIRepository(), userDataRepository: makeUserDataRepository())
   }
 }

@@ -17,35 +17,32 @@ public struct DefaultChatSTOMPRepository: ChatSTOMPRepositoryProtocol {
     self.chatSTOMPService = chatSTOMPService
   }
   
-  public func connectToChatSTOMPServer() -> Observable<Void> {
-    return chatSTOMPService.request(endPoint: .connectToChatServer)
+  public func connectSocket() -> PublishSubject<SocketState> {
+    return chatSTOMPService.connectSocket()
   }
   
-  public func disconnectToChatSTOMPServer() -> Observable<Void> {
-    return chatSTOMPService.request(endPoint: .disconnectFromChatServer)
+  public func send(_ router: ChatSTOMPRouter) {
+    return chatSTOMPService.send(router)
   }
   
-  public func sendMessage(message: String, toRoomId roomId: String) -> Observable<Void> {
-    return chatSTOMPService.request(endPoint: .sendMessage(message: message, roomId: roomId))
+  public func socketObserver() -> PublishSubject<ChatMessageProtocol> {
+    return chatSTOMPService.socketObserver()
   }
   
-  public func subscribeToChatRoom(roomId: String) -> Observable<Void> {
-    return chatSTOMPService.request(endPoint: .subscribeToChatRoom(roomId: roomId))
+  public func connectSTOMP() {
+    chatSTOMPService.send(.connectToChatServer)
   }
   
-  public func unsubscribeFromChatRoom(roomId: String) -> Observable<Void> {
-    return chatSTOMPService.request(endPoint: .unsubsribeFromChatRoom(roomId: roomId))
+  public func subscribeChatRoom(roomId: String) {
+    chatSTOMPService.subscribe(to: roomId)
   }
   
-  public func observeMessages() -> Observable<String> {
-    return chatSTOMPService.messageStream
+  public func unsubscribeChatRoom(roomId: String) {
+    chatSTOMPService.send(.unsubsribeFromChatRoom(roomId: roomId))
   }
   
-  public func observeConnectionChanges() -> Observable<Bool> {
-    return chatSTOMPService.connectionStream
+  public func sendMessage(roomdId: Int, _ type: DomainChatInterface.messageRequestType) {
+    chatSTOMPService.send(.sendMessage(.init(roomId: roomdId, senderId: 6, receiverId: 13, content: type.textValue)))
   }
   
-  public func observeErrors() -> Observable<Error> {
-    return chatSTOMPService.errorStream
-  }
 }

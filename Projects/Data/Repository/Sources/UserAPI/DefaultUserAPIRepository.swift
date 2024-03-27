@@ -121,7 +121,7 @@ public final class DefaultUserAPIRepository: UserAPIRepository {
   }
   
   public func myProfile() -> Single<UserDataProtocol> {
-    return userAPIService.request(endPoint: .myProfile, responseDTO: UserDataReponseDTO.self)
+    return userAPIService.request(endPoint: .profile, responseDTO: UserDataReponseDTO.self)
       .map { $0.toDomain() }
   }
   

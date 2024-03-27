@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import DataNetworkInterface
+import DomainCommon
 
 public extension APIServiceProtocol {
   func request<Model: Decodable>(endPoint: Router, responseDTO: Model.Type) -> Single<Model> {

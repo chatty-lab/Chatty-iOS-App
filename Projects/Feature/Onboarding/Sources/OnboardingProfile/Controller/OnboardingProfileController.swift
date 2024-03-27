@@ -110,6 +110,7 @@ extension OnboardingProfileController: ReactorKit.View {
             owner.delegate?.pushToNextView(reactor.currentState.viewState)
             owner.reactor?.action.onNext(.didPushed)
           } else {
+            print("뭔데 쉬벌")
             owner.delegate?.switchToMainTab()
           }
         }

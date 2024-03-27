@@ -20,7 +20,7 @@ import RxGesture
 /// - `bind`: RxSwift 이벤트 스트림을 구독하거나 사용자 상호작용에 따라 이벤트를 방출하는 로직을 실행해요.
 ///   `BaseController`의 서브 클래스는 `bind` 메서드를 재정의하여 구체적인 바인딩 로직을 구현할 수 있어요.
 ///
-open class BaseController: UIViewController, UIConfigurable, Bindable {
+open class BaseController: UIViewController, UIConfigurable, Bindable, CustomAlertDelegate {
   private lazy var indicatorView = IndicatorView()
   
   public var disposeBag = DisposeBag()
@@ -77,14 +77,32 @@ open class BaseController: UIViewController, UIConfigurable, Bindable {
   }
   
   // MARK: - Error
-  open func showErrorAlert(title: String? = nil, subTitle: String? = nil) {
+  open func showErrorAlert(
+    title: String? = nil,
+    subTitle: String? = nil,
+    positiveLabel: String? = "확인",
+    negativeLabel: String? = nil
+  ) {
     let alertView = CustomAlertView().then {
       $0.title = title
       $0.subTitle = subTitle
     }
-    alertView.addButton("확인", for: .positive)
-    let alertController = CustomAlertController(alertView: alertView)
+    if let positiveLabel {
+      alertView.addButton(positiveLabel, for: .positive)
+    }
+    if let negativeLabel {
+      alertView.addButton(negativeLabel, for: .negative)
+    }
+    let alertController = CustomAlertController(alertView: alertView, delegate: self)
     customNavigationController?.present(alertController, animated: false)
+  }
+  
+  open func destructiveAction() {
+    
+  }
+  
+  open func cancelAction() {
+    
   }
   
   open func showLoadingIndicactor() {

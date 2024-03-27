@@ -7,11 +7,17 @@
 
 import Foundation
 
+public enum SocketState {
+  case socketConnected
+  case stompConnected
+}
+
 public protocol STOMPRouter {
   var command: STOMPCommand { get }
+  var id: String { get }
   var destination: String { get }
   var headers: [String: String] { get }
-  var body: String? { get }
+  var body: Encodable? { get }
 }
 
 public enum STOMPCommand: String {

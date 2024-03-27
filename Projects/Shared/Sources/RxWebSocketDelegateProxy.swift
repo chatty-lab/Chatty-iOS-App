@@ -103,7 +103,6 @@ public extension Reactive where Base: WebSocket {
   }
   
   func write(string: String) -> Observable<Void> {
-    print("소켓에 메시지 쓴다")
     return Observable.create { sub in
       self.base.write(string: string) {
         sub.onNext(())

@@ -73,7 +73,6 @@ public final class CustomNavigationController: UINavigationController, Bindable 
   // MARK: - UIConfigurable
   public func configureUI() {
     disableDefaultNavigationBar()
-    setupCustomNavigationBar()
   }
   
   // MARK: - Navigation Delegate
@@ -143,23 +142,27 @@ extension CustomNavigationController {
   }
   
   private func setupCustomNavigationBar() {
-    view.addSubview(customNavigationBarBackgroundView)
-    view.addSubview(customNavigationBar)
-    
-    customNavigationBarBackgroundView.snp.makeConstraints {
-      $0.top.equalToSuperview()
-      $0.horizontalEdges.equalToSuperview()
-      $0.height.equalTo(50)
-    }
-    
-    customNavigationBar.snp.makeConstraints {
-      $0.top.equalTo(customNavigationBarBackgroundView.snp.bottom)
-      $0.leading.trailing.equalToSuperview()
-      $0.height.equalTo(52)
+    if customNavigationBarBackgroundView.superview == nil,
+       customNavigationBar.superview == nil {
+      view.addSubview(customNavigationBarBackgroundView)
+      view.addSubview(customNavigationBar)
+      
+      customNavigationBarBackgroundView.snp.makeConstraints {
+        $0.top.equalToSuperview()
+        $0.horizontalEdges.equalToSuperview()
+        $0.height.equalTo(50)
+      }
+      
+      customNavigationBar.snp.makeConstraints {
+        $0.top.equalTo(customNavigationBarBackgroundView.snp.bottom)
+        $0.leading.trailing.equalToSuperview()
+        $0.height.equalTo(52)
+      }
     }
   }
   
   private func setCustomNavigationBar(_ config: any CustomNavigationBarConfigurable) {
+    setupCustomNavigationBar()
     customNavigationBar.setNavigationBar(with: config)
     customNavigationBarBackgroundView.backgroundColor = config.backgroundColor
     customNavigationBarBackgroundView.alpha = config.backgroundAlpha

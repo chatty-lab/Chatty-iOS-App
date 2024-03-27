@@ -10,7 +10,7 @@ import RxSwift
 import ReactorKit
 import DataNetworkInterface
 import DomainUserInterface
-
+import DomainCommon
 
 public final class OnboardingProfileReactor: Reactor {
   private let saveProfileDataUseCase: SaveProfileDataUseCase

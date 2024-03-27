@@ -16,13 +16,11 @@ public class ChatMessageCell: UICollectionViewCell {
   private lazy var nicknameLabel: UILabel = UILabel().then {
     $0.font = SystemFont.caption02.font
     $0.textColor = SystemColor.basicBlack.uiColor
-    $0.text = "호이유이"
   }
   
   public let timeLabel: UILabel = UILabel().then {
     $0.font = SystemFont.caption03.font
     $0.textColor = SystemColor.gray600.uiColor
-    $0.text = "오후 9:30"
   }
   
   public let messageView: UIView = UIView()
@@ -32,6 +30,8 @@ public class ChatMessageCell: UICollectionViewCell {
   public func configureCell(with message: ChatMessageViewData) {
     self.message = message
     setupMessageView(with: message)
+  
+    timeLabel.text = message.sendTime?.toCustomString(format: .ahhmm)
   }
   
   public override func prepareForReuse() {
@@ -57,9 +57,10 @@ public class ChatMessageCell: UICollectionViewCell {
         $0.trailing.equalTo(messageView.snp.leading).offset(-8)
         $0.bottom.equalTo(messageView)
       }
-    case .participant:
+    case .participant(let name):
       setupProfileImageView()
       setupNicknameLabel()
+      nicknameLabel.text = name
       
       messageView.snp.makeConstraints {
         $0.leading.equalTo(profileImageView.snp.trailing).offset(10)

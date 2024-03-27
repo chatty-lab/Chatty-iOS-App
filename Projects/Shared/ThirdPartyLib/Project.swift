@@ -18,16 +18,18 @@ let project = Project.makeModule(
         dependencies: [
           .external(name: "ReactorKit"),
           .external(name: "RxSwift"),
+          .external(name: "RxBlocking"),
           .external(name: "RxGesture"),
           .external(name: "RxMoya"),
           .external(name: "Moya"),
           .external(name: "SnapKit"),
           .external(name: "Then"),
           .external(name: "Realm"),
-          .external(name: "Starscream")
+          .external(name: "Starscream"),
+          .external(name: "SwiftStomp"),
+          .external(name: "Kingfisher")
         ]
       )
     ),
-    
   ]
 )

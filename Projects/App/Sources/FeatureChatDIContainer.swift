@@ -11,22 +11,28 @@ import DomainChat
 import DataRepository
 import DataNetwork
 
-final class FeatureChatDIContainer: FeatureChatDependecyProvider {
+final class FeatureChatDIContainer: RepositoryDIcontainer, FeatureChatDependecyProvider {
+  func makeGetChatMessagesUseCase() -> DomainChat.DefaultGetChatMessgesUseCase {
+    return DefaultGetChatMessgesUseCase(chatAPIRepository: makeChatAPIRepository())
+  }
+  
+  func makeChatSendMessageUseCase() -> DomainChat.DefaultChatSendMessageUseCase {
+    return DefaultChatSendMessageUseCase(chatSTOMPRepository: makeChatSTOMPRepository())
+  }
+  
+  func makeGetChatMessageStreamUseCase() -> DomainChat.DefaultGetChatMessageStreamUseCase {
+    return DefaultGetChatMessageStreamUseCase(chatSTOMPRepository: makeChatSTOMPRepository())
+  }
+  
+  func makeChatRoomSubscribeUseCase() -> DomainChat.DefaultChatRoomSubscribeUseCase {
+    return DefaultChatRoomSubscribeUseCase(chatSTOMPRepository: makeChatSTOMPRepository())
+  }
+  
   func makeGetChatRoomListUseCase() -> DomainChat.DefaultGetChatRoomListUseCase {
     return DefaultGetChatRoomListUseCase(chatAPIRepository: makeChatAPIRepository())
   }
   
   func makeChatServerConnectUseCase() -> DefaultChatSTOMPConnectUseCase {
     return DefaultChatSTOMPConnectUseCase(chatSTOMPRepository: makeChatSTOMPRepository())
-  }
-}
-
-extension FeatureChatDIContainer {
-  func makeChatSTOMPRepository() -> DefaultChatSTOMPRepository {
-    return DefaultChatSTOMPRepository(chatSTOMPService: ChatSTOMPServiceImpl())
-  }
-  
-  func makeChatAPIRepository() -> DefaultChatAPIRepository {
-    return DefaultChatAPIRepository(chatAPIService: ChatAPIServiceImpl())
   }
 }

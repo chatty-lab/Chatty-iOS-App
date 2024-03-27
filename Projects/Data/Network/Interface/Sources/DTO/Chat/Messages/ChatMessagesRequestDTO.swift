@@ -9,7 +9,7 @@ import Foundation
 
 public struct ChatMessagesRequestDTO: Encodable {
   let roomId: Int
-  
+
   public init(roomId: Int) {
     self.roomId = roomId
   }

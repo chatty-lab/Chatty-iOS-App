@@ -10,6 +10,17 @@ import Foundation
 extension Date {
   private static let dateFormatter = DateFormatter()
   
+  public enum DateFormatType {
+    case ahhmm
+    
+    var formatString: String {
+      switch self {
+      case .ahhmm:
+        return "a hh:mm"
+      }
+    }
+  }
+  
   /// "yyyy-MM-dd" -> Date
   public func toDate(_ yearMonthDay: String) -> Date {
     let dateFormatter = Self.dateFormatter
@@ -26,20 +37,10 @@ extension Date {
     dateFormatter.dateFormat = "yyyy-MM-dd"
     let convertedDate = dateFormatter.string(from: self)
     return convertedDate
-public enum DateFormatType {
-  case ahhmm
-  
-  var formatString: String {
-    switch self {
-    case .ahhmm:
-      return "a hh:mm"
-    }
   }
-}
-
-public extension Date {
-  func toCustomString(format: DateFormatType) -> String {
-    let formatter = DateFormatter()
+  
+  public func toCustomString(format: DateFormatType) -> String {
+    let formatter = Self.dateFormatter
     formatter.locale = Locale(identifier: "ko_KR")
     formatter.dateFormat = format.formatString
     return formatter.string(from: self)

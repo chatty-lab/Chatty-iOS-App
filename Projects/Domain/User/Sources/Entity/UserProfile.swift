@@ -15,7 +15,7 @@ public struct UserProfile: UserProfileProtocol {
   public let gender: String
   public let mbti: String
   public let interests: [String]
-  public let authority: String
+  public let authority: Authority
   public let address: String?
   public let imageUrl: String?
   public let job: String?
@@ -24,7 +24,7 @@ public struct UserProfile: UserProfileProtocol {
   public let blueCheck: Bool
   public let unlock: Bool
   
-  public init(nickname: String, mobileNumber: String, birth: String, gender: String, mbti: String, interests: [String], authority: String, address: String?, imageUrl: String?, job: String?, introduce: String?, school: String?, blueCheck: Bool, unlock: Bool) {
+  public init(nickname: String, mobileNumber: String, birth: String, gender: String, mbti: String, interests: [String], authority: Authority, address: String?, imageUrl: String?, job: String?, introduce: String?, school: String?, blueCheck: Bool, unlock: Bool) {
     self.nickname = nickname
     self.mobileNumber = mobileNumber
     self.birth = birth

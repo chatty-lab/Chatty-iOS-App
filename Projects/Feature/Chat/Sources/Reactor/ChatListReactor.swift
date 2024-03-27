@@ -14,60 +14,95 @@ import DomainChat
 public final class ChatListReactor: Reactor {
   private let chatServerConnectUseCase: DefaultChatSTOMPConnectUseCase
   private let getChatRoomListUseCase: DefaultGetChatRoomListUseCase
+  private let chatRoomSubscribeUseCase: DefaultChatRoomSubscribeUseCase
+  private let getChatMessageStreamUseCase: DefaultGetChatMessageStreamUseCase
+  
+  private let disposeBag = DisposeBag()
   
   public enum Action {
-    case connectChatServer
+    case connectSocketServer
     case loadChatRooms
+    case observeChatMessage
+    case subscribeChatRoom
   }
   
   public enum Mutation {
     case setSocketState(SocketState)
     case setChatRooms([ChatRoomViewData])
+    case setChatMessage(ChatMessageViewData)
   }
   
   public struct State {
-    var chatRooms: [ChatRoomViewData] = []
+    var chatRooms: [ChatRoomViewData]? = nil
+    var socketState: SocketState? = nil
+    var chatMessages: [Int: ChatMessageViewData]? = nil
   }
   
   public let initialState: State = .init()
   
-  public init(chatServerConnectUseCase: DefaultChatSTOMPConnectUseCase, getChatRoomListUseCase: DefaultGetChatRoomListUseCase) {
+  public init(chatServerConnectUseCase: DefaultChatSTOMPConnectUseCase, getChatRoomListUseCase: DefaultGetChatRoomListUseCase, chatRoomSubscribeUseCase: DefaultChatRoomSubscribeUseCase, getChatMessageStreamUseCase: DefaultGetChatMessageStreamUseCase) {
     self.chatServerConnectUseCase = chatServerConnectUseCase
     self.getChatRoomListUseCase = getChatRoomListUseCase
+    self.chatRoomSubscribeUseCase = chatRoomSubscribeUseCase
+    self.getChatMessageStreamUseCase = getChatMessageStreamUseCase
   }
 }
 
 extension ChatListReactor {
   public func mutate(action: Action) -> Observable<Mutation> {
     switch action {
-    case .connectChatServer:
-      return chatServerConnectUseCase.execute()
-        .flatMap { result -> Observable<Mutation> in
-          return .just(.setSocketState(.success))
-        }
-        .catch { error in
-          return .just(.setSocketState(.failed))
-        }
     case .loadChatRooms:
-      let roomViewData = [ChatRoomViewData(roomId: 6, recieverProfile: .init(userId: 6, name: "아아아", profileImage: .init()), lastMessage: .init(content: .text("asd"), senderType: .currentUser, timestamp: Date()))]
-      return .just(.setChatRooms(roomViewData))
-//      return getChatRoomListUseCase.execute()
-//        .asObservable()
-//        .flatMap { rooms -> Observable<Mutation> in
-//          print("asdasd")
-////          let roomViewData = rooms.map { ChatRoomViewData(roomId: $0.roomId, recieverProfile: , lastMessage: <#T##ChatMessageViewData#>)}
-//          return .just(.setChatRooms(roomViewData))
-//        }
+      return getChatRoomListUseCase.execute()
+        .asObservable()
+        .flatMap { rooms -> Observable<Mutation> in
+          let _ = rooms.map { room in
+            self.chatRoomSubscribeUseCase.execute(roomId: "\(room.roomId)")
+          }
+          let roomViewData = rooms.map {
+            ChatRoomViewData(roomId: $0.roomId, recieverProfile: .init(userId: $0.senderId, name: $0.senderNickname, profileImageURL: $0.senderImageURL), lastMessage: .init(roomId: $0.roomId, content: .text($0.lastMessage ?? ""), senderType: .participant($0.senderNickname), sendTime: $0.createdAt))
+          }
+          return .just(.setChatRooms(roomViewData))
+        }
+    case .observeChatMessage:
+      return getChatMessageStreamUseCase.execute()
+        .asObservable()
+        .flatMap { message -> Observable<Mutation> in
+          let messageViewData = ChatMessageViewData(roomId: message.roomId, content: .text(message.content.textValue), senderType: .participant(""), sendTime: message.sendTime)
+          return .just(.setChatMessage(messageViewData))
+        }
+    case .connectSocketServer:
+      return chatServerConnectUseCase.connectSocket()
+        .asObservable()
+        .flatMap { state -> Observable<Mutation> in
+          self.chatServerConnectUseCase.connectSTOMP()
+          switch state {
+          case .socketConnected:
+            return .just(.setSocketState(.socketConnected))
+          case .stompConnected:
+            return .just(.setSocketState(.stompConnected))
+          }
+        }
+    case .subscribeChatRoom:
+        getChatRoomListUseCase.execute()
+        .subscribe(with: self) { owner, rooms in
+            let _ = rooms.map { room in
+              self.chatRoomSubscribeUseCase.execute(roomId: "\(room.roomId)")
+            }
+        }
+        .disposed(by: disposeBag)
+      return .empty()
     }
   }
   
   public func reduce(state: State, mutation: Mutation) -> State {
     var newSate = state
     switch mutation {
-    case .setSocketState(let _):
-      break
+    case .setSocketState(let status):
+      newSate.socketState = status
     case .setChatRooms(let array):
       newSate.chatRooms = array
+    case .setChatMessage(let messages):
+      break
     }
     return newSate
   }

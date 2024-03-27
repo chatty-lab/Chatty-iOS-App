@@ -11,4 +11,8 @@ import DomainChat
 public protocol FeatureChatDependecyProvider {
   func makeChatServerConnectUseCase() -> DefaultChatSTOMPConnectUseCase
   func makeGetChatRoomListUseCase() -> DefaultGetChatRoomListUseCase
+  func makeChatRoomSubscribeUseCase() -> DefaultChatRoomSubscribeUseCase
+  func makeGetChatMessageStreamUseCase() -> DefaultGetChatMessageStreamUseCase
+  func makeChatSendMessageUseCase() -> DefaultChatSendMessageUseCase
+  func makeGetChatMessagesUseCase() -> DefaultGetChatMessgesUseCase
 }

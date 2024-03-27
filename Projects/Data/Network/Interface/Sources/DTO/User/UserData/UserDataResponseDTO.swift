@@ -6,38 +6,80 @@
 //
 
 import Foundation
+import DomainUserInterface
 import DomainUser
 
 public struct UserDataReponseDTO: Decodable {
-  public let id: Int
-  public let mobileNumber: String
-  public let nickname: String
-  public let birth: String
-  public let gender: String
-  public let mbti: String
-  public let authority: String
-  public let address: String?
-  public let interests: [String]?
-  public let imageUrl: String?
-  public let school: String?
-  public let job: String?
-  public let introduce: String
-  public let blueCheck: Bool
+  let id: Int
+  let mobileNumber: String
+  let nickname: String
+  let birth: String
+  let gender: String
+  let mbti: String
+  let address: String?
+  let authority: String
+  let imageUrl: String?
+  let interests: [String]
+  let job: String?
+  let introduce: String?
+  let school: String?
+  let blueCheck: Bool
+  
+  enum CodingKeys: String, CodingKey {
+    case id
+    case mobileNumber
+    case nickname
+    case birth
+    case gender
+    case mbti
+    case address
+    case authority
+    case imageUrl
+    case interests
+    case job
+    case introduce
+    case school
+    case blueCheck
+  }
+  
+  var toGender: Gender {
+    if gender == "FEMALE" {
+      return .female
+    }
+    if gender == "MALE" {
+      return .male
+    }
+    return .male
+  }
+  
+  var toAuthority: Authority {
+    if authority == "ANONYMOUS" {
+      return .anonymous
+    }
+    if authority == "USER" {
+      return .user
+    }
+    if authority == "ADMIN" {
+      return .admin
+    }
+    return .anonymous
+  }
   
   public func toDomain() -> UserData {
     return UserData(
-      nickname: self.nickname,
-      mobileNumber: self.mobileNumber,
-      birth: self.birth,
-      gender: self.gender,
-      mbti: self.mbti,
-      authority: self.authority,
-      address: self.address,
-      imageUrl: self.imageUrl,
-      interests: self.interests,
-      job: self.job,
-      introduce: self.introduce,
-      school: self.school,
-      blueCheck: self.blueCheck)
+      nickname: nickname,
+      mobileNumber: mobileNumber,
+      birth: birth,
+      gender: toGender,
+      mbti: mbti,
+      authority: toAuthority,
+      address: address,
+      imageUrl: imageUrl,
+      interests: interests,
+      job: job,
+      introduce: introduce,
+      school: school,
+      blueCheck: blueCheck
+    )
   }
 }

@@ -10,10 +10,10 @@ import RxSwift
 import RxCocoa
 import ReactorKit
 import DomainUserInterface
+import DomainCommon
 import DataNetworkInterface
 
 public final class OnboardingNickNameReactor: Reactor {
-  
   private let saveProfileNicknameUseCase: SaveProfileNicknameUseCase
   
   /// 뷰에서 수행할 수 있는 사용자의 액션

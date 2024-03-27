@@ -31,7 +31,7 @@ public final class OnboardingPhoneAuthenticationCoordinator: BaseCoordinator {
       type: type,
       sendVerificationCodeUseCase: dependencyProvider.makeSendVerificationCodeUseCase(),
       getDeviceIdUseCase: dependencyProvider.makeGetDeviceIdUseCase(),
-      signUseCase: dependencyProvider.makeSignUseCase()
+      signUseCase: dependencyProvider.makeSignUseCase(), getUserDataUseCase: dependencyProvider.makeGetUserDataUseCase()
     )
     let onboardingPhoneNumberEntryController = OnboardingPhoneNumberEntryController(reactor: onboardingPhoneAuthenticationReactor)
     onboardingPhoneNumberEntryController.delegate = self
@@ -51,6 +51,6 @@ extension OnboardingPhoneAuthenticationCoordinator: OnboardingPhoneAuthenticatio
     let onboardingNickNameCoordinator = OnboardingNickNameCoordinator(navigationController: navigationController, dependencyProvider: dependencyProvider)
     onboardingNickNameCoordinator.start()
     
-    setRootViewController(to: onboardingNickNameCoordinator)
+    childCoordinators.append(onboardingNickNameCoordinator)
   }
 }

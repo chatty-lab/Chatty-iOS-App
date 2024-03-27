@@ -11,7 +11,7 @@ import SharedDesignSystem
 import FeatureChatInterface
 
 public protocol ChatCoordinatorDelegate: AnyObject {
-  func pushToChatRoom(roomId: Int)
+  func pushToChatRoom(roomViewData: ChatRoomViewData)
 }
 
 public final class ChatCoordinator: BaseCoordinator, ChatCoordinatorDelegate {
@@ -29,14 +29,16 @@ public final class ChatCoordinator: BaseCoordinator, ChatCoordinatorDelegate {
   public override func start() {
     let chatListController = ChatListController(reactor: ChatListReactor(
       chatServerConnectUseCase:dependencyProvider.makeChatServerConnectUseCase(),
-      getChatRoomListUseCase: dependencyProvider.makeGetChatRoomListUseCase())
+      getChatRoomListUseCase: dependencyProvider.makeGetChatRoomListUseCase(), 
+      chatRoomSubscribeUseCase: dependencyProvider.makeChatRoomSubscribeUseCase(), getChatMessageStreamUseCase: dependencyProvider.makeGetChatMessageStreamUseCase())
     )
     chatListController.delegate = self
     navigationController.pushViewController(chatListController, animated: true)
   }
   
-  public func pushToChatRoom(roomId: Int) {
-    let chatRoomController = ChatRoomController(reactor: ChatReactor(chatServerConnectUseCase: dependencyProvider.makeChatServerConnectUseCase()))
+  public func pushToChatRoom(roomViewData: ChatRoomViewData) {
+    let chatRoomController = ChatRoomController(reactor: ChatReactor(chatServerConnectUseCase: dependencyProvider.makeChatServerConnectUseCase(), chatSendMessageUseCase: dependencyProvider.makeChatSendMessageUseCase(), chatRoomSubscribeUseCase: dependencyProvider.makeChatRoomSubscribeUseCase(), getChatMessageStreamUseCase: dependencyProvider.makeGetChatMessageStreamUseCase(), getChatMessagesUseCase: dependencyProvider.makeGetChatMessagesUseCase(), roomViewData: roomViewData))
+    chatRoomController.hidesBottomBarWhenPushed = true
     navigationController.pushViewController(chatRoomController, animated: true)
   }
 }

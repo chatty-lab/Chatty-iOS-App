@@ -6,12 +6,12 @@
 //
 
 import UIKit
+import SharedDesignSystem
 
-final class LiveController: UIViewController {
+final class LiveController: BaseController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    view.backgroundColor = .purple
   }
 }

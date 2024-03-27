@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainUserInterface
 import DomainUser
 
 public struct UserProfileResponseDTO: CommonResponseDTO {
@@ -16,7 +17,8 @@ public struct UserProfileResponseDTO: CommonResponseDTO {
   
   public struct UserProfileData: Decodable {
     let id: Int
-    let mobileNumber, nickname, birth, gender, mbti, authority: String
+    let mobileNumber, nickname, birth, gender, mbti: String
+    let authority: Authority
     let interests: [String]
     let address, imageURL, job, introduce, school: String?
     let blueCheck, unlock: Bool

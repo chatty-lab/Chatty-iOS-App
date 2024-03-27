@@ -146,7 +146,7 @@ public extension UserAPIRouter  {
   
   var authorizationType: Moya.AuthorizationType? {
     switch self {
-    case .nickname, .mbti, .image, .gender, .deviceToken, .birth, .school, .job, .introduce, .interests, .address:
+    case .nickname, .mbti, .image, .gender, .deviceToken, .birth, .school, .job, .introduce, .interests, .address, .profile:
       return .bearer
     default:
       return .none

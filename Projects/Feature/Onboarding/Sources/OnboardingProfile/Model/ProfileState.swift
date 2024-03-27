@@ -21,9 +21,9 @@ public struct ProfileState {
   init(userData: UserDataProtocol) {
     self.nickName = userData.nickname
     switch userData.gender {
-    case "MALE":
+    case .male:
       self.gender = .male
-    case "FEMALE":
+    case .female:
       self.gender = .female
     default:
       self.gender = .none

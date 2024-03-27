@@ -7,13 +7,14 @@
 
 import Foundation
 import Shared
+import DomainChatInterface
 
 public enum ChatSTOMPRouter: STOMPRouter {
   case connectToChatServer
   case disconnectFromChatServer
   case subscribeToChatRoom(roomId: String)
   case unsubsribeFromChatRoom(roomId: String)
-  case sendMessage(message: String, roomId: String)
+  case sendMessage(ChatMessageRequestDTO)
 }
 
 extension ChatSTOMPRouter {
@@ -32,30 +33,35 @@ extension ChatSTOMPRouter {
     }
   }
   
+  public var id: String {
+    switch self {
+    case .subscribeToChatRoom, .sendMessage:
+      return ""
+    default:
+      return ""
+    }
+  }
+  
   public var destination: String {
     switch self {
-    case .subscribeToChatRoom(let roomId), .unsubsribeFromChatRoom(let roomId), .sendMessage(_, let roomId):
-      return "/topic/chat/\(roomId)"
+    case .subscribeToChatRoom(let roomId), .unsubsribeFromChatRoom(let roomId):
+      return "/sub/chat/\(roomId)"
+    case .sendMessage(let messageDTO):
+      return "/pub/chat/message/\(messageDTO.roomId)"
     default:
       return ""
     }
   }
   
   public var headers: [String : String] {
-    var defaultHeaders: [String: String] = ["accept-version": "1.2", "host": "dev.api.chattylab.org"]
-    switch self {
-    case .connectToChatServer:
-      defaultHeaders["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJtb2JpbGVOdW1iZXIiOiIwMTA2MjU4NTA1NSIsImRldmljZUlkIjoiMjE3MDFCMTItQjE3Ni00NjIwLUI0RjUtQjY3NTk3REFGMTJDIiwiaWF0IjoxNzA5MDI4NzYzLCJleHAiOjE3MDkwMjg5NDN9.VnJD6e69oT1T0-JjxnWYUnDsrAYvWcrjFyEykGqZvuM"
-    default:
-      break
-    }
+    let defaultHeaders: [String: String] = ["accept-version": "1.1, 1.0","content-type": "application/json;charset=UTF-8"]
     return defaultHeaders
   }
   
-  public var body: String? {
+  public var body: Encodable? {
     switch self {
-    case .sendMessage(let message, let roomId):
-      return message
+    case .sendMessage(let messageDTO):
+      return messageDTO
     default:
       return nil
     }

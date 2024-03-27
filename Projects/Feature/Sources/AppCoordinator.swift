@@ -9,6 +9,8 @@ import UIKit
 import Shared
 import SharedDesignSystem
 import FeatureOnboarding
+import RxSwift
+import RxBlocking
 
 public final class AppCoordinator: BaseCoordinator, AppFlowDelegate {
   public override var type: CoordinatorType {
@@ -17,9 +19,11 @@ public final class AppCoordinator: BaseCoordinator, AppFlowDelegate {
   
   public var window: UIWindow
   
-  private let featureDependencyProvider: FeatureDependencyProvider
+  private let featureDependencyProvider: AppDependencyProvider
   
-  public init(window: UIWindow, navigationController: CustomNavigationController, featureDependencyProvider: FeatureDependencyProvider) {
+  private let disposeBag = DisposeBag()
+  
+  public init(window: UIWindow, navigationController: CustomNavigationController, featureDependencyProvider: AppDependencyProvider) {
     self.window = window
     self.featureDependencyProvider = featureDependencyProvider
     super.init(navigationController: navigationController)
@@ -27,7 +31,29 @@ public final class AppCoordinator: BaseCoordinator, AppFlowDelegate {
   }
   
   public override func start() {
-    showOnboardingFlow()
+    let validateAccessTokenUseCase = featureDependencyProvider.makeValiateAccessTokenUseCase()
+    let getProfileDataUseCase = featureDependencyProvider.makeGetProfileUseCase()
+    
+    do {
+      let isValid = try validateAccessTokenUseCase.execute().toBlocking().single()
+      let profile = try getProfileDataUseCase.execute(hasFetched: true).toBlocking().single()
+      
+      if isValid {
+        if profile.authority == .anonymous {
+          self.showOnboardingFlow()
+        }
+        if profile.authority == .user {
+          self.showMainFlow()
+        }
+      } else {
+        // 유효성 검사 실패 처리
+        print("자동 로그인 실패! 온보딩으로~")
+        self.showOnboardingFlow()
+      }
+    } catch {
+      print("에러 처리: \(error)")
+      self.showOnboardingFlow()
+    }
   }
   
   public func showOnboardingFlow() {
@@ -35,6 +61,7 @@ public final class AppCoordinator: BaseCoordinator, AppFlowDelegate {
       navigationController: navigationController,
       dependencyProvider: featureDependencyProvider.makeFeatureOnboardingDependencyProvider()
     )
+    
     childCoordinators.append(onboardingCoordinator)
     onboardingCoordinator.start()
     
@@ -42,18 +69,25 @@ public final class AppCoordinator: BaseCoordinator, AppFlowDelegate {
     window.makeKeyAndVisible()
   }
   
-  public func showMainFlow() {
-    navigationController.setViewControllers([], animated: false)
-    let mainCoordinator = MainTabBarCoordinator(navigationController)
-
+  public func showOnboardingProfileFlow() {
+    let onboardingNicknameCoordinator = OnboardingNickNameCoordinator(navigationController: navigationController, dependencyProvider: featureDependencyProvider.makeFeatureOnboardingDependencyProvider())
+    onboardingNicknameCoordinator.start()
+    
     childCoordinators.removeAll()
-    childCoordinators.append(mainCoordinator)
-    mainCoordinator.start()
-
-    print("MainTab -->")
+    childCoordinators.append(onboardingNicknameCoordinator)
+    
+    window.rootViewController = navigationController
+    window.makeKeyAndVisible()
   }
   
-  deinit {
-    print("해제됨: AppCoordinator")
+  public func showMainFlow() {
+    navigationController.setCustomNavigationBarHidden(true, animated: false)
+    let mainCoordinator = MainTabBarCoordinator(navigationController, featureChatDependencyProvider: featureDependencyProvider.makeFeatureChatDependencyProvider())
+    mainCoordinator.start()
+    
+    childCoordinators.removeAll()
+    childCoordinators.append(mainCoordinator)
+    window.rootViewController = navigationController
+    window.makeKeyAndVisible()
   }
 }

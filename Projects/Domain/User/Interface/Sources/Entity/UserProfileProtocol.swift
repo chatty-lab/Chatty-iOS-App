@@ -14,7 +14,7 @@ public protocol UserProfileProtocol {
   var gender: String { get }
   var mbti: String { get }
   var address: String? { get }
-  var authority: String { get }
+  var authority: Authority { get }
   var imageUrl: String? { get }
   var interests: [String] { get }
   var job: String? { get }

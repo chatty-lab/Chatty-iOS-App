@@ -18,7 +18,7 @@ public final class OnboardingProfileCoordinator: BaseCoordinator {
   
   private let dependencyProvider: FeatureOnboardingDependencyProvider
   
-  init(navigationController: CustomNavigationController, dependencyProvider: FeatureOnboardingDependencyProvider) {
+  public init(navigationController: CustomNavigationController, dependencyProvider: FeatureOnboardingDependencyProvider) {
     self.dependencyProvider = dependencyProvider
     super.init(navigationController: navigationController)
   }
@@ -26,7 +26,7 @@ public final class OnboardingProfileCoordinator: BaseCoordinator {
   public override func start() {
     let onboardingProfileReactor = OnboardingProfileReactor(
       saveProfileDataUseCase: dependencyProvider.makeSaveProfileDataUseCase(),
-      getUserDataUseCase: dependencyProvider.makeGetProfileDataUseCase(),
+      getUserDataUseCase: dependencyProvider.makeGetUserDataUseCase(),
       profileType: .gender
     )
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReactor)
@@ -45,7 +45,7 @@ extension OnboardingProfileCoordinator: OnboardingProfileDelegate {
     
     let onboardingProfileReator = OnboardingProfileReactor(
       saveProfileDataUseCase: dependencyProvider.makeSaveProfileDataUseCase(),
-      getUserDataUseCase: dependencyProvider.makeGetProfileDataUseCase(),
+      getUserDataUseCase: dependencyProvider.makeGetUserDataUseCase(),
       profileType: profileType
     )
     let onboardingProfileController = OnboardingProfileController(reactor: onboardingProfileReator)

@@ -9,12 +9,21 @@ import Foundation
 import RxSwift
 
 public protocol ChatSTOMPRepositoryProtocol {
-  func connectToChatSTOMPServer() -> Observable<Void>
-  func disconnectToChatSTOMPServer() -> Observable<Void>
-  func sendMessage(message: String, toRoomId roomId: String) -> Observable<Void>
-  func subscribeToChatRoom(roomId: String) -> Observable<Void>
-  func unsubscribeFromChatRoom(roomId: String) -> Observable<Void>
-  func observeMessages() -> Observable<String>
-  func observeConnectionChanges() -> Observable<Bool>
-  func observeErrors() -> Observable<Error>
+  func connectSocket() -> PublishSubject<SocketState>
+  func connectSTOMP()
+  func socketObserver() -> PublishSubject<ChatMessageProtocol>
+  func subscribeChatRoom(roomId: String)
+  func unsubscribeChatRoom(roomId: String)
+  func sendMessage(roomdId: Int, _ type: messageRequestType)
+}
+
+public enum messageRequestType {
+  case text(String)
+  
+  public var textValue: String {
+    switch self {
+    case .text(let string):
+      return string
+    }
+  }
 }

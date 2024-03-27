@@ -16,7 +16,11 @@ public struct DefaultChatSTOMPConnectUseCase {
     self.chatSTOMPRepository = chatSTOMPRepository
   }
   
-  public func execute() -> Observable<Void> {
-    return chatSTOMPRepository.connectToChatSTOMPServer()
+  public func connectSTOMP() {
+    return chatSTOMPRepository.connectSTOMP()
+  }
+  
+  public func connectSocket() -> PublishSubject<SocketState> {
+    return chatSTOMPRepository.connectSocket()
   }
 }
