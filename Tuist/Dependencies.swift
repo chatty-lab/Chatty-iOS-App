@@ -22,6 +22,7 @@ let SPM = SwiftPackageManagerDependencies(
     .remote(url: "https://github.com/kaishin/Gifu.git", requirement: .upToNextMajor(from: "3.4.0")),
     .remote(url: "https://github.com/yhkaplan/DoubleSlider", requirement: .upToNextMajor(from: "1.0.0")),
     .remote(url: "https://github.com/onevcat/Kingfisher.git", requirement: .upToNextMajor(from: "7.0.0")),
+    .remote(url: "https://github.com/Romixery/SwiftStomp.git", requirement: .upToNextMajor(from: "1.1.1"))
   ],
   productTypes: [
     "RxGesture": .framework,

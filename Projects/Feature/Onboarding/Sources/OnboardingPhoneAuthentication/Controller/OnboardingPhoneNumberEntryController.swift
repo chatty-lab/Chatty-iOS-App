@@ -70,6 +70,14 @@ public final class OnboardingPhoneNumberEntryController: BaseController {
     let alertController = CustomAlertController(alertView: alertView, delegate: self)
     navigationController?.present(alertController, animated: false)
   }
+  
+  public override func destructiveAction() {
+    reactor?.action.onNext(.sendSMS)
+  }
+  
+  public override func cancelAction() {
+    self.activateTextField()
+  }
 }
 
 extension OnboardingPhoneNumberEntryController: ReactorKit.View {
@@ -113,15 +121,5 @@ extension OnboardingPhoneNumberEntryController: ReactorKit.View {
         }
       }
       .disposed(by: disposeBag)
-  }
-}
-
-extension OnboardingPhoneNumberEntryController: CustomAlertDelegate {
-  public func destructiveAction() {
-    reactor?.action.onNext(.sendSMS)
-  }
-  
-  public func cancelAction() {
-    self.activateTextField()
   }
 }

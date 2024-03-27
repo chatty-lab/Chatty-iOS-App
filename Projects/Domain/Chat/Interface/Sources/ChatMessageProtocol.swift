@@ -16,4 +16,11 @@ public protocol ChatMessageProtocol {
 
 public enum MessageContentType: Hashable {
   case text(String)
+  
+  public var textValue: String {
+    switch self {
+    case .text(let string):
+      return string
+    }
+  }
 }

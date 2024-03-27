@@ -12,7 +12,7 @@ import RxSwift
 import Moya
 import DomainCommon
 
-public struct DefaultAuthAPIRepository: AuthAPIRepository {  
+public struct DefaultAuthAPIRepository: AuthAPIRepository {
   private let authAPIService: any AuthAPIService
   
   public init(authAPIService: any AuthAPIService) {
@@ -29,5 +29,10 @@ public struct DefaultAuthAPIRepository: AuthAPIRepository {
     let request = MobileRequestDTO(mobileNumber: mobileNumber, deviceId: deviceId)
     return authAPIService.request(endPoint: .mobile(request), responseDTO: MobileResponseDTO.self)
       .map { $0.toDomain() }
+  }
+  
+  public func tokenValidation() -> RxSwift.Single<Bool> {
+    return authAPIService.request(endPoint: .token, responseDTO: EmptyResponseDTO.self)
+      .map { _ in true }
   }
 }

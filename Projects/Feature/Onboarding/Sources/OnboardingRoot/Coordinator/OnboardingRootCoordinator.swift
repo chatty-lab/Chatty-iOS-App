@@ -25,7 +25,7 @@ public final class OnboardingRootCoordinator: BaseCoordinator {
   public override func start() {
     let onboardingRootController = OnboardingRootController()
     onboardingRootController.delegate = self
-    navigationController.pushViewController(onboardingRootController, animated: false)
+    navigationController.setViewControllers([onboardingRootController], animated: false)
   }
   
   deinit {

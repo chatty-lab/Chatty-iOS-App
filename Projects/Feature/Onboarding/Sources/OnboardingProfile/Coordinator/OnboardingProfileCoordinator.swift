@@ -19,7 +19,7 @@ public final class OnboardingProfileCoordinator: BaseCoordinator {
   
   private let dependencyProvider: FeatureOnboardingDependencyProvider
   
-  init(navigationController: CustomNavigationController, dependencyProvider: FeatureOnboardingDependencyProvider) {
+  public init(navigationController: CustomNavigationController, dependencyProvider: FeatureOnboardingDependencyProvider) {
     self.dependencyProvider = dependencyProvider
     super.init(navigationController: navigationController)
   }

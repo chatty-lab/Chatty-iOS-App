@@ -12,4 +12,5 @@ import DomainCommon
 public protocol AuthAPIRepositoryProtocol {
   func tokenRefresh(refreshToken: String) -> Single<TokenProtocol>
   func sendVerificationCode(mobileNumber: String, deviceId: String) -> Single<Void>
+  func tokenValidation() -> Single<Bool>
 }

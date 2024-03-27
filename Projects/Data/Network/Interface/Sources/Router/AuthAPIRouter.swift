@@ -8,10 +8,10 @@
 import Foundation
 import Moya
 
-public enum AuthAPIRouter: RouterProtocol {
+public enum AuthAPIRouter: RouterProtocol, AccessTokenAuthorizable {
   case mobile(MobileRequestDTO)
   case refresh(RefreshRequestDTO)
-  case token(TokenRequestDTO)
+  case token
 }
 
 public extension AuthAPIRouter {
@@ -47,8 +47,8 @@ public extension AuthAPIRouter {
       return .requestJSONEncodable(mobileRequestDTO)
     case .refresh(let refreshRequestDTO):
       return .requestJSONEncodable(refreshRequestDTO)
-    case .token(let tokenRequestDTO):
-      return .requestJSONEncodable(tokenRequestDTO)
+    case .token:
+      return .requestPlain
     }
   }
   
@@ -56,6 +56,15 @@ public extension AuthAPIRouter {
     switch self {
     case .mobile, .refresh, .token:
       return ["Content-Type": "application/json"]
+    }
+  }
+  
+  var authorizationType: AuthorizationType? {
+    switch self {
+    case .token:
+      return .bearer
+    default:
+      return .none
     }
   }
 }

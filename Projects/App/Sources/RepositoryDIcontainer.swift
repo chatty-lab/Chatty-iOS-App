@@ -23,14 +23,23 @@ public protocol RepositoryDIcontainer: ServiceDIContainer {
   func makeLiveAPIRepository() -> DefaultLiveAPIRepository
   func makeLiveSocketRepository() -> DefaultLiveSocketRepository
   func makeUserDefaultsRepository() -> DefaultUserDefaultsRepository
+  func makeChatSTOMPRepository() -> DefaultChatSTOMPRepository
+  func makeChatAPIRepository() -> DefaultChatAPIRepository
 }
 
 extension RepositoryDIcontainer {
   func makeUserAPIRepository() -> DefaultUserAPIRepository {
     return DefaultUserAPIRepository(
-      userAPIService: makeUserAPIService(),
-      profileAPIService: makeProfileAPIService(),
-      interestAPIService: makeInterestAPIService()
+      userAPIService: UserAPIServiceImpl(
+        authAPIService: AuthAPIServiceImpl(
+          keychainService: KeychainService.shared),
+        keychainService: KeychainService.shared
+      ),
+      profileAPIService: ProfileAPIServiceImpl(
+        authAPIService: AuthAPIServiceImpl(
+          keychainService: KeychainService.shared),
+        keychainService: KeychainService.shared
+      )
     )
   }
   
@@ -67,6 +76,19 @@ extension RepositoryDIcontainer {
   public func makeUserDefaultsRepository() -> DefaultUserDefaultsRepository {
     return DefaultUserDefaultsRepository(
       userDefaultService: makeUserDefaultsService()
+  }
+  
+  func makeChatSTOMPRepository() -> DefaultChatSTOMPRepository {
+    return DefaultChatSTOMPRepository(chatSTOMPService: ChatSTOMPServiceImpl.shared)
+  }
+  
+  func makeChatAPIRepository() -> DefaultChatAPIRepository {
+    return DefaultChatAPIRepository(
+      chatAPIService: ChatAPIServiceImpl(
+        authAPIService: AuthAPIServiceImpl(
+          keychainService: KeychainService.shared
+        ),
+        keychainService: KeychainService.shared)
     )
   }
 }

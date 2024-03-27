@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import DomainUserInterface
 import DomainUser
 import DomainUserInterface
 

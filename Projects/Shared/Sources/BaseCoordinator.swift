@@ -23,6 +23,10 @@ open class BaseCoordinator: Coordinator {
     self.navigationController.customDelegate = self
   }
   
+  deinit {
+    print("Deinitialized \(Swift.type(of: self))")
+  }
+  
   open func start() {
     
   }
@@ -30,11 +34,10 @@ open class BaseCoordinator: Coordinator {
 
 extension BaseCoordinator {
   public func setRootViewController(to coordinator: Coordinator, animated: Bool = true) {
-    childCoordinators.removeAll()
-    if let newRootViewController = coordinator.navigationController.viewControllers.first {
+    addChildCoordinator(coordinator)
+    if let newRootViewController = coordinator.navigationController.viewControllers.last {
       navigationController.setViewControllers([newRootViewController], animated: animated)
     }
-    addChildCoordinator(coordinator)
   }
   
   public func addChildCoordinator(_ childCoordinator: Coordinator) {

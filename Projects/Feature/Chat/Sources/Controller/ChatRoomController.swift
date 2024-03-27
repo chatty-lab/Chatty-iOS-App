@@ -27,8 +27,10 @@ public final class ChatRoomController: BaseController {
   }
   
   public override func setNavigationBar() {
+    guard let title = reactor?.roomViewData.recieverProfile.name else { return }
     self.customNavigationController?.customNavigationBarConfig = CustomNavigationBarConfiguration(
-      titleView: .init(title: "호이유이"),
+      titleView: .init(title: title),
+      backgroundColor: SystemColor.basicWhite.uiColor,
       backgroundAlpha: 0.97)
   }
 }
@@ -56,10 +58,24 @@ extension ChatRoomController: ReactorKit.View {
       .disposed(by: disposeBag)
     
     reactor.state
+      .map(\.socketState)
+      .distinctUntilChanged()
+      .subscribe(with: self) { owner, state in
+        print("소켓 상태 변한다!!!!")
+        switch state {
+        case .stompConnected:
+          owner.reactor?.action.onNext(.observeChatMessage)
+        default:
+          break
+        }
+      }
+      .disposed(by: disposeBag)
+    
+    reactor.state
       .map(\.messages)
       .distinctUntilChanged()
       .subscribe(with: self) { owner, messages in
-        owner.chatAdapter.applySnapshot(messages: messages)
+        owner.chatAdapter.applySnapshot(messages: messages, animatingDifferences: false)
       }
       .disposed(by: disposeBag)
   }

@@ -30,7 +30,7 @@ public struct CustomNavigationBarConfiguration: CustomNavigationBarConfigurable 
   public var backgroundOpacity: Float
   public var backgroundAlpha: CGFloat
   
-  public init(titleView: Item? = nil, titleAlignment: Alignment = .center, rightButtons: [Button] = [], backgroundColor: UIColor = SystemColor.basicWhite.uiColor, backgroundOpacity: Float = 1, backgroundAlpha: CGFloat = 1) {
+  public init(titleView: Item? = nil, titleAlignment: Alignment = .center, rightButtons: [Button] = [], backgroundColor: UIColor = .clear, backgroundOpacity: Float = 1, backgroundAlpha: CGFloat = 1) {
     guard rightButtons.count < 5 else {
       fatalError("CustomNavigationBarConfiguration Error: 버튼은 최대 4개까지 등록할 수 있습니다.")
     }

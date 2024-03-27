@@ -23,13 +23,21 @@ public final class MainTabBarController: UITabBarController {
   public override func viewDidLoad() {
     super.viewDidLoad()
     
-    view.backgroundColor = .systemBackground
     configureTabBarController(controllers: tabNavigationControllers)
+    navigationController?.navigationBar.isHidden = true
   }
   
   private func configureTabBarController(controllers: [MainTabBarItemType: CustomNavigationController]) {
+    self.tabBar.tintColor = SystemColor.primaryNormal.uiColor
+    
     let items = MainTabBarItemType.allCases.map { item -> CustomNavigationController in
       guard let tab = tabNavigationControllers[item] else { return CustomNavigationController() }
+      if let defaultImage = UIImage(asset: item.tabIconDefault),
+        let selectedImage = UIImage(asset: item.tabIconSelected) {
+        tab.tabBarItem.image = defaultImage
+        tab.tabBarItem.selectedImage = selectedImage
+      }
+      tab.tabBarItem.title = item.title
       return tab
     }
     

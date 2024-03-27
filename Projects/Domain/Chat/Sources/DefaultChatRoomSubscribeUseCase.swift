@@ -16,7 +16,7 @@ public struct DefaultChatRoomSubscribeUseCase {
     self.chatSTOMPRepository = chatSTOMPRepository
   }
   
-  public func execute(roomId: String) -> Observable<Void> {
-    return chatSTOMPRepository.subscribeToChatRoom(roomId: roomId)
+  public func execute(roomId: String) {
+    return chatSTOMPRepository.subscribeChatRoom(roomId: roomId)
   }
 }

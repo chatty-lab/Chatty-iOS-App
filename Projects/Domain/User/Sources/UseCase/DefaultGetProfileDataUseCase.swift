@@ -10,7 +10,6 @@ import DomainUserInterface
 import RxSwift
 
 public final class DefaultGetUserDataUseCase: GetUserDataUseCase {
-  
   private let userAPIRepository: any UserAPIRepositoryProtocol
   private let userDataRepository: any UserDataRepositoryProtocol
 

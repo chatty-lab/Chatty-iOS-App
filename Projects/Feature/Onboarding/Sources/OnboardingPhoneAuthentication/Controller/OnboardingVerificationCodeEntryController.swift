@@ -10,6 +10,7 @@ import ReactorKit
 import RxSwift
 import RxCocoa
 import SharedDesignSystem
+import Shared
 
 public final class OnboardingVerificationCodeEntryController: BaseController {
   // MARK: - View Property
@@ -51,6 +52,10 @@ public final class OnboardingVerificationCodeEntryController: BaseController {
       $0.bottom.equalToSuperview()
     }
   }
+  
+  public override func destructiveAction() {
+    reactor?.action.onNext(.sendVerificationCodeWithout)
+  }
 }
 
 extension OnboardingVerificationCodeEntryController: ReactorKit.View {
@@ -74,12 +79,20 @@ extension OnboardingVerificationCodeEntryController: ReactorKit.View {
         switch state {
         case .idle: break
         case .loading: break
-        case .success:
-          owner.delegate?.pushToNickNameView()
+        case .success(let type):
+          switch type {
+          case .signIn:
+            print("로그인!")
+            AppFlowControl.shared.delegete?.showMainFlow()
+          case .signUp:
+            print("닉네임으로!")
+            owner.delegate?.pushToNickNameView()
+          default: break
+          }
         }
       }
       .disposed(by: disposeBag)
-    
+  
     reactor.state
       .map(\.errorState)
       .compactMap { $0 }
@@ -96,6 +109,17 @@ extension OnboardingVerificationCodeEntryController: ReactorKit.View {
           print("기기 번호가 다릅니다. 계정 확인 화면으로~")
         case .unknownError:
           print("알 수 없는 에러입니다.")
+        case .alreadyExistUser:
+          print("이미 가입한 유저입니다.")
+          switch reactor.type {
+          case .signIn:
+            print("메인으로 보내기")
+          case .signUp:
+            owner.showErrorAlert(title: "계정 확인", subTitle: "이미 가입된 계정이 있어요.", positiveLabel: "로그인", negativeLabel: "취소")
+          }
+        case .profileNotCompleted:
+          print("프로필 미완성! 닉네임으로~")
+          owner.delegate?.pushToNickNameView()
         }
       }
       .disposed(by: disposeBag)

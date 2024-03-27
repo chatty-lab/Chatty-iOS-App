@@ -10,6 +10,17 @@ import Foundation
 extension Date {
   private static let dateFormatter = DateFormatter()
   
+  public enum DateFormatType {
+    case ahhmm
+    
+    var formatString: String {
+      switch self {
+      case .ahhmm:
+        return "a hh:mm"
+      }
+    }
+  }
+  
   /// "yyyy-MM-dd" -> Date
   public func toDate(_ yearMonthDay: String) -> Date {
     let dateFormatter = Self.dateFormatter
@@ -29,7 +40,7 @@ extension Date {
   }
   
   public func toCustomString(format: DateFormatType) -> String {
-    let formatter = DateFormatter()
+    let formatter = Self.dateFormatter
     formatter.locale = Locale(identifier: "ko_KR")
     formatter.dateFormat = format.formatString
     return formatter.string(from: self)

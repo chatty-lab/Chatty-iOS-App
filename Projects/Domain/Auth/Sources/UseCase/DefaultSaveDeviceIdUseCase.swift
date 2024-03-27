@@ -19,7 +19,7 @@ public struct DefaultSaveDeviceIdUseCase: SaveDeviceIdUseCase {
   
   public func execute() -> Single<Void> {
     let newDeviceId = UUID().uuidString
-    print(newDeviceId)
+    print("디바이스 아이디 생성 \(newDeviceId)")
     return keychainRepository.requestCreate(type: .deviceId(newDeviceId))
       .map { _ in () }
   }

@@ -31,12 +31,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     AppMessagingService.Firebase.setDelegate(self)
     
     // 기기 식별 번호 생성 ( 앱 최초 설치 시 )
-    let getDeviceIdUseCase = FeatureDIContainer.shared.makeDefaultGetDeviceIdUseCase()
+    let getDeviceIdUseCase = AppDIContainer.shared.makeDefaultGetDeviceIdUseCase()
     getDeviceIdUseCase.execute()
-      .subscribe(onFailure: { _ in
-        let saveDeviceIdUseCase = FeatureDIContainer.shared.makeDefaultSaveDeviceIdUseCase()
+      .filter { deviceId in
+        return deviceId.isEmpty
+      }
+      .subscribe(with: self) { owner, _ in
+        let saveDeviceIdUseCase = AppDIContainer.shared.makeDefaultSaveDeviceIdUseCase()
         let _ = saveDeviceIdUseCase.execute()
-      })
+      }
       .dispose()
 
     
@@ -75,7 +78,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 extension AppDelegate: MessagingDelegate {
   func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
     guard let fcmToken else { return }
-    let saveDeviceTokenUseCase = FeatureDIContainer.shared.makeDefaultSaveDeviceTokenUseCase()
+    let saveDeviceTokenUseCase = AppDIContainer.shared.makeDefaultSaveDeviceTokenUseCase()
     let _ = saveDeviceTokenUseCase.execute(deviceToken: fcmToken)
   }
 }

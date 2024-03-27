@@ -28,7 +28,7 @@ public final class MoyaPlugin: PluginType {
     var request = request
     let authValue = authorizationType.value + " " + accessToken
     request.addValue(authValue, forHTTPHeaderField: "Authorization")
-    
+    print("지금 사용하는 토큰: \(accessToken)")
     return request
   }
 }
@@ -37,21 +37,21 @@ extension MoyaPlugin {
   /// Request를 보낼 때 호출
   public func willSend(_ request: RequestType, target: TargetType) {
     guard let httpRequest = request.request else {
-      print("--> 유효하지 않은 요청")
+//      print("--> 유효하지 않은 요청")
       return
     }
     let url = httpRequest.description
     let method = httpRequest.httpMethod ?? "unknown method"
-    var log = "----------------------------------------------------\n\n[\(method)] \(url)\n\n----------------------------------------------------\n"
-    log.append("API: \(target)\n")
+//    var log = "----------------------------------------------------\n\n[\(method)] \(url)\n\n----------------------------------------------------\n"
+//    log.append("API: \(target)\n")
     if let headers = httpRequest.allHTTPHeaderFields, !headers.isEmpty {
-      log.append("header: \(headers)\n")
+//      log.append("header: \(headers)\n")
     }
     if let body = httpRequest.httpBody, let bodyString = String(bytes: body, encoding: String.Encoding.utf8) {
-      log.append("\(bodyString)\n")
+//      log.append("\(bodyString)\n")
     }
-    log.append("------------------- END \(method) --------------------------")
-    print(log)
+//    log.append("------------------- END \(method) --------------------------")
+//    print(log)
   }
   
   /// Response 받았을 시 분기 처리

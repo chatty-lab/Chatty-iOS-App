@@ -21,6 +21,15 @@ public final class UserDataService: UserDataServiceProtocol {
       nickname: "",
       mobileNumber: "",
       authority: "",
+      birth: "",
+      gender: .female,
+      mbti: "",
+      address: "",
+      imageUrl: "",
+      interests: [],
+      job: "",
+      introduce: "",
+      school: "",
       blueCheck: false
     )
     self.allInterests = []

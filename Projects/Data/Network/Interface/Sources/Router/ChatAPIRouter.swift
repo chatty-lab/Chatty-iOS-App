@@ -8,7 +8,7 @@
 import Foundation
 import Moya
 
-public enum ChatAPIRouter: RouterProtocol {
+public enum ChatAPIRouter: RouterProtocol, AccessTokenAuthorizable {
   case messages(ChatMessagesRequestDTO)
   case createChatRoom(senderId: Int, receiverId: Int)
   case deleteChatRoom(roomId: Int, userId: Int)
@@ -34,7 +34,7 @@ public extension ChatAPIRouter {
     case .getChatRoomInfo(let roomId):
       return "/room/\(roomId)"
     case .getChatRooms:
-      return "/rooms"
+      return "/room"
     }
   }
   

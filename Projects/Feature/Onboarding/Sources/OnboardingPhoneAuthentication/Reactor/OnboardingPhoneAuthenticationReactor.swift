@@ -14,22 +14,25 @@ import DomainCommon
 import Shared
 
 public final class OnboardingPhoneAuthenticationReactor: Reactor {
-  private let type: OnboardingAuthType
+  public let type: OnboardingAuthType
   
   private let sendVerificationCodeUseCase: SendVerificationCodeUseCase
   private let getDeviceIdUseCase: GetDeviceIdUseCase
   private let signUseCase: SignUseCase
+  private let getUserDataUseCase: GetUserDataUseCase
   
   public enum Action {
     case phoneNumberEntered(String)
     case sendSMS
     case sendVerificationCode(String)
+    case sendVerificationCodeWithout
   }
   
   public enum Mutation {
     case setSendSMSState(AsyncState<Void>)
     case setSendSMSButton(PhoneNumberValidationResult)
     case setPhoneNumber(String)
+    case setVerificationCode(String)
     case setSendVerificationCodeState(AsyncState<Void>)
     case setError(ErrorType?)
   }
@@ -39,16 +42,18 @@ public final class OnboardingPhoneAuthenticationReactor: Reactor {
     var isSendSMSButtonEnabled: Bool = false
     var sendSMSState: AsyncState<Void> = .idle
     var sendVerificationCodeState: AsyncState<Void> = .idle
+    var verificationCode: String = ""
     var errorState: ErrorType? = nil
   }
   
   public let initialState: State = State()
   
-  public init(type: OnboardingAuthType, sendVerificationCodeUseCase: SendVerificationCodeUseCase, getDeviceIdUseCase: GetDeviceIdUseCase, signUseCase: SignUseCase) {
+  public init(type: OnboardingAuthType, sendVerificationCodeUseCase: SendVerificationCodeUseCase, getDeviceIdUseCase: GetDeviceIdUseCase, signUseCase: SignUseCase, getUserDataUseCase: GetUserDataUseCase) {
     self.type = type
     self.sendVerificationCodeUseCase = sendVerificationCodeUseCase
     self.getDeviceIdUseCase = getDeviceIdUseCase
     self.signUseCase = signUseCase
+    self.getUserDataUseCase = getUserDataUseCase
   }
 }
 
@@ -63,7 +68,7 @@ extension OnboardingPhoneAuthenticationReactor {
         .just(.setSendSMSState(.loading)),
         self.sendVerificationCodeUseCase.execute(mobileNumber: self.currentState.phoneNumber)
           .asObservable()
-          .map { .setSendSMSState(.success) }
+          .map { .setSendSMSState(.success(.sendSms)) }
           .catch { error -> Observable<Mutation> in
             return error.toMutation()
           },
@@ -72,26 +77,21 @@ extension OnboardingPhoneAuthenticationReactor {
     case .sendVerificationCode(let code):
       switch type {
       case .signIn:
-        return Observable.concat([
-          signUseCase.requestLogin(mobileNumber: self.currentState.phoneNumber, authenticationNumber: code)
-            .asObservable()
-            .map { _ in .setSendVerificationCodeState(.success) }
-            .catch { error -> Observable<Mutation> in
-              return error.toMutation()
-            },
-          .just(.setSendVerificationCodeState(.idle))
-        ])
+        return processLogin(mobileNumber: self.currentState.phoneNumber, authenticationNumber: code)
       case .signUp:
         return Observable.concat([
           signUseCase.requestJoin(mobileNumber: self.currentState.phoneNumber, authenticationNumber: code)
             .asObservable()
-            .map { _ in .setSendVerificationCodeState(.success) }
+            .map { _ in .setSendVerificationCodeState(.success(.signUp)) }
             .catch { error -> Observable<Mutation> in
               return error.toMutation()
             },
-          .just(.setSendVerificationCodeState(.idle))
+          .just(.setSendVerificationCodeState(.idle)),
+          .just(.setVerificationCode(code))
         ])
       }
+    case .sendVerificationCodeWithout:
+      return processLogin(mobileNumber: self.currentState.phoneNumber, authenticationNumber: currentState.verificationCode)
     }
   }
   
@@ -108,6 +108,8 @@ extension OnboardingPhoneAuthenticationReactor {
       newState.sendVerificationCodeState = state
     case .setError(let state):
       newState.errorState = state
+    case .setVerificationCode(let code):
+      newState.verificationCode = code
     }
     return newState
   }
@@ -116,6 +118,31 @@ extension OnboardingPhoneAuthenticationReactor {
     guard let _ = Int(phoneNumberStr) else { return .notANumber }
     guard phoneNumberStr.count == 11 else { return .lengthNotValid }
     return .valid
+  }
+  
+  func processLogin(mobileNumber: String, authenticationNumber: String) -> Observable<Mutation> {
+    return Observable.concat([
+      signUseCase.requestLogin(mobileNumber: mobileNumber, authenticationNumber: authenticationNumber)
+        .asObservable()
+        .flatMap { loginResponse -> Observable<Mutation> in
+          self.getUserDataUseCase.execute(hasFetched: true)
+            .asObservable()
+            .flatMap { userData -> Observable<Mutation> in
+              if userData.authority == .user {
+                return .just(.setSendVerificationCodeState(.success(.signIn)))
+              } else {
+                return .concat([
+                  .just(.setError(.profileNotCompleted)),
+                  .just(.setError(nil))
+                ])
+              }
+            }
+        }
+        .catch { error -> Observable<Mutation> in
+          return error.toMutation()
+        },
+      .just(.setSendVerificationCodeState(.idle))
+    ])
   }
   
   public enum PhoneNumberValidationResult {
@@ -127,13 +154,21 @@ extension OnboardingPhoneAuthenticationReactor {
   public enum AsyncState<T> {
     case idle
     case loading
-    case success
+    case success(NetworkAction)
+  }
+  
+  public enum NetworkAction {
+    case sendSms
+    case signUp
+    case signIn
   }
   
   public enum ErrorType: Error {
     case invalidPhoneNumber
     case invalidVerificationCode
     case mismatchedDeviceId
+    case alreadyExistUser
+    case profileNotCompleted
     case smsFailed
     case unknownError
   }
@@ -148,6 +183,8 @@ extension Error {
         return .just(.setError(.smsFailed))
       case .E007SMSAuthenticationFailed:
         return .just(.setError(.invalidVerificationCode))
+      case .E008AlreadyExistUser:
+        return .just(.setError(.alreadyExistUser))
       case .E023MismatchedAccountAndDeviceId:
         return .just(.setError(.mismatchedDeviceId))
       default:

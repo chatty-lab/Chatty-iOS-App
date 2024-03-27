@@ -9,6 +9,7 @@ import UIKit
 import Then
 import SharedDesignSystem
 import SharedUtil
+import Kingfisher
 
 public final class ChatRoomListCell: UICollectionViewCell {
   private let containerView: UIView = UIView()
@@ -41,17 +42,21 @@ public final class ChatRoomListCell: UICollectionViewCell {
   }
   
   public func configureCell(data: ChatRoomViewData) {
-    setProfileImage(image: data.recieverProfile.profileImage)
+    setProfileImage(imageURL: data.recieverProfile.profileImageURL)
     setLastestMessage(message: data.lastMessage)
     setLastestMessageTime(message: data.lastMessage)
     setNameLabel(name: data.recieverProfile.name)
   }
   
-  private func setProfileImage(image: UIImage) {
-    profileImageView.image = image
+  private func setProfileImage(imageURL: String?) {
+    guard let imageURL,
+          let url = URL(string: imageURL) else { return }
+    profileImageView.kf.setImage(with: url)
   }
   
-  private func setLastestMessage(message: ChatMessageViewData) {
+  private func setLastestMessage(message: ChatMessageViewData?) {
+    print("asdasd \(message?.content.textValue)")
+    guard let message else { return }
     switch message.content {
     case .text(let string):
       lastestMessageLabel.text = string
@@ -62,8 +67,9 @@ public final class ChatRoomListCell: UICollectionViewCell {
     nameLabel.text = name
   }
   
-  private func setLastestMessageTime(message: ChatMessageViewData) {
-    lastestMessageTimeLabel.text = message.sendTime.toCustomString(format: .ahhmm)
+  private func setLastestMessageTime(message: ChatMessageViewData?) {
+    guard let sendTime = message?.sendTime else { return }
+    lastestMessageTimeLabel.text = sendTime.toCustomString(format: .ahhmm)
   }
                
   private func configureUI() {

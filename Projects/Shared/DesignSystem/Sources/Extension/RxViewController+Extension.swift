@@ -14,6 +14,11 @@ public extension Reactive where Base: UIViewController {
     let source = self.methodInvoked(#selector(Base.viewDidLoad)).map { _ in }
     return ControlEvent(events: source)
   }
+  
+  var viewIsAppear: ControlEvent<Bool> {
+    let source = self.methodInvoked(#selector(Base.viewIsAppearing)).map { $0.first as? Bool ?? false }
+    return ControlEvent(events: source)
+  }
 
   var viewWillAppear: ControlEvent<Bool> {
     let source = self.methodInvoked(#selector(Base.viewWillAppear)).map { $0.first as? Bool ?? false }

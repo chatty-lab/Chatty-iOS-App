@@ -111,6 +111,8 @@ extension KeychainService {
       print("update - false staus = \(status)")
       return false
     }
+    
+    print("키체인 업데이트 \(type.query)")
   }
 
   public func delete(type: KeychainRouter) -> Bool {

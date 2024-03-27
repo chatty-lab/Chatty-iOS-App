@@ -1,6 +1,6 @@
 //
 //  UserData.swift
-//  DomainCommonInterface
+//  DomainUserInterface
 //
 //  Created by 윤지호 on 1/29/24.
 //
@@ -21,4 +21,15 @@ public protocol UserDataProtocol {
   var introduce: String? { get set }
   var school: String? { get set }
   var blueCheck: Bool { get set }
+}
+
+public enum Authority: String, Decodable {
+  case anonymous = "ANONYMOUS"
+  case user = "USER"
+  case admin = "ADMIN"
+}
+
+public enum Gender: String, Codable {
+  case male = "Male"
+  case female = "Female"
 }

@@ -11,7 +11,6 @@ import ReactorKit
 import DomainUserInterface
 import DomainCommon
 
-
 public final class OnboardingProfileReactor: Reactor {
   private let saveProfileDataUseCase: SaveProfileDataUseCase
   private let getInterestsUseCase: GetAllInterestsUseCase
